@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dough Architect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        :root {
+            --accent: #4f46e5;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+            padding-bottom: 160px; /* More space for footer */
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        /* Compact Sliders */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+            height: 24px; /* Taller touch target */
+        }
+        
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 18px;
+            width: 18px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid var(--accent);
+            cursor: pointer;
+            margin-top: -7px; /* Centers thumb on track */
+            box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+        }
+        
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #e2e8f0;
+            border-radius: 2px;
+        }
+
+        /* Toggle */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: var(--accent);
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: var(--accent);
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            padding: 10px 14px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        
+        .label-text {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        /* Editable Number Inputs */
+        .val-input {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--accent);
+            background: transparent;
+            border: 1px solid transparent;
+            text-align: right;
+            width: 3.5rem;
+            border-radius: 4px;
+            padding-right: 0;
+            transition: all 0.2s;
+            /* iOS Input fix */
+            -webkit-user-select: text;
+        }
+        .val-input:focus {
+            outline: none;
+            background-color: #f1f5f9;
+            color: #1e293b;
+        }
+        /* Remove arrows/spinners */
+        .val-input::-webkit-outer-spin-button,
+        .val-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .val-input {
+            -moz-appearance: textfield;
+        }
+        
+        .unit-text {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            font-weight: 500;
+            margin-left: 1px;
+        }
+
+        /* Stepper Buttons */
+        .step-btn {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f1f5f9;
+            border-radius: 6px;
+            color: #64748b;
+            font-weight: 700;
+            font-size: 1.1rem;
+            line-height: 1;
+            cursor: pointer;
+            transition: bg 0.2s;
+            user-select: none;
+        }
+        .step-btn:active {
+            background: #cbd5e1;
+            color: #334155;
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            background-color: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(2px);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="bg-slate-900 text-white sticky top-0 z-50 shadow-md">
+        <div class="max-w-md mx-auto px-4 py-3 flex justify-between items-center gap-3">
+            <h1 class="text-base font-bold flex items-center gap-2 whitespace-nowrap">
+                <span class="text-indigo-400">●</span> Dough Architect
+            </h1>
+            
+            <div class="flex items-center gap-2 flex-grow justify-end">
+                <!-- Preset Dropdown -->
+                <div class="relative flex-grow max-w-[140px]">
+                     <select id="preset-select" onchange="loadPreset(this.value)" class="w-full appearance-none bg-slate-800 border border-slate-700 text-xs font-medium rounded-full py-1.5 pl-3 pr-6 focus:outline-none focus:border-indigo-500 text-slate-200 truncate">
+                        <optgroup label="My Recipes" id="user-presets-group" class="hidden"></optgroup>
+                        <optgroup label="Standard" id="std-presets-group">
+                            <option value="neapolitan">Neapolitan</option>
+                            <option value="nyc">New York</option>
+                            <option value="detroit">Detroit</option>
+                            <option value="romana">Romana</option>
+                            <option value="chicago">Chicago</option>
+                            <option value="focaccia">Focaccia</option>
+                            <option value="ciabatta">Ciabatta</option>
+                            <option value="glutenfree">Gluten Free</option>
+                            <option value="baguette">Baguette</option>
+                            <option value="country">Country Loaf</option>
+                        </optgroup>
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-400">
+                        <svg class="fill-current h-3 w-3" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                    </div>
+                </div>
+
+                <button onclick="openSaveModal()" class="p-1.5 rounded-full bg-slate-800 text-slate-300 hover:text-white border border-slate-700">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                </button>
+                <button onclick="openSettings()" class="p-1.5 rounded-full bg-slate-800 text-slate-300 hover:text-white border border-slate-700">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-md mx-auto p-2 space-y-2">
+
+        <!-- 2-Col Grid -->
+        <div class="grid grid-cols-2 gap-2">
+            <!-- Count -->
+            <div class="card">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="label-text">Ball Count</span>
+                    <!-- Input with onfocus="this.select()" -->
+                    <input type="number" id="val-qty" class="val-input" value="2" onfocus="this.select()" onchange="manualInput('qty')">
+                </div>
+                <div class="flex items-center gap-2">
+                    <button class="step-btn" onclick="stepVal('qty', -1)">-</button>
+                    <input type="range" id="qty" min="1" max="12" value="2" class="flex-grow" oninput="adjVal('qty')">
+                    <button class="step-btn" onclick="stepVal('qty', 1)">+</button>
+                </div>
+            </div>
+            
+            <!-- Weight -->
+            <div class="card">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="label-text">Weight</span>
+                    <div class="flex items-baseline">
+                        <input type="number" id="val-weight" class="val-input" value="250" onfocus="this.select()" onchange="manualInput('weight')">
+                        <span class="unit-text">g</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button class="step-btn" onclick="stepVal('weight', -5)">-</button>
+                    <input type="range" id="weight" min="50" max="1000" step="5" value="250" class="flex-grow" oninput="adjVal('weight')">
+                    <button class="step-btn" onclick="stepVal('weight', 5)">+</button>
+                </div>
+            </div>
+
+            <!-- Hydration -->
+            <div class="card">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="label-text">Hydration</span>
+                    <div class="flex items-baseline">
+                        <input type="number" id="val-hydro" class="val-input" value="63" onfocus="this.select()" onchange="manualInput('hydro')">
+                        <span class="unit-text">%</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button class="step-btn" onclick="stepVal('hydro', -1)">-</button>
+                    <input type="range" id="hydro" min="40" max="100" value="63" class="flex-grow" oninput="adjVal('hydro')">
+                    <button class="step-btn" onclick="stepVal('hydro', 1)">+</button>
+                </div>
+            </div>
+            
+            <!-- Salt -->
+            <div class="card">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="label-text">Salt</span>
+                    <div class="flex items-baseline">
+                        <input type="number" id="val-salt" class="val-input" value="3.0" step="0.1" onfocus="this.select()" onchange="manualInput('salt')">
+                        <span class="unit-text">%</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button class="step-btn" onclick="stepVal('salt', -0.1)">-</button>
+                    <input type="range" id="salt" min="0" max="5" step="0.1" value="3.0" class="flex-grow" oninput="adjVal('salt')">
+                    <button class="step-btn" onclick="stepVal('salt', 0.1)">+</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fermentation Row -->
+        <div class="card">
+            <div class="flex justify-between items-center mb-2">
+                <span class="label-text">Room Temp Fermentation</span>
+                <span class="text-xs font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded-full">
+                   Total RT
+                </span>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <!-- Hours -->
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-[9px] text-slate-400 uppercase">Hours</span>
+                        <input type="number" id="val-rt-time" class="val-input" style="width:3rem; font-size:1rem;" value="8" step="0.5" onfocus="this.select()" onchange="manualInput('rt-time')">
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button class="step-btn" style="height:24px; width:24px;" onclick="stepVal('rt-time', -0.5)">-</button>
+                        <input type="range" id="rt-time" min="0" max="48" value="8" step="0.5" class="flex-grow" oninput="adjVal('rt-time')">
+                        <button class="step-btn" style="height:24px; width:24px;" onclick="stepVal('rt-time', 0.5)">+</button>
+                    </div>
+                </div>
+                <!-- Temp -->
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-[9px] text-slate-400 uppercase">Temp <span id="label-unit-temp">°F</span></span>
+                        <input type="number" id="val-rt-temp" class="val-input" style="width:3rem; font-size:1rem;" value="72" onfocus="this.select()" onchange="manualInput('rt-temp')">
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button class="step-btn" style="height:24px; width:24px;" onclick="stepVal('rt-temp', -1)">-</button>
+                        <input type="range" id="rt-temp" min="55" max="95" value="72" step="1" class="flex-grow" oninput="adjVal('rt-temp')">
+                        <button class="step-btn" style="height:24px; width:24px;" onclick="stepVal('rt-temp', 1)">+</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Yeast Type & CT Toggle Row -->
+        <div class="grid grid-cols-2 gap-2">
+             <div class="card flex flex-col justify-center">
+                 <span class="label-text mb-2 text-center">Yeast Type</span>
+                 <div class="flex justify-between gap-1">
+                    <button onclick="setYeast('IDY')" class="yeast-btn active flex-1 py-1.5 text-[10px] font-bold rounded border border-slate-200 text-center hover:bg-slate-50" id="y-idy">IDY</button>
+                    <button onclick="setYeast('SSD')" class="yeast-btn flex-1 py-1.5 text-[10px] font-bold rounded border border-slate-200 text-center hover:bg-slate-50" id="y-ssd">Levain</button>
+                    <button onclick="toggleYeastMenu()" class="flex-1 py-1.5 text-[10px] font-bold rounded border border-slate-200 text-center text-slate-400" id="y-more">•••</button>
+                 </div>
+                 <div id="more-yeast" class="hidden absolute bg-white shadow-lg border rounded-lg p-2 mt-8 z-10" style="width:140px">
+                     <button onclick="setYeast('ADY')" class="w-full text-left p-2 text-xs font-bold text-slate-600 hover:bg-slate-50">ADY (Dry)</button>
+                     <button onclick="setYeast('CY')" class="w-full text-left p-2 text-xs font-bold text-slate-600 hover:bg-slate-50">Fresh Cake</button>
+                 </div>
+             </div>
+
+             <div class="card flex items-center justify-between">
+                <div class="flex flex-col">
+                    <span class="label-text">Cold Ferment</span>
+                    <span class="text-[10px] text-slate-400" id="ct-status">Disabled</span>
+                </div>
+                <div class="relative inline-block w-10 align-middle select-none">
+                    <input type="checkbox" id="ct-toggle" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer border-slate-300 transition-all duration-300"/>
+                    <label for="ct-toggle" class="toggle-label block overflow-hidden h-5 rounded-full bg-slate-200 cursor-pointer transition-colors duration-300"></label>
+                </div>
+             </div>
+        </div>
+
+        <!-- Hidden Panels -->
+        <div id="ct-controls" class="hidden card bg-indigo-50 border-indigo-100">
+             <div class="flex justify-between items-center mb-1">
+                <span class="label-text text-indigo-800">Fridge Time</span>
+                <div class="flex items-baseline">
+                    <input type="number" id="val-ct-time" class="val-input text-indigo-700 bg-indigo-50 focus:bg-white" value="24" onfocus="this.select()" onchange="manualInput('ct-time')">
+                    <span class="unit-text text-indigo-400">h</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <button class="step-btn bg-indigo-100 text-indigo-700" onclick="stepVal('ct-time', -1)">-</button>
+                <input type="range" id="ct-time" min="0" max="120" value="24" step="1" class="flex-grow" oninput="adjVal('ct-time')">
+                <button class="step-btn bg-indigo-100 text-indigo-700" onclick="stepVal('ct-time', 1)">+</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <button onclick="toggleEnrichments()" class="flex items-center justify-between w-full">
+                <span class="label-text">Enrichments (Oil / Sugar)</span>
+                <span class="text-xs text-slate-400" id="enrich-status">None</span>
+            </button>
+            <div id="enrichments-panel" class="hidden mt-3 pt-3 border-t border-slate-100 grid grid-cols-2 gap-4">
+                <div>
+                     <div class="flex justify-between mb-1">
+                         <span class="text-[10px] font-bold text-slate-500">OIL %</span> 
+                         <input type="number" id="val-oil" class="val-input" style="width:3rem; font-size:0.9rem" value="0" step="0.5" onfocus="this.select()" onchange="manualInput('oil')">
+                     </div>
+                     <div class="flex items-center gap-2">
+                        <button class="step-btn" style="width:24px; height:24px;" onclick="stepVal('oil', -0.5)">-</button>
+                        <input type="range" id="oil" min="0" max="25" step="0.5" value="0" class="flex-grow" oninput="adjVal('oil')">
+                        <button class="step-btn" style="width:24px; height:24px;" onclick="stepVal('oil', 0.5)">+</button>
+                     </div>
+                </div>
+                <div>
+                     <div class="flex justify-between mb-1">
+                         <span class="text-[10px] font-bold text-slate-500">SUGAR %</span> 
+                         <input type="number" id="val-sugar" class="val-input" style="width:3rem; font-size:0.9rem" value="0" step="0.5" onfocus="this.select()" onchange="manualInput('sugar')">
+                     </div>
+                     <div class="flex items-center gap-2">
+                        <button class="step-btn" style="width:24px; height:24px;" onclick="stepVal('sugar', -0.5)">-</button>
+                        <input type="range" id="sugar" min="0" max="20" step="0.5" value="0" class="flex-grow" oninput="adjVal('sugar')">
+                        <button class="step-btn" style="width:24px; height:24px;" onclick="stepVal('sugar', 0.5)">+</button>
+                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-4 py-4 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-40 max-w-md mx-auto">
+        <div class="flex justify-between items-end mb-3">
+            <div class="flex items-center gap-2">
+                 <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Total Batch</span>
+                 <span class="text-lg font-black text-slate-800"><span id="res-total">0</span><span class="text-xs font-medium text-slate-400 ml-1">g</span></span>
+            </div>
+            <button onclick="shareRecipe()" class="flex items-center gap-1 bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-1 rounded-full text-xs font-bold transition">
+                <span id="share-text">Share</span>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+            </button>
+        </div>
+        
+        <div class="grid grid-cols-4 gap-2 text-center">
+            <div class="bg-slate-50 py-2 rounded border border-slate-100">
+                <div class="text-[9px] text-slate-400 font-bold uppercase mb-0.5">Flour</div>
+                <div class="font-bold text-slate-800 text-base leading-none" id="res-flour">0</div>
+            </div>
+            <div class="bg-slate-50 py-2 rounded border border-slate-100">
+                <div class="text-[9px] text-slate-400 font-bold uppercase mb-0.5">Water</div>
+                <div class="font-bold text-slate-800 text-base leading-none" id="res-water">0</div>
+            </div>
+            <div class="bg-slate-50 py-2 rounded border border-slate-100">
+                <div class="text-[9px] text-slate-400 font-bold uppercase mb-0.5">Salt</div>
+                <div class="font-bold text-slate-800 text-base leading-none" id="res-salt">0</div>
+            </div>
+            <div class="bg-indigo-50 py-2 rounded border border-indigo-100">
+                <div class="text-[9px] text-indigo-400 font-bold uppercase mb-0.5" id="res-yeast-label">IDY</div>
+                <div class="font-bold text-indigo-700 text-base leading-none" id="res-yeast">0</div>
+            </div>
+        </div>
+        <div id="res-enrich-row" class="hidden text-center mt-2 text-[10px] text-slate-500">
+            Includes <span class="font-bold text-slate-700" id="res-oil">0g</span> Oil & <span class="font-bold text-slate-700" id="res-sugar">0g</span> Sugar
+        </div>
+    </div>
+
+    <!-- Modals (Save & Settings) -->
+    <div id="save-modal" class="hidden fixed inset-0 modal-overlay z-[60] flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm space-y-4">
+            <h3 class="text-lg font-bold text-slate-800">Save Recipe</h3>
+            <input type="text" id="recipe-name" placeholder="e.g. My Weekend Pizza" class="w-full border border-slate-300 rounded-lg px-4 py-2 focus:outline-none focus:border-indigo-500">
+            <div class="flex justify-end gap-2">
+                <button onclick="closeModal('save-modal')" class="px-4 py-2 text-slate-500 font-medium">Cancel</button>
+                <button onclick="savePreset()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg font-bold">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="settings-modal" class="hidden fixed inset-0 modal-overlay z-[60] flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm space-y-6">
+            <div class="flex justify-between items-center">
+                <h3 class="text-lg font-bold text-slate-800">Settings</h3>
+                <button onclick="closeModal('settings-modal')" class="text-slate-400 hover:text-slate-600">✕</button>
+            </div>
+            <div class="flex justify-between items-center">
+                <span class="font-medium text-slate-700">Temperature Unit</span>
+                <div class="flex bg-slate-100 p-1 rounded-lg">
+                    <button onclick="setUnit('F')" id="btn-unit-f" class="px-4 py-1.5 rounded-md text-xs font-bold transition bg-white shadow text-slate-800">°F</button>
+                    <button onclick="setUnit('C')" id="btn-unit-c" class="px-4 py-1.5 rounded-md text-xs font-bold transition text-slate-500">°C</button>
+                </div>
+            </div>
+            <div class="pt-2 border-t border-slate-100">
+                <button onclick="clearSaved()" class="w-full text-center text-red-500 text-xs font-bold hover:text-red-700 py-2">Clear Saved Recipes</button>
+            </div>
+            <div class="text-xs text-slate-400 text-center">Dough Architect v1.3</div>
+        </div>
+    </div>
+
+<script>
+    const stdPresets = {
+        neapolitan: { hydro: 62, salt: 3.0, oil: 0, sugar: 0, weight: 260, yeast: 'IDY' },
+        nyc:        { hydro: 62, salt: 2.5, oil: 2.0, sugar: 1.0, weight: 350, yeast: 'IDY' },
+        detroit:    { hydro: 70, salt: 2.5, oil: 1.5, sugar: 0, weight: 320, yeast: 'IDY' },
+        romana:     { hydro: 56, salt: 2.5, oil: 2.5, sugar: 0, weight: 180, yeast: 'IDY' },
+        chicago:    { hydro: 58, salt: 1.5, oil: 15.0, sugar: 0, weight: 600, yeast: 'IDY' },
+        focaccia:   { hydro: 80, salt: 2.5, oil: 4.0, sugar: 0, weight: 600, yeast: 'IDY' },
+        ciabatta:   { hydro: 82, salt: 2.2, oil: 0, sugar: 0, weight: 400, yeast: 'IDY' },
+        glutenfree: { hydro: 75, salt: 2.5, oil: 3.0, sugar: 1.0, weight: 280, yeast: 'IDY' },
+        baguette:   { hydro: 68, salt: 2.0, oil: 0, sugar: 0, weight: 350, yeast: 'IDY' },
+        country:    { hydro: 75, salt: 2.0, oil: 0, sugar: 0, weight: 900, yeast: 'SSD' }
+    };
+
+    let userPresets = JSON.parse(localStorage.getItem('doughUserPresets')) || {};
+
+    let state = {
+        qty: 2, weight: 260, hydro: 62, salt: 3.0, oil: 0, sugar: 0,
+        rtTime: 6, rtTemp: 72, ctEnabled: false, ctTime: 24, yeastType: 'IDY',
+        unitTemp: localStorage.getItem('doughUnitTemp') || 'F' // 'F' or 'C'
+    };
+
+    function calculate() {
+        let displayTemp = state.rtTemp;
+        let mathTempF = state.unitTemp === 'F' ? state.rtTemp : (state.rtTemp * 9/5) + 32;
+
+        let yeastPct = 0;
+        if (state.yeastType === 'SSD') {
+            yeastPct = 20.0;
+        } else {
+            let effectiveHours = state.rtTime + (state.ctEnabled ? (state.ctTime * 0.1) : 0);
+            if (effectiveHours < 0.5) effectiveHours = 0.5;
+            const tempFactor = Math.pow(1.05, mathTempF - 70);
+            let predicted = 2.5 / (effectiveHours * tempFactor);
+            if (state.yeastType === 'ADY') predicted *= 1.3;
+            if (state.yeastType === 'CY') predicted *= 3.0;
+            yeastPct = Math.min(Math.max(predicted, 0.01), 10);
+        }
+
+        const totalPct = 100 + state.hydro + state.salt + yeastPct + state.oil + state.sugar;
+        const totalBatch = state.qty * state.weight;
+        const flour = totalBatch / (totalPct / 100);
+
+        // Update UI
+        updateVal('val-qty', state.qty);
+        updateVal('val-weight', state.weight);
+        updateVal('val-hydro', state.hydro);
+        updateVal('val-salt', state.salt.toFixed(1));
+        updateVal('val-rt-time', state.rtTime);
+        updateVal('val-rt-temp', Math.round(state.rtTemp));
+        updateVal('val-ct-time', state.ctTime);
+        updateVal('val-oil', state.oil);
+        updateVal('val-sugar', state.sugar);
+
+        updateSlider('qty', state.qty);
+        updateSlider('weight', state.weight);
+        updateSlider('hydro', state.hydro);
+        updateSlider('salt', state.salt);
+        updateSlider('rt-time', state.rtTime);
+        updateSlider('rt-temp', Math.round(state.rtTemp));
+        updateSlider('ct-time', state.ctTime);
+        updateSlider('oil', state.oil);
+        updateSlider('sugar', state.sugar);
+
+        updateDOM('label-unit-temp', '°' + state.unitTemp);
+
+        updateDOM('res-total', Math.round(totalBatch));
+        updateDOM('res-flour', Math.round(flour));
+        updateDOM('res-water', Math.round(flour * (state.hydro / 100)));
+        updateDOM('res-salt', (flour * (state.salt / 100)).toFixed(1));
+        
+        let yVal = flour * (yeastPct / 100);
+        updateDOM('res-yeast', yVal < 1 ? yVal.toFixed(2) : (yVal < 10 ? yVal.toFixed(1) : Math.round(yVal)));
+        
+        const yLabels = { 'IDY': 'IDY', 'ADY': 'ADY', 'CY': 'Fresh', 'SSD': 'Levain' };
+        updateDOM('res-yeast-label', yLabels[state.yeastType]);
+
+        updateDOM('ct-status', state.ctEnabled ? `${state.ctTime}h Enabled` : 'Disabled');
+        const enrichTotal = state.oil + state.sugar;
+        updateDOM('enrich-status', enrichTotal > 0 ? `${enrichTotal}% Added` : 'None');
+        
+        const enrichRow = document.getElementById('res-enrich-row');
+        if (state.oil > 0 || state.sugar > 0) {
+            enrichRow.classList.remove('hidden');
+            updateDOM('res-oil', Math.round(flour * (state.oil/100)) + 'g');
+            updateDOM('res-sugar', Math.round(flour * (state.sugar/100)) + 'g');
+        } else {
+            enrichRow.classList.add('hidden');
+        }
+    }
+
+    function updateDOM(id, val) { const el = document.getElementById(id); if(el) el.innerText = val; }
+    function updateSlider(id, val) { const el = document.getElementById(id); if(el) el.value = val; }
+    function updateVal(id, val) { 
+        const el = document.getElementById(id); 
+        if(el && document.activeElement !== el) el.value = val; 
+    }
+
+    function loadPreset(name) {
+        let p = stdPresets[name];
+        if (!p && userPresets[name]) p = userPresets[name];
+        if (p) {
+            Object.assign(state, { hydro: p.hydro, salt: p.salt, oil: p.oil, sugar: p.sugar, weight: p.weight, yeastType: p.yeast });
+            setYeast(p.yeast);
+        }
+    }
+
+    function adjVal(key) {
+        let stateKey = key.includes('-') ? key.split('-')[0] + key.split('-')[1].charAt(0).toUpperCase() + key.split('-')[1].slice(1) : key;
+        state[stateKey] = parseFloat(document.getElementById(key).value);
+        calculate();
+    }
+    
+    function manualInput(key) {
+        let stateKey = key.includes('-') ? key.split('-')[0] + key.split('-')[1].charAt(0).toUpperCase() + key.split('-')[1].slice(1) : key;
+        let val = parseFloat(document.getElementById('val-' + key).value);
+        if(isNaN(val)) val = 0;
+        state[stateKey] = val;
+        calculate();
+    }
+
+    function stepVal(key, amount) {
+        let stateKey = key.includes('-') ? key.split('-')[0] + key.split('-')[1].charAt(0).toUpperCase() + key.split('-')[1].slice(1) : key;
+        let newVal = state[stateKey] + amount;
+        
+        // Handling precision for floats
+        if (amount % 1 !== 0) {
+            newVal = Math.round(newVal * 10) / 10;
+        }
+
+        // Constraints
+        const slider = document.getElementById(key);
+        if (slider) {
+            if (newVal < parseFloat(slider.min)) newVal = parseFloat(slider.min);
+            if (newVal > parseFloat(slider.max)) newVal = parseFloat(slider.max);
+        } else if (newVal < 0) newVal = 0; // fallback if slider logic fails
+
+        state[stateKey] = newVal;
+        calculate();
+    }
+
+    // --- Helpers ---
+    function setYeast(type) {
+        state.yeastType = type;
+        document.getElementById('more-yeast').classList.add('hidden');
+        document.querySelectorAll('.yeast-btn').forEach(b => { b.classList.remove('active', 'bg-indigo-600', 'text-white', 'border-indigo-600'); b.classList.add('text-slate-500', 'border-slate-200'); });
+        const btn = document.getElementById('y-' + type.toLowerCase());
+        if(btn) { btn.classList.add('active', 'bg-indigo-600', 'text-white', 'border-indigo-600'); btn.classList.remove('text-slate-500', 'border-slate-200'); }
+        calculate();
+    }
+    function toggleYeastMenu() { document.getElementById('more-yeast').classList.toggle('hidden'); }
+    function toggleEnrichments() { document.getElementById('enrichments-panel').classList.toggle('hidden'); }
+    document.getElementById('ct-toggle').addEventListener('change', (e) => {
+        state.ctEnabled = e.target.checked;
+        const panel = document.getElementById('ct-controls');
+        if(state.ctEnabled) panel.classList.remove('hidden'); else panel.classList.add('hidden');
+        calculate();
+    });
+
+    function openSettings() { document.getElementById('settings-modal').classList.remove('hidden'); updateUnitBtns(); }
+    function setUnit(u) {
+        if (state.unitTemp !== u) {
+            const slider = document.getElementById('rt-temp');
+            if (u === 'C') {
+                state.rtTemp = Math.round((state.rtTemp - 32) * 5/9);
+                slider.min = 15; slider.max = 35;
+            } else {
+                state.rtTemp = Math.round((state.rtTemp * 9/5) + 32);
+                slider.min = 55; slider.max = 95;
+            }
+        }
+        state.unitTemp = u;
+        localStorage.setItem('doughUnitTemp', u);
+        updateUnitBtns();
+        calculate();
+    }
+    function updateUnitBtns() {
+        const fBtn = document.getElementById('btn-unit-f');
+        const cBtn = document.getElementById('btn-unit-c');
+        if(state.unitTemp === 'F') { fBtn.className = "px-4 py-1.5 rounded-md text-xs font-bold transition bg-white shadow text-slate-800"; cBtn.className = "px-4 py-1.5 rounded-md text-xs font-bold transition text-slate-500 hover:bg-slate-200"; } 
+        else { cBtn.className = "px-4 py-1.5 rounded-md text-xs font-bold transition bg-white shadow text-slate-800"; fBtn.className = "px-4 py-1.5 rounded-md text-xs font-bold transition text-slate-500 hover:bg-slate-200"; }
+    }
+    function clearSaved() { if(confirm('Delete all saved recipes?')) { localStorage.removeItem('doughUserPresets'); userPresets = {}; refreshDropdown(); closeModal('settings-modal'); } }
+    
+    function refreshDropdown() {
+        const grp = document.getElementById('user-presets-group');
+        grp.innerHTML = '';
+        const keys = Object.keys(userPresets);
+        if (keys.length > 0) { grp.classList.remove('hidden'); keys.forEach(k => { const opt = document.createElement('option'); opt.value = k; opt.innerText = k; grp.appendChild(opt); }); } else { grp.classList.add('hidden'); }
+    }
+    function openSaveModal() { document.getElementById('save-modal').classList.remove('hidden'); }
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+    function savePreset() {
+        const name = document.getElementById('recipe-name').value.trim();
+        if(!name) return;
+        userPresets[name] = { hydro: state.hydro, salt: state.salt, oil: state.oil, sugar: state.sugar, weight: state.weight, yeast: state.yeastType };
+        localStorage.setItem('doughUserPresets', JSON.stringify(userPresets));
+        refreshDropdown(); closeModal('save-modal'); document.getElementById('preset-select').value = name; alert('Recipe Saved!');
+    }
+    function shareRecipe() {
+        const txt = `🍕 Dough Recipe (${document.getElementById('preset-select').options[document.getElementById('preset-select').selectedIndex].text})\n\nFlour: ${document.getElementById('res-flour').innerText}g\nWater: ${document.getElementById('res-water').innerText}g (${state.hydro}%)\nSalt: ${document.getElementById('res-salt').innerText}g (${state.salt}%)\nYeast (${state.yeastType}): ${document.getElementById('res-yeast').innerText}g\nEnrichments: Oil ${state.oil}%, Sugar ${state.sugar}%\n\nFermentation: ${state.rtTime}h @ ${state.rtTemp}°${state.unitTemp} ${state.ctEnabled ? `+ ${state.ctTime}h Cold` : ''}`;
+        const el = document.createElement('textarea'); el.value = txt; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el);
+        const btnLabel = document.getElementById('share-text'); const orig = btnLabel.innerText; btnLabel.innerText = "Copied!"; setTimeout(() => btnLabel.innerText = orig, 1500);
+    }
+
+    refreshDropdown();
+    if (state.unitTemp === 'C') { const slider = document.getElementById('rt-temp'); slider.min = 15; slider.max = 35; state.rtTemp = 22; }
+    loadPreset('neapolitan');
+    updateUnitBtns();
+    calculate();
+</script>
+</body>
+</html>
