@@ -3,12 +3,14 @@
 // Backend: Firebase Firestore (real-time, shared across devices)
 // Data model:
 //   attendees:  [{ id, name, site, arrival, departure, note }]
-//   siteClaims: { siteId: attendeeId }   ← string IDs, never indices
+//   siteClaims: { siteId: attendeeId }
 //   gear:       [{ id, name, category, owner, packed }]
+//   potluck:    [{ id, name, dish, category, note }]
+//   tshirts:    [{ id, name, size, qty, note }]
 // ============================================================
 
 // ── Password gate ────────────────────────────────────────────
-const TRIP_PASS = 'DesertTurkey2026';
+const TRIP_PASS = 'ieatturkeyinthedesert';
 
 function isAuthenticated() {
   return sessionStorage.getItem('dt2026_auth') === '1';
@@ -28,11 +30,37 @@ function submitPassword() {
   }
 }
 
+// ── Tab switching ─────────────────────────────────────────────
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tab === tabId);
+  });
+  document.querySelectorAll('.tab-panel').forEach(panel => {
+    panel.classList.toggle('active', panel.id === 'tab-' + tabId);
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Re-render map when switching to it (markers need the panel visible)
+  if (tabId === 'map') renderMap();
+}
+
+function initTabs() {
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+  });
+
+  // Honour hash on load
+  const hash = location.hash.replace('#', '');
+  if (hash) switchTab(hash);
+}
+
 // ── State ────────────────────────────────────────────────────
 let state = {
   attendees:     [],
   siteClaims:    {},
   gear:          [],
+  potluck:       [],
+  tshirts:       [],
   activeGearCat: 'all',
   loaded:        false,
 };
@@ -43,6 +71,8 @@ function syncToFirestore() {
     attendees:  state.attendees,
     siteClaims: state.siteClaims,
     gear:       state.gear,
+    potluck:    state.potluck,
+    tshirts:    state.tshirts,
   });
 }
 
@@ -57,11 +87,14 @@ function initFirestore() {
         state.attendees  = data.attendees  || [];
         state.siteClaims = data.siteClaims || {};
         state.gear       = data.gear       || DEFAULT_GEAR;
+        state.potluck    = data.potluck    || [];
+        state.tshirts    = data.tshirts    || [];
       } else {
-        // First ever load — seed with default gear list
         state.attendees  = [];
         state.siteClaims = {};
         state.gear       = DEFAULT_GEAR;
+        state.potluck    = [];
+        state.tshirts    = [];
         syncToFirestore();
       }
       state.loaded = true;
@@ -89,6 +122,8 @@ function renderAll() {
   renderGearCategories();
   renderGearList();
   renderStats();
+  renderPotluck();
+  renderTshirts();
 }
 
 // ── Countdown ────────────────────────────────────────────────
@@ -99,7 +134,7 @@ function renderCountdown() {
   if (!el) return;
 
   if (diff <= 0) {
-    el.innerHTML = '<span style="color:var(--amber);font-family:\'Playfair Display\',serif;font-size:1.1rem;letter-spacing:0.05em">We\'re there! 🏕️</span>';
+    el.innerHTML = '<span style="color:var(--terracotta);font-family:\'Playfair Display\',serif;font-size:1.1rem;letter-spacing:0.05em">We\'re there! 🏕️</span>';
     return;
   }
 
@@ -122,26 +157,6 @@ function renderStats() {
   document.getElementById('statAttendees').textContent = state.attendees.length;
   document.getElementById('statSites').textContent     = Object.keys(state.siteClaims).length;
   document.getElementById('statGear').textContent      = state.gear.filter(g => g.packed).length;
-}
-
-// ── Stars ────────────────────────────────────────────────────
-function renderStars() {
-  const container = document.getElementById('stars');
-  if (!container) return;
-  for (let i = 0; i < 180; i++) {
-    const star = document.createElement('div');
-    star.className = 'star';
-    const size = Math.random() * 2.5 + 0.5;
-    star.style.cssText = `
-      width:${size}px; height:${size}px;
-      top:${Math.random() * 85}%;
-      left:${Math.random() * 100}%;
-      --dur:${(Math.random() * 4 + 2).toFixed(1)}s;
-      --delay:${(Math.random() * 5).toFixed(1)}s;
-      --op:${(Math.random() * 0.5 + 0.2).toFixed(2)};
-    `;
-    container.appendChild(star);
-  }
 }
 
 // ── Map ──────────────────────────────────────────────────────
@@ -169,7 +184,7 @@ function openSiteModal(siteId) {
       </div>
       <div class="site-info-row">
         <span class="site-info-label">Status</span>
-        <span class="site-info-value" style="color:var(--orange)">Claimed</span>
+        <span class="site-info-value" style="color:var(--terracotta)">Claimed</span>
       </div>
       <button class="btn btn-outline" style="margin-top:16px;width:100%" onclick="releaseSite('${siteId}')">
         Release This Site
@@ -194,7 +209,7 @@ function openSiteModal(siteId) {
       `;
     } else if (state.attendees.length === 0) {
       claimOptions = `<p style="color:var(--muted);font-size:0.85rem;margin-top:12px">
-        Add yourself to <a href="#attendees" style="color:var(--amber)" onclick="closeSiteModal()">Who's Coming</a> first, then claim a site.
+        Add yourself in the <a href="#" style="color:var(--terracotta)" onclick="closeSiteModal();switchTab('campers')">Campers tab</a> first, then claim a site.
       </p>`;
     } else {
       claimOptions = `<p style="color:var(--muted);font-size:0.85rem;margin-top:12px">
@@ -223,14 +238,12 @@ function claimSiteForAttendee(siteId) {
   const attendeeId  = select.value;
   if (!attendeeId) return;
 
-  // Remove any pre-existing claim this attendee had
   for (const [sid, aid] of Object.entries(state.siteClaims)) {
     if (aid === attendeeId) delete state.siteClaims[sid];
   }
 
   state.siteClaims[siteId] = attendeeId;
 
-  // Keep the attendee's .site field in sync for display
   const attendee = state.attendees.find(a => a.id === attendeeId);
   if (attendee) attendee.site = siteId;
 
@@ -283,7 +296,6 @@ function deleteAttendee(attendeeId) {
   if (!attendee) return;
   if (!confirm(`Remove ${attendee.name} from the trip?`)) return;
 
-  // Release their site claim
   for (const [sid, aid] of Object.entries(state.siteClaims)) {
     if (aid === attendeeId) delete state.siteClaims[sid];
   }
@@ -403,21 +415,87 @@ function renderInfo() {
   `).join('');
 }
 
+// ── Potluck ───────────────────────────────────────────────────
+const POTLUCK_CAT_LABELS = {
+  main: 'Main Course', side: 'Side Dish', appetizer: 'Appetizer',
+  dessert: 'Dessert', drinks: 'Drinks', snacks: 'Snacks', other: 'Other',
+};
+
+function renderPotluck() {
+  const tbody = document.getElementById('potluckBody');
+  if (!tbody) return;
+
+  if (state.potluck.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" class="table-empty">No sign-ups yet — be the first!</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = state.potluck.map(p => `
+    <tr>
+      <td><strong>${esc(p.name)}</strong></td>
+      <td>${esc(p.dish)}</td>
+      <td><span class="potluck-badge cat-${esc(p.category)}">${esc(POTLUCK_CAT_LABELS[p.category] || p.category)}</span></td>
+      <td style="color:var(--muted);font-style:italic">${esc(p.note)}</td>
+      <td><button class="table-delete" onclick="deletePotluck('${esc(p.id)}')" title="Remove">✕</button></td>
+    </tr>
+  `).join('');
+}
+
+function deletePotluck(id) {
+  const entry = state.potluck.find(p => p.id === id);
+  if (!entry) return;
+  if (!confirm(`Remove ${entry.name}'s entry from the potluck?`)) return;
+  state.potluck = state.potluck.filter(p => p.id !== id);
+  syncToFirestore();
+}
+
+// ── T-shirts ──────────────────────────────────────────────────
+function renderTshirts() {
+  const tbody = document.getElementById('tshirtBody');
+  if (!tbody) return;
+
+  if (state.tshirts.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" class="table-empty">No orders yet — be the first!</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = state.tshirts.map(t => `
+    <tr>
+      <td><strong>${esc(t.name)}</strong></td>
+      <td><strong style="color:var(--terracotta)">${esc(t.size)}</strong></td>
+      <td>${esc(String(t.qty))}</td>
+      <td style="color:var(--muted);font-style:italic">${esc(t.note)}</td>
+      <td><button class="table-delete" onclick="deleteTshirt('${esc(t.id)}')" title="Remove">✕</button></td>
+    </tr>
+  `).join('');
+
+  // Update size summary
+  const summary = document.getElementById('tshirtSummary');
+  if (summary) {
+    const sizes = ['XS','S','M','L','XL','2XL'];
+    const counts = {};
+    state.tshirts.forEach(t => {
+      counts[t.size] = (counts[t.size] || 0) + Number(t.qty);
+    });
+    const total = Object.values(counts).reduce((a,b) => a + b, 0);
+    summary.innerHTML = sizes
+      .filter(s => counts[s])
+      .map(s => `<span class="size-count"><strong>${s}</strong>${counts[s]}</span>`)
+      .join('') + (total ? `<span class="size-count"><strong>Total</strong>${total}</span>` : '');
+  }
+}
+
+function deleteTshirt(id) {
+  const entry = state.tshirts.find(t => t.id === id);
+  if (!entry) return;
+  if (!confirm(`Remove ${entry.name}'s shirt order?`)) return;
+  state.tshirts = state.tshirts.filter(t => t.id !== id);
+  syncToFirestore();
+}
+
 // ── Modal helpers ────────────────────────────────────────────
 function openModal(id)  { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-
-// ── Nav ──────────────────────────────────────────────────────
-function initNav() {
-  const nav = document.getElementById('nav');
-  window.addEventListener('scroll', () => {
-    nav.style.borderBottomColor = window.scrollY > 50 ? 'var(--border)' : 'transparent';
-  }, { passive: true });
-}
-
-function closeDrawer() {
-  document.getElementById('navDrawer').classList.remove('open');
-}
 
 // ── Utility ──────────────────────────────────────────────────
 function esc(str) {
@@ -443,14 +521,13 @@ function uid() {
 // ── Init ─────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
 
-  // Static renders (don't need Firestore data)
-  renderStars();
+  // Static renders
   renderItinerary();
   renderTrails();
   renderInfo();
   renderCountdown();
   setInterval(renderCountdown, 1000);
-  initNav();
+  initTabs();
 
   // Password gate
   const pwOverlay = document.getElementById('pwOverlay');
@@ -463,11 +540,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (e.key === 'Enter') submitPassword();
     });
   }
-
-  // ── Hamburger ──
-  document.getElementById('navHamburger').addEventListener('click', () => {
-    document.getElementById('navDrawer').classList.toggle('open');
-  });
 
   // ── Site modal close ──
   document.getElementById('modalClose').addEventListener('click', closeSiteModal);
@@ -503,7 +575,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const attendee = { id, name, site, arrival, departure, note };
     state.attendees.push(attendee);
 
-    // Auto-claim site if it's a known site ID and currently unclaimed
     if (site && SITE_COORDS[site] && !state.siteClaims[site]) {
       state.siteClaims[site] = id;
     }
@@ -536,13 +607,66 @@ document.addEventListener('DOMContentLoaded', () => {
     closeModal('gearModal');
   });
 
+  // ── Add potluck ──
+  document.getElementById('addPotluckBtn').addEventListener('click', () => {
+    document.getElementById('potluckName').value  = '';
+    document.getElementById('potluckDish').value  = '';
+    document.getElementById('potluckNote').value  = '';
+    openModal('potluckModal');
+  });
+
+  document.getElementById('potluckModalClose').addEventListener('click', () => closeModal('potluckModal'));
+  document.getElementById('potluckModal').addEventListener('click', e => {
+    if (e.target.id === 'potluckModal') closeModal('potluckModal');
+  });
+
+  document.getElementById('savePotluckBtn').addEventListener('click', () => {
+    const name     = document.getElementById('potluckName').value.trim();
+    const dish     = document.getElementById('potluckDish').value.trim();
+    const category = document.getElementById('potluckCategory').value;
+    const note     = document.getElementById('potluckNote').value.trim();
+
+    if (!name) { document.getElementById('potluckName').focus(); return; }
+    if (!dish) { document.getElementById('potluckDish').focus(); return; }
+
+    state.potluck.push({ id: uid(), name, dish, category, note });
+    syncToFirestore();
+    closeModal('potluckModal');
+  });
+
+  // ── Add t-shirt ──
+  document.getElementById('addTshirtBtn').addEventListener('click', () => {
+    document.getElementById('tshirtName').value = '';
+    document.getElementById('tshirtNote').value = '';
+    openModal('tshirtModal');
+  });
+
+  document.getElementById('tshirtModalClose').addEventListener('click', () => closeModal('tshirtModal'));
+  document.getElementById('tshirtModal').addEventListener('click', e => {
+    if (e.target.id === 'tshirtModal') closeModal('tshirtModal');
+  });
+
+  document.getElementById('saveTshirtBtn').addEventListener('click', () => {
+    const name = document.getElementById('tshirtName').value.trim();
+    const size = document.getElementById('tshirtSize').value;
+    const qty  = document.getElementById('tshirtQty').value;
+    const note = document.getElementById('tshirtNote').value.trim();
+
+    if (!name) { document.getElementById('tshirtName').focus(); return; }
+
+    state.tshirts.push({ id: uid(), name, size, qty: Number(qty), note });
+    syncToFirestore();
+    closeModal('tshirtModal');
+  });
+
   // ── Keyboard close ──
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
       closeSiteModal();
       closeModal('attendeeModal');
       closeModal('gearModal');
-      closeDrawer();
+      closeModal('potluckModal');
+      closeModal('tshirtModal');
     }
   });
 });

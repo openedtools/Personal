@@ -25,76 +25,216 @@
     </div>
   </div>
 
-  <!-- NAV -->
-  <nav id="nav">
-    <div class="nav-inner">
+  <!-- TOP NAV -->
+  <nav id="topNav">
+    <div class="top-nav-inner">
       <span class="nav-logo">🦃 Desert Turkey 2026</span>
-      <div class="nav-links">
-        <a href="#map">Map</a>
-        <a href="#attendees">Who's Coming</a>
-        <a href="#gear">Gear</a>
-        <a href="#itinerary">Itinerary</a>
-        <a href="#trails">Trails</a>
-        <a href="#info">Info</a>
-      </div>
       <span class="sync-status" id="syncStatus" title="Firestore sync status">
         <span class="sync-dot" id="syncDot"></span>
         <span class="sync-label" id="syncLabel">connecting…</span>
       </span>
-      <button class="nav-hamburger" id="navHamburger" aria-label="Menu">&#9776;</button>
     </div>
   </nav>
 
-  <!-- MOBILE NAV DRAWER -->
-  <div class="nav-drawer" id="navDrawer">
-    <a href="#map" onclick="closeDrawer()">Map</a>
-    <a href="#attendees" onclick="closeDrawer()">Who's Coming</a>
-    <a href="#gear" onclick="closeDrawer()">Gear</a>
-    <a href="#itinerary" onclick="closeDrawer()">Itinerary</a>
-    <a href="#trails" onclick="closeDrawer()">Trails</a>
-    <a href="#info" onclick="closeDrawer()">Info</a>
+  <!-- TAB BAR -->
+  <div class="tab-bar-wrap" id="tabBarWrap">
+    <div class="tab-bar" id="tabBar">
+      <button class="tab-btn active" data-tab="welcome">Welcome</button>
+      <button class="tab-btn" data-tab="map">Map</button>
+      <button class="tab-btn" data-tab="campers">Campers</button>
+      <button class="tab-btn" data-tab="gear">Gear</button>
+      <button class="tab-btn" data-tab="itinerary">Itinerary</button>
+      <button class="tab-btn" data-tab="trails">Trails</button>
+      <button class="tab-btn" data-tab="info">Info</button>
+      <button class="tab-btn" data-tab="potluck">Potluck</button>
+      <button class="tab-btn" data-tab="tshirts">T-Shirts</button>
+    </div>
   </div>
 
-  <!-- HERO -->
-  <header id="hero">
-    <div class="stars" id="stars"></div>
-    <div class="hero-content">
-      <p class="hero-eyebrow">Joshua Tree National Park</p>
-      <h1 class="hero-title">Desert Turkey<br/>2026</h1>
-      <p class="hero-subtitle">Jumbo Rocks Campground · Thanksgiving 2026</p>
-      <div class="hero-dates">November 25–30, 2026</div>
-      <div class="countdown" id="countdown"></div>
-      <a href="#map" class="hero-cta">See the Campground Map</a>
-    </div>
-    <div class="hero-rocks"></div>
-  </header>
+  <!-- ═══════════════════════════════════════════════
+       WELCOME TAB
+  ═══════════════════════════════════════════════ -->
+  <div class="tab-panel active" id="tab-welcome">
 
-  <!-- QUICK STATS -->
-  <section class="stats-bar">
-    <div class="stat"><span class="stat-num" id="statAttendees">0</span><span class="stat-label">Campers</span></div>
-    <div class="stat-divider"></div>
-    <div class="stat"><span class="stat-num" id="statSites">0</span><span class="stat-label">Sites Claimed</span></div>
-    <div class="stat-divider"></div>
-    <div class="stat"><span class="stat-num" id="statNights">5</span><span class="stat-label">Nights</span></div>
-    <div class="stat-divider"></div>
-    <div class="stat"><span class="stat-num" id="statGear">0</span><span class="stat-label">Gear Items Packed</span></div>
-  </section>
-
-  <!-- MAP -->
-  <section id="map" class="section">
-    <div class="section-header">
-      <h2>Campground Map</h2>
-      <p class="section-desc">Jumbo Rocks has 124 sites spread across the boulder formations. Click a site to claim it or see who's there.</p>
-    </div>
-    <div class="map-container">
-      <div class="map-legend" id="mapLegend">
-        <span class="legend-item"><span class="dot dot-available"></span>Available</span>
-        <span class="legend-item"><span class="dot dot-claimed"></span>Claimed</span>
+    <!-- HERO -->
+    <header id="hero">
+      <div class="hero-content">
+        <p class="hero-eyebrow">Joshua Tree National Park</p>
+        <h1 class="hero-title">Desert Turkey<br/>2026</h1>
+        <p class="hero-subtitle">Jumbo Rocks Campground · Thanksgiving 2026</p>
+        <div class="hero-dates">November 25–30, 2026</div>
+        <div class="countdown" id="countdown"></div>
+        <button class="hero-cta" onclick="switchTab('map')">See the Campground Map</button>
       </div>
-      <div class="map-wrap">
-        <div class="map-image-container">
-          <img src="img/PhotoshopExtension_Image_upscayl_2x_upscayl-standard-4x.png" alt="Jumbo Rocks Campground Map" class="map-base-img" />
-          <div class="map-markers-layer" id="mapMarkersLayer"></div>
+
+      <!-- Desert landscape SVG -->
+      <svg class="desert-scene" viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+        <defs>
+          <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#7ec4e0"/>
+            <stop offset="55%" stop-color="#d8ecf8"/>
+            <stop offset="100%" stop-color="#f4d8aa"/>
+          </linearGradient>
+          <linearGradient id="groundGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#c8a870"/>
+            <stop offset="100%" stop-color="#a88848"/>
+          </linearGradient>
+        </defs>
+
+        <!-- Sky -->
+        <rect width="1200" height="280" fill="url(#skyGrad)"/>
+
+        <!-- Sun glow -->
+        <circle cx="980" cy="135" r="55" fill="#fce8b0" opacity="0.5"/>
+        <circle cx="980" cy="135" r="30" fill="#fcd870" opacity="0.8"/>
+        <circle cx="980" cy="135" r="18" fill="#f8c840"/>
+
+        <!-- Far hazy mountains -->
+        <path fill="#c0a898" opacity="0.45" d="M0,190 L100,150 L200,168 L310,128 L420,155 L540,110 L660,140 L780,105 L900,130 L1020,108 L1120,128 L1200,115 L1200,205 L0,205Z"/>
+
+        <!-- Near mountains -->
+        <path fill="#b09070" opacity="0.65" d="M0,210 L90,175 L190,198 L290,162 L390,188 L510,152 L620,178 L740,158 L860,180 L970,158 L1080,175 L1180,160 L1200,168 L1200,222 L0,222Z"/>
+
+        <!-- Desert floor -->
+        <path fill="url(#groundGrad)" d="M0,222 Q200,215 400,225 Q700,235 1000,220 Q1100,216 1200,222 L1200,280 L0,280Z"/>
+
+        <!-- Ground texture shadows -->
+        <ellipse cx="180" cy="255" rx="130" ry="10" fill="#a08848" opacity="0.35"/>
+        <ellipse cx="650" cy="260" rx="220" ry="12" fill="#a08848" opacity="0.28"/>
+        <ellipse cx="1060" cy="252" rx="150" ry="10" fill="#a08848" opacity="0.32"/>
+
+        <!-- Boulders left -->
+        <ellipse cx="82" cy="245" rx="28" ry="18" fill="#9a8060"/>
+        <ellipse cx="102" cy="252" rx="20" ry="14" fill="#8a7050"/>
+        <ellipse cx="68" cy="253" rx="16" ry="11" fill="#a89070"/>
+
+        <!-- Boulders right -->
+        <ellipse cx="1090" cy="242" rx="32" ry="20" fill="#9a8060"/>
+        <ellipse cx="1112" cy="252" rx="22" ry="15" fill="#8a7050"/>
+        <ellipse cx="1072" cy="254" rx="18" ry="12" fill="#a08060"/>
+
+        <!-- Small far Joshua Tree — center-left background -->
+        <g transform="translate(350,222) scale(0.52)">
+          <rect x="-5" y="-108" width="10" height="108" rx="3" fill="#5a4030"/>
+          <path d="M0,-75 Q-18,-88 -26,-118 Q-28,-132 -22,-140" stroke="#5a4030" stroke-width="8" fill="none" stroke-linecap="round"/>
+          <path d="M0,-85 Q16,-96 22,-122 Q24,-136 20,-144" stroke="#5a4030" stroke-width="7" fill="none" stroke-linecap="round"/>
+          <circle cx="-22" cy="-144" r="15" fill="#607830"/>
+          <circle cx="20" cy="-147" r="14" fill="#587028"/>
+          <circle cx="-2" cy="-122" r="9" fill="#5a7030"/>
+        </g>
+
+        <!-- Small far Joshua Tree — right background -->
+        <g transform="translate(800,222) scale(0.48)">
+          <rect x="-5" y="-98" width="10" height="98" rx="3" fill="#5a4030"/>
+          <path d="M0,-68 Q-20,-80 -26,-108" stroke="#5a4030" stroke-width="7" fill="none" stroke-linecap="round"/>
+          <path d="M0,-78 Q18,-90 24,-118 Q26,-130 22,-138" stroke="#5a4030" stroke-width="7" fill="none" stroke-linecap="round"/>
+          <circle cx="-26" cy="-112" r="13" fill="#5a7028"/>
+          <circle cx="22" cy="-140" r="14" fill="#607830"/>
+          <circle cx="0" cy="-108" r="9" fill="#587028"/>
+        </g>
+
+        <!-- Medium Joshua Tree — left foreground -->
+        <g transform="translate(215,224) scale(0.78)">
+          <rect x="-7" y="-135" width="14" height="135" rx="4" fill="#4a3420"/>
+          <!-- branch lower-left -->
+          <path d="M-2,-78 Q-28,-92 -42,-128 Q-46,-144 -40,-156" stroke="#4a3420" stroke-width="11" fill="none" stroke-linecap="round"/>
+          <!-- branch upper-right -->
+          <path d="M2,-98 Q28,-112 38,-148 Q42,-162 36,-172" stroke="#4a3420" stroke-width="9" fill="none" stroke-linecap="round"/>
+          <!-- sub-branches from left arm -->
+          <path d="M-40,-156 Q-52,-168 -56,-188" stroke="#4a3420" stroke-width="7" fill="none" stroke-linecap="round"/>
+          <path d="M-40,-156 Q-32,-170 -26,-188" stroke="#4a3420" stroke-width="6" fill="none" stroke-linecap="round"/>
+          <!-- foliage clusters -->
+          <circle cx="-56" cy="-193" r="17" fill="#5a7028"/>
+          <circle cx="-26" cy="-192" r="15" fill="#607830"/>
+          <circle cx="36" cy="-176" r="16" fill="#5a7030"/>
+          <circle cx="-6" cy="-145" r="11" fill="#587028"/>
+        </g>
+
+        <!-- Tall Joshua Tree — center-right foreground -->
+        <g transform="translate(590,224) scale(0.72)">
+          <rect x="-6" y="-128" width="12" height="128" rx="3" fill="#4a3420"/>
+          <path d="M-2,-82 Q-24,-96 -34,-128 Q-36,-142 -30,-152" stroke="#4a3420" stroke-width="10" fill="none" stroke-linecap="round"/>
+          <path d="M2,-92 Q22,-105 30,-136 Q34,-150 28,-160" stroke="#4a3420" stroke-width="9" fill="none" stroke-linecap="round"/>
+          <path d="M-30,-152 Q-40,-165 -44,-182" stroke="#4a3420" stroke-width="7" fill="none" stroke-linecap="round"/>
+          <path d="M-30,-152 Q-22,-165 -16,-182" stroke="#4a3420" stroke-width="6" fill="none" stroke-linecap="round"/>
+          <circle cx="-44" cy="-187" r="15" fill="#607830"/>
+          <circle cx="-16" cy="-186" r="14" fill="#5a7028"/>
+          <circle cx="28" cy="-163" r="15" fill="#5a7030"/>
+          <circle cx="-4" cy="-138" r="10" fill="#587028"/>
+        </g>
+
+        <!-- Tallest Joshua Tree — right foreground -->
+        <g transform="translate(940,224) scale(0.88)">
+          <rect x="-8" y="-152" width="16" height="152" rx="4" fill="#4a3420"/>
+          <!-- branch left lower -->
+          <path d="M-3,-88 Q-32,-104 -46,-140 Q-52,-158 -44,-170" stroke="#4a3420" stroke-width="12" fill="none" stroke-linecap="round"/>
+          <!-- branch right lower -->
+          <path d="M3,-74 Q26,-88 34,-118 Q36,-132 30,-140" stroke="#4a3420" stroke-width="10" fill="none" stroke-linecap="round"/>
+          <!-- branch center-right upper -->
+          <path d="M2,-108 Q32,-124 44,-162 Q48,-178 42,-190" stroke="#4a3420" stroke-width="10" fill="none" stroke-linecap="round"/>
+          <!-- sub-branches from left arm -->
+          <path d="M-44,-170 Q-58,-184 -64,-206" stroke="#4a3420" stroke-width="8" fill="none" stroke-linecap="round"/>
+          <path d="M-44,-170 Q-36,-185 -28,-206" stroke="#4a3420" stroke-width="7" fill="none" stroke-linecap="round"/>
+          <!-- foliage -->
+          <circle cx="-64" cy="-211" r="19" fill="#5a7028"/>
+          <circle cx="-28" cy="-210" r="17" fill="#607830"/>
+          <circle cx="42" cy="-194" r="18" fill="#5a7030"/>
+          <circle cx="30" cy="-143" r="13" fill="#587028"/>
+          <circle cx="-4" cy="-158" r="10" fill="#5a6a28"/>
+        </g>
+
+        <!-- Prickly pear cactus — center -->
+        <g transform="translate(462,226)">
+          <ellipse cx="0" cy="-19" rx="14" ry="20" fill="#6a8838"/>
+          <ellipse cx="-17" cy="-28" rx="11" ry="17" fill="#709040" transform="rotate(-22,-17,-28)"/>
+          <ellipse cx="15" cy="-30" rx="10" ry="16" fill="#6a8838" transform="rotate(18,15,-30)"/>
+          <ellipse cx="1" cy="-42" rx="9" ry="14" fill="#789048"/>
+        </g>
+
+        <!-- Small prickly pear — far right -->
+        <g transform="translate(1148,228)">
+          <ellipse cx="0" cy="-16" rx="11" ry="17" fill="#6a8838"/>
+          <ellipse cx="-13" cy="-24" rx="8" ry="13" fill="#709040" transform="rotate(-28,-13,-24)"/>
+          <ellipse cx="12" cy="-25" rx="8" ry="13" fill="#6a8838" transform="rotate(22,12,-25)"/>
+        </g>
+
+        <!-- Ground line detail -->
+        <path d="M0,222 Q150,218 300,223 Q450,228 600,222 Q750,217 900,222 Q1050,226 1200,221" stroke="#b09050" stroke-width="1.5" fill="none" opacity="0.6"/>
+      </svg>
+    </header>
+
+    <!-- QUICK STATS -->
+    <section class="stats-bar">
+      <div class="stat"><span class="stat-num" id="statAttendees">0</span><span class="stat-label">Campers</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat"><span class="stat-num" id="statSites">0</span><span class="stat-label">Sites Claimed</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat"><span class="stat-num" id="statNights">5</span><span class="stat-label">Nights</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat"><span class="stat-num" id="statGear">0</span><span class="stat-label">Gear Items Packed</span></div>
+    </section>
+
+  </div><!-- /tab-welcome -->
+
+  <!-- ═══════════════════════════════════════════════
+       MAP TAB
+  ═══════════════════════════════════════════════ -->
+  <div class="tab-panel" id="tab-map">
+    <div class="tab-content">
+      <div class="section-header">
+        <h2>Campground Map</h2>
+        <p class="section-desc">Jumbo Rocks has 124 sites spread across the boulder formations. Click a site to claim it or see who's there.</p>
+      </div>
+      <div class="map-container">
+        <div class="map-legend" id="mapLegend">
+          <span class="legend-item"><span class="dot dot-available"></span>Available</span>
+          <span class="legend-item"><span class="dot dot-claimed"></span>Claimed</span>
+        </div>
+        <div class="map-wrap">
+          <div class="map-image-container">
+            <img src="img/PhotoshopExtension_Image_upscayl_2x_upscayl-standard-4x.png" alt="Jumbo Rocks Campground Map" class="map-base-img" />
+            <div class="map-markers-layer" id="mapMarkersLayer"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -107,16 +247,22 @@
         <div id="modalContent"></div>
       </div>
     </div>
-  </section>
+  </div><!-- /tab-map -->
 
-  <!-- ATTENDEES -->
-  <section id="attendees" class="section section-dark">
-    <div class="section-header">
-      <h2>Who's Coming</h2>
-      <p class="section-desc">Add yourself to let everyone know you'll be there.</p>
+  <!-- ═══════════════════════════════════════════════
+       CAMPERS TAB
+  ═══════════════════════════════════════════════ -->
+  <div class="tab-panel" id="tab-campers">
+    <div class="tab-content">
+      <div class="section-header">
+        <h2>Who's Coming</h2>
+        <p class="section-desc">Add yourself to let everyone know you'll be there.</p>
+      </div>
+      <div class="attendees-grid" id="attendeesGrid"></div>
+      <div style="text-align:center;margin-top:8px">
+        <button class="btn btn-primary" id="addAttendeeBtn">+ Add Yourself</button>
+      </div>
     </div>
-    <div class="attendees-grid" id="attendeesGrid"></div>
-    <button class="btn btn-primary" id="addAttendeeBtn">+ Add Yourself</button>
 
     <!-- Add Attendee Modal -->
     <div class="modal-overlay" id="attendeeModal">
@@ -146,19 +292,23 @@
         <button class="btn btn-primary" id="saveAttendeeBtn">Add Me to the Trip</button>
       </div>
     </div>
-  </section>
+  </div><!-- /tab-campers -->
 
-  <!-- GEAR LIST -->
-  <section id="gear" class="section">
-    <div class="section-header">
-      <h2>Gear &amp; Supplies</h2>
-      <p class="section-desc">Coordinate who's bringing what. Check items off as they're covered.</p>
+  <!-- ═══════════════════════════════════════════════
+       GEAR TAB
+  ═══════════════════════════════════════════════ -->
+  <div class="tab-panel" id="tab-gear">
+    <div class="tab-content">
+      <div class="section-header">
+        <h2>Gear &amp; Supplies</h2>
+        <p class="section-desc">Coordinate who's bringing what. Check items off as they're covered.</p>
+      </div>
+      <div class="gear-toolbar">
+        <div class="gear-categories" id="gearCategories"></div>
+        <button class="btn btn-outline" id="addGearBtn">+ Add Item</button>
+      </div>
+      <div class="gear-list" id="gearList"></div>
     </div>
-    <div class="gear-toolbar">
-      <div class="gear-categories" id="gearCategories"></div>
-      <button class="btn btn-outline" id="addGearBtn">+ Add Item</button>
-    </div>
-    <div class="gear-list" id="gearList"></div>
 
     <!-- Add Gear Modal -->
     <div class="modal-overlay" id="gearModal">
@@ -189,34 +339,203 @@
         <button class="btn btn-primary" id="saveGearBtn">Add to List</button>
       </div>
     </div>
-  </section>
+  </div><!-- /tab-gear -->
 
-  <!-- ITINERARY -->
-  <section id="itinerary" class="section section-dark">
-    <div class="section-header">
-      <h2>Itinerary</h2>
-      <p class="section-desc">Five days in the desert. Subject to vibes.</p>
+  <!-- ═══════════════════════════════════════════════
+       ITINERARY TAB
+  ═══════════════════════════════════════════════ -->
+  <div class="tab-panel" id="tab-itinerary">
+    <div class="tab-content">
+      <div class="section-header">
+        <h2>Itinerary</h2>
+        <p class="section-desc">Five days in the desert. Subject to vibes.</p>
+      </div>
+      <div class="itinerary-timeline" id="itineraryTimeline"></div>
     </div>
-    <div class="itinerary-timeline" id="itineraryTimeline"></div>
-  </section>
+  </div><!-- /tab-itinerary -->
 
-  <!-- TRAILS -->
-  <section id="trails" class="section">
-    <div class="section-header">
-      <h2>Nearby Trails &amp; Activities</h2>
-      <p class="section-desc">Joshua Tree has world-class hiking, bouldering, and stargazing.</p>
+  <!-- ═══════════════════════════════════════════════
+       TRAILS TAB
+  ═══════════════════════════════════════════════ -->
+  <div class="tab-panel" id="tab-trails">
+    <div class="tab-content">
+      <div class="section-header">
+        <h2>Nearby Trails &amp; Activities</h2>
+        <p class="section-desc">Joshua Tree has world-class hiking, bouldering, and stargazing.</p>
+      </div>
+      <div class="trails-grid" id="trailsGrid"></div>
     </div>
-    <div class="trails-grid" id="trailsGrid"></div>
-  </section>
+  </div><!-- /tab-trails -->
 
-  <!-- INFO -->
-  <section id="info" class="section section-dark">
-    <div class="section-header">
-      <h2>Good to Know</h2>
-      <p class="section-desc">Everything you need before you hit the desert.</p>
+  <!-- ═══════════════════════════════════════════════
+       INFO TAB
+  ═══════════════════════════════════════════════ -->
+  <div class="tab-panel" id="tab-info">
+    <div class="tab-content">
+      <div class="section-header">
+        <h2>Good to Know</h2>
+        <p class="section-desc">Everything you need before you hit the desert.</p>
+      </div>
+      <div class="info-grid" id="infoGrid"></div>
     </div>
-    <div class="info-grid" id="infoGrid"></div>
-  </section>
+  </div><!-- /tab-info -->
+
+  <!-- ═══════════════════════════════════════════════
+       POTLUCK TAB
+  ═══════════════════════════════════════════════ -->
+  <div class="tab-panel" id="tab-potluck">
+    <div class="tab-content">
+      <div class="section-header">
+        <h2>🍽️ Thanksgiving Potluck</h2>
+        <p class="section-desc">Sign up with what you're bringing to the feast. The more the merrier!</p>
+      </div>
+
+      <div class="potluck-toolbar">
+        <div class="potluck-cat-legend">
+          <span class="potluck-badge cat-main">Main</span>
+          <span class="potluck-badge cat-side">Side Dish</span>
+          <span class="potluck-badge cat-appetizer">Appetizer</span>
+          <span class="potluck-badge cat-dessert">Dessert</span>
+          <span class="potluck-badge cat-drinks">Drinks</span>
+          <span class="potluck-badge cat-snacks">Snacks</span>
+        </div>
+        <button class="btn btn-primary" id="addPotluckBtn">+ Sign Me Up</button>
+      </div>
+
+      <div class="signup-table-wrap">
+        <table class="signup-table" id="potluckTable">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Bringing</th>
+              <th>Category</th>
+              <th>Note</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="potluckBody">
+            <tr><td colspan="5" class="table-empty">No sign-ups yet — be the first!</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Add Potluck Modal -->
+    <div class="modal-overlay" id="potluckModal">
+      <div class="modal">
+        <button class="modal-close" id="potluckModalClose">✕</button>
+        <h3>Sign Up for Potluck</h3>
+        <div class="form-group">
+          <label>Your Name</label>
+          <input type="text" id="potluckName" placeholder="First Name" maxlength="30" />
+        </div>
+        <div class="form-group">
+          <label>What are you bringing?</label>
+          <input type="text" id="potluckDish" placeholder="e.g. Sweet potato casserole" maxlength="80" />
+        </div>
+        <div class="form-group">
+          <label>Category</label>
+          <select id="potluckCategory">
+            <option value="main">Main Course</option>
+            <option value="side">Side Dish</option>
+            <option value="appetizer">Appetizer</option>
+            <option value="dessert">Dessert</option>
+            <option value="drinks">Drinks</option>
+            <option value="snacks">Snacks</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Note (optional)</label>
+          <input type="text" id="potluckNote" placeholder="e.g. vegetarian · serves 8" maxlength="80" />
+        </div>
+        <button class="btn btn-primary" id="savePotluckBtn">Add to Potluck</button>
+      </div>
+    </div>
+  </div><!-- /tab-potluck -->
+
+  <!-- ═══════════════════════════════════════════════
+       T-SHIRTS TAB
+  ═══════════════════════════════════════════════ -->
+  <div class="tab-panel" id="tab-tshirts">
+    <div class="tab-content">
+
+      <!-- Shirt mockup area -->
+      <div class="shirt-mockup-area">
+        <div class="mockup-placeholder">
+          <span class="mockup-icon">👕</span>
+          <p class="mockup-title">This Year's Shirt</p>
+          <p class="mockup-sub">Mockup coming soon — check back later!</p>
+        </div>
+      </div>
+
+      <div class="section-header" style="margin-top:48px">
+        <h2>T-Shirt Orders</h2>
+        <p class="section-desc">Add your name and size below to get in on this year's Desert Turkey tee.</p>
+      </div>
+
+      <div class="potluck-toolbar">
+        <div class="tshirt-summary" id="tshirtSummary"></div>
+        <button class="btn btn-primary" id="addTshirtBtn">+ Add My Order</button>
+      </div>
+
+      <div class="signup-table-wrap">
+        <table class="signup-table" id="tshirtTable">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Size</th>
+              <th>Qty</th>
+              <th>Note</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="tshirtBody">
+            <tr><td colspan="5" class="table-empty">No orders yet — be the first!</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <!-- Add T-shirt Modal -->
+    <div class="modal-overlay" id="tshirtModal">
+      <div class="modal">
+        <button class="modal-close" id="tshirtModalClose">✕</button>
+        <h3>Add T-Shirt Order</h3>
+        <div class="form-group">
+          <label>Your Name</label>
+          <input type="text" id="tshirtName" placeholder="First Name" maxlength="30" />
+        </div>
+        <div class="form-group">
+          <label>Size</label>
+          <select id="tshirtSize">
+            <option value="XS">XS</option>
+            <option value="S">S</option>
+            <option value="M" selected>M</option>
+            <option value="L">L</option>
+            <option value="XL">XL</option>
+            <option value="2XL">2XL</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Quantity</label>
+          <select id="tshirtQty">
+            <option value="1" selected>1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Note (optional)</label>
+          <input type="text" id="tshirtNote" placeholder="e.g. one for my kid too" maxlength="80" />
+        </div>
+        <button class="btn btn-primary" id="saveTshirtBtn">Add Order</button>
+      </div>
+    </div>
+  </div><!-- /tab-tshirts -->
 
   <!-- FOOTER -->
   <footer>
