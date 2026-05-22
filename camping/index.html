@@ -6,7 +6,7 @@
   <title>Desert Turkey 2026 · Jumbo Rocks · Thanksgiving 2026</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/style.css?v=3" />
 </head>
 <body>
 
@@ -67,140 +67,6 @@
         <button class="hero-cta" onclick="switchTab('map')">See the Campground Map</button>
       </div>
 
-      <!-- Desert landscape SVG -->
-      <svg class="desert-scene" viewBox="0 0 1200 280" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
-        <defs>
-          <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#7ec4e0"/>
-            <stop offset="55%" stop-color="#d8ecf8"/>
-            <stop offset="100%" stop-color="#f4d8aa"/>
-          </linearGradient>
-          <linearGradient id="groundGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#c8a870"/>
-            <stop offset="100%" stop-color="#a88848"/>
-          </linearGradient>
-        </defs>
-
-        <!-- Sky -->
-        <rect width="1200" height="280" fill="url(#skyGrad)"/>
-
-        <!-- Sun glow -->
-        <circle cx="980" cy="135" r="55" fill="#fce8b0" opacity="0.5"/>
-        <circle cx="980" cy="135" r="30" fill="#fcd870" opacity="0.8"/>
-        <circle cx="980" cy="135" r="18" fill="#f8c840"/>
-
-        <!-- Far hazy mountains -->
-        <path fill="#c0a898" opacity="0.45" d="M0,190 L100,150 L200,168 L310,128 L420,155 L540,110 L660,140 L780,105 L900,130 L1020,108 L1120,128 L1200,115 L1200,205 L0,205Z"/>
-
-        <!-- Near mountains -->
-        <path fill="#b09070" opacity="0.65" d="M0,210 L90,175 L190,198 L290,162 L390,188 L510,152 L620,178 L740,158 L860,180 L970,158 L1080,175 L1180,160 L1200,168 L1200,222 L0,222Z"/>
-
-        <!-- Desert floor -->
-        <path fill="url(#groundGrad)" d="M0,222 Q200,215 400,225 Q700,235 1000,220 Q1100,216 1200,222 L1200,280 L0,280Z"/>
-
-        <!-- Ground texture shadows -->
-        <ellipse cx="180" cy="255" rx="130" ry="10" fill="#a08848" opacity="0.35"/>
-        <ellipse cx="650" cy="260" rx="220" ry="12" fill="#a08848" opacity="0.28"/>
-        <ellipse cx="1060" cy="252" rx="150" ry="10" fill="#a08848" opacity="0.32"/>
-
-        <!-- Boulders left -->
-        <ellipse cx="82" cy="245" rx="28" ry="18" fill="#9a8060"/>
-        <ellipse cx="102" cy="252" rx="20" ry="14" fill="#8a7050"/>
-        <ellipse cx="68" cy="253" rx="16" ry="11" fill="#a89070"/>
-
-        <!-- Boulders right -->
-        <ellipse cx="1090" cy="242" rx="32" ry="20" fill="#9a8060"/>
-        <ellipse cx="1112" cy="252" rx="22" ry="15" fill="#8a7050"/>
-        <ellipse cx="1072" cy="254" rx="18" ry="12" fill="#a08060"/>
-
-        <!-- Small far Joshua Tree — center-left background -->
-        <g transform="translate(350,222) scale(0.52)">
-          <rect x="-5" y="-108" width="10" height="108" rx="3" fill="#5a4030"/>
-          <path d="M0,-75 Q-18,-88 -26,-118 Q-28,-132 -22,-140" stroke="#5a4030" stroke-width="8" fill="none" stroke-linecap="round"/>
-          <path d="M0,-85 Q16,-96 22,-122 Q24,-136 20,-144" stroke="#5a4030" stroke-width="7" fill="none" stroke-linecap="round"/>
-          <circle cx="-22" cy="-144" r="15" fill="#607830"/>
-          <circle cx="20" cy="-147" r="14" fill="#587028"/>
-          <circle cx="-2" cy="-122" r="9" fill="#5a7030"/>
-        </g>
-
-        <!-- Small far Joshua Tree — right background -->
-        <g transform="translate(800,222) scale(0.48)">
-          <rect x="-5" y="-98" width="10" height="98" rx="3" fill="#5a4030"/>
-          <path d="M0,-68 Q-20,-80 -26,-108" stroke="#5a4030" stroke-width="7" fill="none" stroke-linecap="round"/>
-          <path d="M0,-78 Q18,-90 24,-118 Q26,-130 22,-138" stroke="#5a4030" stroke-width="7" fill="none" stroke-linecap="round"/>
-          <circle cx="-26" cy="-112" r="13" fill="#5a7028"/>
-          <circle cx="22" cy="-140" r="14" fill="#607830"/>
-          <circle cx="0" cy="-108" r="9" fill="#587028"/>
-        </g>
-
-        <!-- Medium Joshua Tree — left foreground -->
-        <g transform="translate(215,224) scale(0.78)">
-          <rect x="-7" y="-135" width="14" height="135" rx="4" fill="#4a3420"/>
-          <!-- branch lower-left -->
-          <path d="M-2,-78 Q-28,-92 -42,-128 Q-46,-144 -40,-156" stroke="#4a3420" stroke-width="11" fill="none" stroke-linecap="round"/>
-          <!-- branch upper-right -->
-          <path d="M2,-98 Q28,-112 38,-148 Q42,-162 36,-172" stroke="#4a3420" stroke-width="9" fill="none" stroke-linecap="round"/>
-          <!-- sub-branches from left arm -->
-          <path d="M-40,-156 Q-52,-168 -56,-188" stroke="#4a3420" stroke-width="7" fill="none" stroke-linecap="round"/>
-          <path d="M-40,-156 Q-32,-170 -26,-188" stroke="#4a3420" stroke-width="6" fill="none" stroke-linecap="round"/>
-          <!-- foliage clusters -->
-          <circle cx="-56" cy="-193" r="17" fill="#5a7028"/>
-          <circle cx="-26" cy="-192" r="15" fill="#607830"/>
-          <circle cx="36" cy="-176" r="16" fill="#5a7030"/>
-          <circle cx="-6" cy="-145" r="11" fill="#587028"/>
-        </g>
-
-        <!-- Tall Joshua Tree — center-right foreground -->
-        <g transform="translate(590,224) scale(0.72)">
-          <rect x="-6" y="-128" width="12" height="128" rx="3" fill="#4a3420"/>
-          <path d="M-2,-82 Q-24,-96 -34,-128 Q-36,-142 -30,-152" stroke="#4a3420" stroke-width="10" fill="none" stroke-linecap="round"/>
-          <path d="M2,-92 Q22,-105 30,-136 Q34,-150 28,-160" stroke="#4a3420" stroke-width="9" fill="none" stroke-linecap="round"/>
-          <path d="M-30,-152 Q-40,-165 -44,-182" stroke="#4a3420" stroke-width="7" fill="none" stroke-linecap="round"/>
-          <path d="M-30,-152 Q-22,-165 -16,-182" stroke="#4a3420" stroke-width="6" fill="none" stroke-linecap="round"/>
-          <circle cx="-44" cy="-187" r="15" fill="#607830"/>
-          <circle cx="-16" cy="-186" r="14" fill="#5a7028"/>
-          <circle cx="28" cy="-163" r="15" fill="#5a7030"/>
-          <circle cx="-4" cy="-138" r="10" fill="#587028"/>
-        </g>
-
-        <!-- Tallest Joshua Tree — right foreground -->
-        <g transform="translate(940,224) scale(0.88)">
-          <rect x="-8" y="-152" width="16" height="152" rx="4" fill="#4a3420"/>
-          <!-- branch left lower -->
-          <path d="M-3,-88 Q-32,-104 -46,-140 Q-52,-158 -44,-170" stroke="#4a3420" stroke-width="12" fill="none" stroke-linecap="round"/>
-          <!-- branch right lower -->
-          <path d="M3,-74 Q26,-88 34,-118 Q36,-132 30,-140" stroke="#4a3420" stroke-width="10" fill="none" stroke-linecap="round"/>
-          <!-- branch center-right upper -->
-          <path d="M2,-108 Q32,-124 44,-162 Q48,-178 42,-190" stroke="#4a3420" stroke-width="10" fill="none" stroke-linecap="round"/>
-          <!-- sub-branches from left arm -->
-          <path d="M-44,-170 Q-58,-184 -64,-206" stroke="#4a3420" stroke-width="8" fill="none" stroke-linecap="round"/>
-          <path d="M-44,-170 Q-36,-185 -28,-206" stroke="#4a3420" stroke-width="7" fill="none" stroke-linecap="round"/>
-          <!-- foliage -->
-          <circle cx="-64" cy="-211" r="19" fill="#5a7028"/>
-          <circle cx="-28" cy="-210" r="17" fill="#607830"/>
-          <circle cx="42" cy="-194" r="18" fill="#5a7030"/>
-          <circle cx="30" cy="-143" r="13" fill="#587028"/>
-          <circle cx="-4" cy="-158" r="10" fill="#5a6a28"/>
-        </g>
-
-        <!-- Prickly pear cactus — center -->
-        <g transform="translate(462,226)">
-          <ellipse cx="0" cy="-19" rx="14" ry="20" fill="#6a8838"/>
-          <ellipse cx="-17" cy="-28" rx="11" ry="17" fill="#709040" transform="rotate(-22,-17,-28)"/>
-          <ellipse cx="15" cy="-30" rx="10" ry="16" fill="#6a8838" transform="rotate(18,15,-30)"/>
-          <ellipse cx="1" cy="-42" rx="9" ry="14" fill="#789048"/>
-        </g>
-
-        <!-- Small prickly pear — far right -->
-        <g transform="translate(1148,228)">
-          <ellipse cx="0" cy="-16" rx="11" ry="17" fill="#6a8838"/>
-          <ellipse cx="-13" cy="-24" rx="8" ry="13" fill="#709040" transform="rotate(-28,-13,-24)"/>
-          <ellipse cx="12" cy="-25" rx="8" ry="13" fill="#6a8838" transform="rotate(22,12,-25)"/>
-        </g>
-
-        <!-- Ground line detail -->
-        <path d="M0,222 Q150,218 300,223 Q450,228 600,222 Q750,217 900,222 Q1050,226 1200,221" stroke="#b09050" stroke-width="1.5" fill="none" opacity="0.6"/>
-      </svg>
     </header>
 
     <!-- QUICK STATS -->
@@ -515,9 +381,9 @@
   <!-- Firebase SDK (v10 compat build — no bundler needed) -->
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-  <script src="js/firebase-config.js"></script>
-  <script src="js/data.js"></script>
-  <script src="js/map.js"></script>
-  <script src="js/app.js"></script>
+  <script src="js/firebase-config.js?v=3"></script>
+  <script src="js/data.js?v=3"></script>
+  <script src="js/map.js?v=3"></script>
+  <script src="js/app.js?v=3"></script>
 </body>
 </html>

@@ -208,29 +208,17 @@ body {
 
 /* ── HERO (WELCOME TAB) ───────────────────────────── */
 #hero {
-  position: relative;
-  min-height: 62vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  overflow: hidden;
-  background: linear-gradient(to bottom, #7ec4e0 0%, #d8ecf8 55%, #f4d8aa 100%);
-  padding: 60px 24px 260px;
-}
-
-.desert-scene {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  width: 100%;
-  height: auto;
-  pointer-events: none;
+  background: var(--bg);
+  padding: 80px 24px 60px;
+  border-bottom: 1px solid var(--border);
 }
 
 .hero-content {
-  position: relative;
-  z-index: 2;
   max-width: 680px;
 }
 
@@ -244,12 +232,11 @@ body {
 
 .hero-title {
   font-family: 'Playfair Display', serif;
-  font-size: clamp(2.8rem, 7vw, 5.5rem);
+  font-size: clamp(2.6rem, 7vw, 5rem);
   font-weight: 700;
   line-height: 1.05;
   color: var(--text);
   margin-bottom: 20px;
-  text-shadow: 0 1px 8px rgba(255,255,255,0.6);
 }
 
 .hero-subtitle {
@@ -268,7 +255,7 @@ body {
   font-size: 0.85rem;
   letter-spacing: 0.1em;
   margin-bottom: 28px;
-  background: rgba(255,255,255,0.45);
+  background: var(--surface);
 }
 
 .countdown {
@@ -291,7 +278,6 @@ body {
   line-height: 1;
   min-width: 56px;
   text-align: center;
-  text-shadow: 0 1px 6px rgba(255,255,255,0.7);
 }
 
 .countdown-label {
@@ -1154,7 +1140,7 @@ footer p {
 @media (max-width: 768px) {
   body { padding-top: 100px; }
 
-  #hero { padding: 40px 16px 200px; }
+  #hero { padding: 50px 16px 40px; }
 
   .stats-bar { gap: 0; }
   .stat { padding: 8px 20px; }
