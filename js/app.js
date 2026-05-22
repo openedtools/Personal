@@ -1,42 +1,80 @@
 // ============================================================
 // Josh Vetri Camping Trip — App Logic
-// Uses localStorage for persistence (swap for Firebase/backend later)
+// Backend: Firebase Firestore (real-time, shared across devices)
+// Data model:
+//   attendees:  [{ id, name, site, arrival, departure, note }]
+//   siteClaims: { siteId: attendeeId }   ← string IDs, never indices
+//   gear:       [{ id, name, category, owner, packed }]
 // ============================================================
-
-// ── Storage helpers ──────────────────────────────────────────
-const store = {
-  get: (key, fallback) => {
-    try {
-      const val = localStorage.getItem('jvc_' + key);
-      return val ? JSON.parse(val) : fallback;
-    } catch { return fallback; }
-  },
-  set: (key, val) => {
-    try { localStorage.setItem('jvc_' + key, JSON.stringify(val)); } catch {}
-  }
-};
 
 // ── State ────────────────────────────────────────────────────
 let state = {
-  attendees: store.get('attendees', []),
-  siteClaims: store.get('siteClaims', {}),  // { siteId: attendeeIndex }
-  gear:       store.get('gear', DEFAULT_GEAR),
+  attendees:     [],
+  siteClaims:    {},
+  gear:          [],
   activeGearCat: 'all',
+  loaded:        false,
 };
 
-function save() {
-  store.set('attendees', state.attendees);
-  store.set('siteClaims', state.siteClaims);
-  store.set('gear', state.gear);
+// ── Firestore sync ───────────────────────────────────────────
+function syncToFirestore() {
+  return TRIP_DOC.set({
+    attendees:  state.attendees,
+    siteClaims: state.siteClaims,
+    gear:       state.gear,
+  });
+}
+
+function initFirestore() {
+  setSyncStatus('connecting');
+
+  TRIP_DOC.onSnapshot(
+    snap => {
+      setSyncStatus('live');
+      if (snap.exists) {
+        const data       = snap.data();
+        state.attendees  = data.attendees  || [];
+        state.siteClaims = data.siteClaims || {};
+        state.gear       = data.gear       || DEFAULT_GEAR;
+      } else {
+        // First ever load — seed with default gear list
+        state.attendees  = [];
+        state.siteClaims = {};
+        state.gear       = DEFAULT_GEAR;
+        syncToFirestore();
+      }
+      state.loaded = true;
+      renderAll();
+    },
+    err => {
+      setSyncStatus('error');
+      console.error('Firestore error:', err);
+    }
+  );
+}
+
+function setSyncStatus(status) {
+  const dot   = document.getElementById('syncDot');
+  const label = document.getElementById('syncLabel');
+  if (!dot || !label) return;
+  dot.className = 'sync-dot sync-' + status;
+  label.textContent = { live: 'Live', connecting: 'connecting…', error: 'offline' }[status] || status;
+}
+
+// ── Full re-render ────────────────────────────────────────────
+function renderAll() {
+  renderMap();
+  renderAttendees();
+  renderGearCategories();
+  renderGearList();
+  renderStats();
 }
 
 // ── Countdown ────────────────────────────────────────────────
 function renderCountdown() {
   const target = new Date('2026-11-25T12:00:00');
-  const now    = new Date();
-  const diff   = target - now;
-
-  const el = document.getElementById('countdown');
+  const diff   = target - new Date();
+  const el     = document.getElementById('countdown');
   if (!el) return;
 
   if (diff <= 0) {
@@ -49,10 +87,10 @@ function renderCountdown() {
   const minutes = Math.floor((diff % 3600000)  / 60000);
   const seconds = Math.floor((diff % 60000)    / 1000);
 
-  const unit = (num, label) => `
+  const unit = (num, lbl) => `
     <div class="countdown-unit">
       <span class="countdown-num">${String(num).padStart(2,'0')}</span>
-      <span class="countdown-label">${label}</span>
+      <span class="countdown-label">${lbl}</span>
     </div>`;
 
   el.innerHTML = unit(days,'Days') + unit(hours,'Hrs') + unit(minutes,'Min') + unit(seconds,'Sec');
@@ -98,24 +136,26 @@ function openSiteModal(siteId) {
 
   title.textContent = 'Site ' + siteId;
 
-  const claimIdx = state.siteClaims[siteId];
-  const claim    = claimIdx !== undefined ? state.attendees[claimIdx] : null;
+  const claimedById = state.siteClaims[siteId];
+  const claimer     = claimedById ? state.attendees.find(a => a.id === claimedById) : null;
 
-  if (claim) {
+  if (claimer) {
     content.innerHTML = `
       <div class="site-claimed-by">
-        <div class="site-claimed-name">${esc(claim.name)}</div>
-        <div style="font-size:0.85rem;color:var(--muted);margin-top:4px">${esc(claim.arrival)} → ${esc(claim.departure)}</div>
-        ${claim.note ? `<div style="font-size:0.8rem;color:var(--muted);margin-top:6px;font-style:italic">"${esc(claim.note)}"</div>` : ''}
+        <div class="site-claimed-name">${esc(claimer.name)}</div>
+        <div style="font-size:0.85rem;color:var(--muted);margin-top:4px">${fmtDate(claimer.arrival)} → ${fmtDate(claimer.departure)}</div>
+        ${claimer.note ? `<div style="font-size:0.8rem;color:var(--muted);margin-top:6px;font-style:italic">"${esc(claimer.note)}"</div>` : ''}
       </div>
-      <div class="site-info-row"><span class="site-info-label">Status</span><span class="site-info-value" style="color:var(--orange)">Claimed</span></div>
-      <button class="btn btn-outline" style="margin-top:16px;width:100%" onclick="releaseSite('${siteId}')">Release This Site</button>
+      <div class="site-info-row">
+        <span class="site-info-label">Status</span>
+        <span class="site-info-value" style="color:var(--orange)">Claimed</span>
+      </div>
+      <button class="btn btn-outline" style="margin-top:16px;width:100%" onclick="releaseSite('${siteId}')">
+        Release This Site
+      </button>
     `;
   } else {
-    // Show attendees who haven't claimed a site yet
-    const unclaimed = state.attendees.filter((a, i) =>
-      !Object.values(state.siteClaims).includes(i)
-    );
+    const unclaimed = state.attendees.filter(a => !Object.values(state.siteClaims).includes(a.id));
 
     let claimOptions = '';
     if (unclaimed.length > 0) {
@@ -124,19 +164,28 @@ function openSiteModal(siteId) {
           <label>Assign to</label>
           <select id="claimSelect">
             <option value="">-- pick a camper --</option>
-            ${unclaimed.map((a, i) => `<option value="${state.attendees.indexOf(a)}">${esc(a.name)}</option>`).join('')}
+            ${unclaimed.map(a => `<option value="${esc(a.id)}">${esc(a.name)}</option>`).join('')}
           </select>
         </div>
-        <button class="btn btn-primary" style="width:100%" onclick="claimSiteForAttendee('${siteId}')">Claim This Site</button>
+        <button class="btn btn-primary" style="width:100%" onclick="claimSiteForAttendee('${siteId}')">
+          Claim This Site
+        </button>
       `;
     } else if (state.attendees.length === 0) {
-      claimOptions = `<p style="color:var(--muted);font-size:0.85rem;margin-top:12px">Add yourself to <a href="#attendees" style="color:var(--amber)" onclick="closeSiteModal()">Who's Coming</a> first, then claim a site.</p>`;
+      claimOptions = `<p style="color:var(--muted);font-size:0.85rem;margin-top:12px">
+        Add yourself to <a href="#attendees" style="color:var(--amber)" onclick="closeSiteModal()">Who's Coming</a> first, then claim a site.
+      </p>`;
     } else {
-      claimOptions = `<p style="color:var(--muted);font-size:0.85rem;margin-top:12px">All attendees have sites. Add more campers to claim this site.</p>`;
+      claimOptions = `<p style="color:var(--muted);font-size:0.85rem;margin-top:12px">
+        All attendees have sites assigned. Add more campers first.
+      </p>`;
     }
 
     content.innerHTML = `
-      <div class="site-info-row"><span class="site-info-label">Status</span><span class="site-info-value" style="color:var(--muted)">Available</span></div>
+      <div class="site-info-row">
+        <span class="site-info-label">Status</span>
+        <span class="site-info-value" style="color:var(--muted)">Available</span>
+      </div>
       ${claimOptions}
     `;
   }
@@ -149,33 +198,33 @@ function closeSiteModal() {
 }
 
 function claimSiteForAttendee(siteId) {
-  const select = document.getElementById('claimSelect');
-  const idx    = parseInt(select.value, 10);
-  if (isNaN(idx)) return;
-  // Remove any existing claim by this attendee
-  for (const [sid, aidx] of Object.entries(state.siteClaims)) {
-    if (aidx === idx) delete state.siteClaims[sid];
+  const select      = document.getElementById('claimSelect');
+  const attendeeId  = select.value;
+  if (!attendeeId) return;
+
+  // Remove any pre-existing claim this attendee had
+  for (const [sid, aid] of Object.entries(state.siteClaims)) {
+    if (aid === attendeeId) delete state.siteClaims[sid];
   }
-  state.siteClaims[siteId] = idx;
-  // Update attendee's site field
-  state.attendees[idx].site = siteId;
-  save();
-  renderMap();
-  renderAttendees();
-  renderStats();
+
+  state.siteClaims[siteId] = attendeeId;
+
+  // Keep the attendee's .site field in sync for display
+  const attendee = state.attendees.find(a => a.id === attendeeId);
+  if (attendee) attendee.site = siteId;
+
+  syncToFirestore();
   closeSiteModal();
 }
 
 function releaseSite(siteId) {
-  const idx = state.siteClaims[siteId];
-  if (idx !== undefined && state.attendees[idx]) {
-    state.attendees[idx].site = '';
+  const attendeeId = state.siteClaims[siteId];
+  if (attendeeId) {
+    const attendee = state.attendees.find(a => a.id === attendeeId);
+    if (attendee) attendee.site = '';
   }
   delete state.siteClaims[siteId];
-  save();
-  renderMap();
-  renderAttendees();
-  renderStats();
+  syncToFirestore();
   closeSiteModal();
 }
 
@@ -201,29 +250,27 @@ function renderAttendees() {
 
     return `
       <div class="attendee-card">
-        <button class="attendee-delete" onclick="deleteAttendee(${i})" title="Remove">✕</button>
+        <button class="attendee-delete" onclick="deleteAttendee('${esc(a.id)}')" title="Remove">✕</button>
         <div class="attendee-avatar" style="background:${color}">${initial}</div>
         <div class="attendee-name">${esc(a.name)}</div>
-        ${site}
-        ${dates}
-        ${note}
+        ${site}${dates}${note}
       </div>
     `;
   }).join('');
 }
 
-function deleteAttendee(i) {
-  if (!confirm(`Remove ${state.attendees[i].name} from the trip?`)) return;
-  // Release their site
-  for (const [sid, aidx] of Object.entries(state.siteClaims)) {
-    if (aidx === i) delete state.siteClaims[sid];
-    else if (aidx > i) state.siteClaims[sid] = aidx - 1;
+function deleteAttendee(attendeeId) {
+  const attendee = state.attendees.find(a => a.id === attendeeId);
+  if (!attendee) return;
+  if (!confirm(`Remove ${attendee.name} from the trip?`)) return;
+
+  // Release their site claim
+  for (const [sid, aid] of Object.entries(state.siteClaims)) {
+    if (aid === attendeeId) delete state.siteClaims[sid];
   }
-  state.attendees.splice(i, 1);
-  save();
-  renderAttendees();
-  renderMap();
-  renderStats();
+
+  state.attendees = state.attendees.filter(a => a.id !== attendeeId);
+  syncToFirestore();
 }
 
 // ── Gear ─────────────────────────────────────────────────────
@@ -256,14 +303,15 @@ function renderGearList() {
   }
 
   list.innerHTML = filtered.map(g => {
-    const realIdx = state.gear.indexOf(g);
-    const cat     = GEAR_CATEGORIES.find(c => c.id === g.category) || { label: g.category };
+    const cat = GEAR_CATEGORIES.find(c => c.id === g.category) || { label: g.category };
     return `
       <div class="gear-item ${g.packed ? 'packed' : ''}">
         <div class="gear-checkbox ${g.packed ? 'checked' : ''}" onclick="toggleGear('${g.id}')"></div>
         <div class="gear-item-info">
           <div class="gear-item-name">${esc(g.name)}</div>
-          ${g.owner ? `<div class="gear-item-owner">Brought by: ${esc(g.owner)}</div>` : '<div class="gear-item-owner" style="color:var(--border)">Unassigned</div>'}
+          ${g.owner
+            ? `<div class="gear-item-owner">Brought by: ${esc(g.owner)}</div>`
+            : '<div class="gear-item-owner" style="color:var(--border)">Unassigned</div>'}
         </div>
         <span class="gear-item-cat">${cat.label}</span>
         <button class="gear-delete" onclick="deleteGear('${g.id}')" title="Remove">✕</button>
@@ -274,19 +322,18 @@ function renderGearList() {
 
 function toggleGear(id) {
   const item = state.gear.find(g => g.id === id);
-  if (item) { item.packed = !item.packed; save(); renderGearList(); renderStats(); }
+  if (item) { item.packed = !item.packed; syncToFirestore(); }
 }
 
 function deleteGear(id) {
   state.gear = state.gear.filter(g => g.id !== id);
-  save(); renderGearList(); renderStats();
+  syncToFirestore();
 }
 
 // ── Itinerary ────────────────────────────────────────────────
 function renderItinerary() {
   const el = document.getElementById('itineraryTimeline');
   if (!el) return;
-
   el.innerHTML = ITINERARY.map(day => `
     <div class="itinerary-day">
       <div class="day-marker">
@@ -308,7 +355,6 @@ function renderItinerary() {
 function renderTrails() {
   const grid = document.getElementById('trailsGrid');
   if (!grid) return;
-
   grid.innerHTML = TRAILS.map(t => `
     <div class="trail-card">
       <span class="trail-difficulty difficulty-${t.difficulty}">${t.difficulty}</span>
@@ -327,7 +373,6 @@ function renderTrails() {
 function renderInfo() {
   const grid = document.getElementById('infoGrid');
   if (!grid) return;
-
   grid.innerHTML = INFO_CARDS.map(card => `
     <div class="info-card">
       <span class="info-icon">${card.icon}</span>
@@ -343,7 +388,7 @@ function renderInfo() {
 function openModal(id)  { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
-// ── Nav scroll effect ────────────────────────────────────────
+// ── Nav ──────────────────────────────────────────────────────
 function initNav() {
   const nav = document.getElementById('nav');
   window.addEventListener('scroll', () => {
@@ -351,7 +396,6 @@ function initNav() {
   }, { passive: true });
 }
 
-// ── Hamburger ────────────────────────────────────────────────
 function closeDrawer() {
   document.getElementById('navDrawer').classList.remove('open');
 }
@@ -368,33 +412,31 @@ function esc(str) {
 
 function fmtDate(iso) {
   if (!iso) return '';
-  const [y, m, d] = iso.split('-');
+  const [, m, d] = iso.split('-');
   const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   return `${months[parseInt(m,10)-1]} ${parseInt(d,10)}`;
 }
 
 function uid() {
-  return 'g' + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 }
 
 // ── Init ─────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
 
-  // Render everything
+  // Static renders (don't need Firestore data)
   renderStars();
-  renderMap();
-  renderAttendees();
-  renderGearCategories();
-  renderGearList();
   renderItinerary();
   renderTrails();
   renderInfo();
-  renderStats();
   renderCountdown();
   setInterval(renderCountdown, 1000);
   initNav();
 
-  // ── Hamburger menu ──
+  // Start Firestore listener — triggers renderAll() on first data
+  initFirestore();
+
+  // ── Hamburger ──
   document.getElementById('navHamburger').addEventListener('click', () => {
     document.getElementById('navDrawer').classList.toggle('open');
   });
@@ -429,22 +471,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!name) { document.getElementById('attendeeName').focus(); return; }
 
-    const attendee = { name, site, arrival, departure, note };
+    const id       = uid();
+    const attendee = { id, name, site, arrival, departure, note };
     state.attendees.push(attendee);
-    const newIdx = state.attendees.length - 1;
 
-    // Auto-claim site if specified and valid
-    if (site && CAMP_SITES.find(s => s[0] === site)) {
-      for (const [sid, aidx] of Object.entries(state.siteClaims)) {
-        if (aidx === newIdx) delete state.siteClaims[sid];
-      }
-      state.siteClaims[site] = newIdx;
+    // Auto-claim site if it's a known site ID and currently unclaimed
+    if (site && CAMP_SITES.find(s => s[0] === site) && !state.siteClaims[site]) {
+      state.siteClaims[site] = id;
     }
 
-    save();
-    renderAttendees();
-    renderMap();
-    renderStats();
+    syncToFirestore();
     closeModal('attendeeModal');
   });
 
@@ -468,13 +504,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!name) { document.getElementById('gearItemName').focus(); return; }
 
     state.gear.push({ id: uid(), name, category, owner, packed: false });
-    save();
-    renderGearList();
-    renderStats();
+    syncToFirestore();
     closeModal('gearModal');
   });
 
-  // Keyboard close
+  // ── Keyboard close ──
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
       closeSiteModal();
