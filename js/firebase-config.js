@@ -27,12 +27,12 @@
 // ============================================================
 
 const firebaseConfig = {
-  apiKey:            "YOUR_API_KEY",
-  authDomain:        "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId:         "YOUR_PROJECT_ID",
-  storageBucket:     "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId:             "YOUR_APP_ID"
+  apiKey:            "AIzaSyC9KHeINwy8-Nd47bkNYIzG1exsO4PjwKw",
+  authDomain:        "joshua-tree-26.firebaseapp.com",
+  projectId:         "joshua-tree-26",
+  storageBucket:     "joshua-tree-26.firebasestorage.app",
+  messagingSenderId: "615332626266",
+  appId:             "1:615332626266:web:82626c55df2892c1bd3d63"
 };
 
 firebase.initializeApp(firebaseConfig);
