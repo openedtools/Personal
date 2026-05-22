@@ -3,17 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Josh Vetri Camping · Jumbo Rocks · Thanksgiving 2026</title>
+  <title>Desert Turkey 2026 · Jumbo Rocks · Thanksgiving 2026</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
+  <!-- PASSWORD GATE -->
+  <div class="pw-overlay" id="pwOverlay">
+    <div class="pw-modal">
+      <div class="pw-logo">🦃</div>
+      <h2 class="pw-title">Desert Turkey 2026</h2>
+      <p class="pw-subtitle">Jumbo Rocks · Joshua Tree NP · Thanksgiving 2026</p>
+      <div class="form-group" style="text-align:left">
+        <label>Password</label>
+        <input type="password" id="pwInput" placeholder="Enter password" maxlength="40" autocomplete="current-password" />
+      </div>
+      <div class="pw-error" id="pwError"></div>
+      <button class="btn btn-primary" id="pwSubmit" style="width:100%">Enter the Desert</button>
+    </div>
+  </div>
+
   <!-- NAV -->
   <nav id="nav">
     <div class="nav-inner">
-      <span class="nav-logo">⛺ Josh Vetri Camp 2026</span>
+      <span class="nav-logo">🦃 Desert Turkey 2026</span>
       <div class="nav-links">
         <a href="#map">Map</a>
         <a href="#attendees">Who's Coming</a>
@@ -45,7 +60,7 @@
     <div class="stars" id="stars"></div>
     <div class="hero-content">
       <p class="hero-eyebrow">Joshua Tree National Park</p>
-      <h1 class="hero-title">Josh Vetri<br/>Camping Trip</h1>
+      <h1 class="hero-title">Desert Turkey<br/>2026</h1>
       <p class="hero-subtitle">Jumbo Rocks Campground · Thanksgiving 2026</p>
       <div class="hero-dates">November 25–30, 2026</div>
       <div class="countdown" id="countdown"></div>
@@ -72,13 +87,15 @@
       <p class="section-desc">Jumbo Rocks has 124 sites spread across the boulder formations. Click a site to claim it or see who's there.</p>
     </div>
     <div class="map-container">
-      <div class="map-legend">
+      <div class="map-legend" id="mapLegend">
         <span class="legend-item"><span class="dot dot-available"></span>Available</span>
         <span class="legend-item"><span class="dot dot-claimed"></span>Claimed</span>
-        <span class="legend-item"><span class="dot dot-rock"></span>Rock Formation</span>
       </div>
       <div class="map-wrap">
-        <svg id="campMap" viewBox="0 0 900 620" xmlns="http://www.w3.org/2000/svg"></svg>
+        <div class="map-image-container">
+          <img src="img/campground-map.png" alt="Jumbo Rocks Campground Map" class="map-base-img" />
+          <div class="map-markers-layer" id="mapMarkersLayer"></div>
+        </div>
       </div>
     </div>
 
@@ -112,7 +129,7 @@
         </div>
         <div class="form-group">
           <label>Site # (if known)</label>
-          <input type="text" id="attendeeSite" placeholder="e.g. B7" maxlength="5" />
+          <input type="text" id="attendeeSite" placeholder="e.g. 42" maxlength="3" />
         </div>
         <div class="form-group">
           <label>Arrival → Departure</label>
@@ -203,7 +220,7 @@
 
   <!-- FOOTER -->
   <footer>
-    <p>Josh Vetri Camping · Jumbo Rocks · Joshua Tree NP · Thanksgiving 2026</p>
+    <p>Desert Turkey 2026 · Jumbo Rocks · Joshua Tree NP · Thanksgiving 2026</p>
     <p class="footer-sub">Leave No Trace · Pack It In, Pack It Out</p>
   </footer>
 

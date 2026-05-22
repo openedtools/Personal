@@ -37,6 +37,54 @@ body {
   overflow-x: hidden;
 }
 
+/* ── PASSWORD OVERLAY ─────────────────────────────── */
+.pw-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  background: radial-gradient(ellipse at 50% 30%, #1a2a4a 0%, #0d0906 70%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.pw-overlay.hidden { display: none; }
+
+.pw-modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 40px 36px;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+.pw-logo { font-size: 3rem; margin-bottom: 12px; }
+
+.pw-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  color: var(--cream);
+  margin-bottom: 8px;
+}
+
+.pw-subtitle {
+  font-size: 0.85rem;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+  margin-bottom: 28px;
+}
+
+.pw-error {
+  color: #e05050;
+  font-size: 0.8rem;
+  min-height: 20px;
+  margin-bottom: 10px;
+}
+
 /* ── NAV ─────────────────────────────────────────── */
 #nav {
   position: fixed;
@@ -393,59 +441,65 @@ section.section-dark { padding: 80px 24px; }
 .dot-rock      { background: var(--rock); }
 
 .map-wrap {
-  padding: 24px;
   overflow-x: auto;
 }
 
-#campMap {
+/* Real NPS map image + marker overlay */
+.map-image-container {
+  position: relative;
   width: 100%;
-  max-width: 900px;
-  display: block;
-  margin: 0 auto;
+  min-width: 600px;
+  user-select: none;
 }
 
-/* SVG Map Elements */
-.map-road { fill: none; stroke: #4a3a28; stroke-width: 8; stroke-linecap: round; }
-.map-road-minor { fill: none; stroke: #3a2d1e; stroke-width: 4; stroke-linecap: round; }
-.map-boulder { fill: var(--rock); }
-.map-boulder-dark { fill: #4a3f32; }
-.map-site {
-  fill: var(--rock2);
-  stroke: #6a5a45;
-  stroke-width: 1;
+.map-base-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: invert(1) sepia(0.35) hue-rotate(5deg) brightness(0.62) contrast(1.05);
+}
+
+.map-markers-layer {
+  position: absolute;
+  inset: 0;
+}
+
+.site-marker {
+  position: absolute;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--rock2);
+  border: 1.5px solid var(--amber);
+  transform: translate(-50%, -50%);
   cursor: pointer;
-  transition: fill 0.15s;
-  rx: 3;
+  transition: transform 0.15s, z-index 0s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 5px;
+  color: white;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  z-index: 1;
 }
-.map-site:hover { fill: var(--amber); }
-.map-site.claimed { fill: var(--orange); stroke: #d4722d; }
-.map-site.mine { fill: var(--gold); stroke: #e8b040; }
-.map-site-label {
+
+.site-marker:hover {
+  transform: translate(-50%, -50%) scale(2);
+  z-index: 10;
+}
+
+.site-marker.claimed {
+  width: 15px;
+  height: 15px;
   font-size: 7px;
-  fill: var(--cream);
-  text-anchor: middle;
-  dominant-baseline: middle;
-  pointer-events: none;
-  font-family: 'Inter', sans-serif;
+  border: 2px solid rgba(255,255,255,0.25);
+  z-index: 2;
 }
-.map-area-label {
-  font-size: 10px;
-  fill: var(--muted);
-  text-anchor: middle;
-  font-family: 'Playfair Display', serif;
-  font-style: italic;
-  pointer-events: none;
-}
-.map-compass {
-  font-size: 12px;
-  fill: var(--muted);
-  font-family: 'Inter', sans-serif;
-}
-.map-entrance-label {
-  font-size: 9px;
-  fill: var(--amber);
-  font-family: 'Inter', sans-serif;
-  letter-spacing: 0.05em;
+
+.site-marker.claimed:hover {
+  transform: translate(-50%, -50%) scale(1.7);
+  z-index: 10;
 }
 
 /* ── ATTENDEES ────────────────────────────────────── */

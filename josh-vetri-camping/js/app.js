@@ -1,11 +1,32 @@
 // ============================================================
-// Josh Vetri Camping Trip — App Logic
+// Desert Turkey 2026 — App Logic
 // Backend: Firebase Firestore (real-time, shared across devices)
 // Data model:
 //   attendees:  [{ id, name, site, arrival, departure, note }]
 //   siteClaims: { siteId: attendeeId }   ← string IDs, never indices
 //   gear:       [{ id, name, category, owner, packed }]
 // ============================================================
+
+// ── Password gate ────────────────────────────────────────────
+const TRIP_PASS = 'DesertTurkey2026';
+
+function isAuthenticated() {
+  return sessionStorage.getItem('dt2026_auth') === '1';
+}
+
+function submitPassword() {
+  const input = document.getElementById('pwInput');
+  const error = document.getElementById('pwError');
+  if (input.value === TRIP_PASS) {
+    sessionStorage.setItem('dt2026_auth', '1');
+    document.getElementById('pwOverlay').classList.add('hidden');
+    initFirestore();
+  } else {
+    error.textContent = 'Incorrect password — try again.';
+    input.value = '';
+    input.focus();
+  }
+}
 
 // ── State ────────────────────────────────────────────────────
 let state = {
@@ -125,7 +146,7 @@ function renderStars() {
 
 // ── Map ──────────────────────────────────────────────────────
 function renderMap() {
-  buildMap(state.siteClaims);
+  buildMap(state.siteClaims, state.attendees);
 }
 
 // ── Site Modal ───────────────────────────────────────────────
@@ -229,8 +250,6 @@ function releaseSite(siteId) {
 }
 
 // ── Attendees ────────────────────────────────────────────────
-const AVATAR_COLORS = ['#c4622d','#2d6bc4','#6bc42d','#c42d8a','#2dc4b0','#c4a02d','#8a2dc4'];
-
 function renderAttendees() {
   const grid = document.getElementById('attendeesGrid');
   if (!grid) return;
@@ -433,8 +452,17 @@ document.addEventListener('DOMContentLoaded', () => {
   setInterval(renderCountdown, 1000);
   initNav();
 
-  // Start Firestore listener — triggers renderAll() on first data
-  initFirestore();
+  // Password gate
+  const pwOverlay = document.getElementById('pwOverlay');
+  if (isAuthenticated()) {
+    pwOverlay.classList.add('hidden');
+    initFirestore();
+  } else {
+    document.getElementById('pwSubmit').addEventListener('click', submitPassword);
+    document.getElementById('pwInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter') submitPassword();
+    });
+  }
 
   // ── Hamburger ──
   document.getElementById('navHamburger').addEventListener('click', () => {
@@ -476,7 +504,7 @@ document.addEventListener('DOMContentLoaded', () => {
     state.attendees.push(attendee);
 
     // Auto-claim site if it's a known site ID and currently unclaimed
-    if (site && CAMP_SITES.find(s => s[0] === site) && !state.siteClaims[site]) {
+    if (site && SITE_COORDS[site] && !state.siteClaims[site]) {
       state.siteClaims[site] = id;
     }
 
