@@ -211,7 +211,7 @@
       <div class="stat-divider"></div>
       <div class="stat"><span class="stat-num" id="statNights">5</span><span class="stat-label">Nights</span></div>
       <div class="stat-divider"></div>
-      <div class="stat"><span class="stat-num" id="statGear">0</span><span class="stat-label">Gear Items Packed</span></div>
+      <div class="stat"><span class="stat-num">🏕️</span><span class="stat-label">Thanksgiving 2026</span></div>
     </section>
 
   </div><!-- /tab-welcome -->
@@ -300,44 +300,13 @@
   <div class="tab-panel" id="tab-gear">
     <div class="tab-content">
       <div class="section-header">
-        <h2>Gear &amp; Supplies</h2>
-        <p class="section-desc">Coordinate who's bringing what. Check items off as they're covered.</p>
+        <h2>Packing List</h2>
+        <p class="section-desc">Suggested gear for the trip. Use this as a personal checklist when packing — everyone brings their own.</p>
       </div>
-      <div class="gear-toolbar">
+      <div class="gear-categories-wrap">
         <div class="gear-categories" id="gearCategories"></div>
-        <button class="btn btn-outline" id="addGearBtn">+ Add Item</button>
       </div>
       <div class="gear-list" id="gearList"></div>
-    </div>
-
-    <!-- Add Gear Modal -->
-    <div class="modal-overlay" id="gearModal">
-      <div class="modal">
-        <button class="modal-close" id="gearModalClose">✕</button>
-        <h3>Add Gear Item</h3>
-        <div class="form-group">
-          <label>Item Name</label>
-          <input type="text" id="gearItemName" placeholder="e.g. Cast iron skillet" maxlength="60" />
-        </div>
-        <div class="form-group">
-          <label>Category</label>
-          <select id="gearItemCategory">
-            <option value="shelter">Shelter</option>
-            <option value="cooking">Cooking</option>
-            <option value="food">Food &amp; Drinks</option>
-            <option value="clothing">Clothing</option>
-            <option value="safety">Safety &amp; First Aid</option>
-            <option value="tools">Tools &amp; Lighting</option>
-            <option value="fun">Fun &amp; Games</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Who's Bringing It</label>
-          <input type="text" id="gearItemOwner" placeholder="Your name" maxlength="30" />
-        </div>
-        <button class="btn btn-primary" id="saveGearBtn">Add to List</button>
-      </div>
     </div>
   </div><!-- /tab-gear -->
 

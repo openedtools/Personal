@@ -58,7 +58,6 @@ function initTabs() {
 let state = {
   attendees:     [],
   siteClaims:    {},
-  gear:          [],
   potluck:       [],
   tshirts:       [],
   activeGearCat: 'all',
@@ -70,7 +69,6 @@ function syncToFirestore() {
   return TRIP_DOC.set({
     attendees:  state.attendees,
     siteClaims: state.siteClaims,
-    gear:       state.gear,
     potluck:    state.potluck,
     tshirts:    state.tshirts,
   });
@@ -86,13 +84,11 @@ function initFirestore() {
         const data       = snap.data();
         state.attendees  = data.attendees  || [];
         state.siteClaims = data.siteClaims || {};
-        state.gear       = data.gear       || DEFAULT_GEAR;
         state.potluck    = data.potluck    || [];
         state.tshirts    = data.tshirts    || [];
       } else {
         state.attendees  = [];
         state.siteClaims = {};
-        state.gear       = DEFAULT_GEAR;
         state.potluck    = [];
         state.tshirts    = [];
         syncToFirestore();
@@ -119,8 +115,6 @@ function setSyncStatus(status) {
 function renderAll() {
   renderMap();
   renderAttendees();
-  renderGearCategories();
-  renderGearList();
   renderStats();
   renderPotluck();
   renderTshirts();
@@ -156,7 +150,6 @@ function renderCountdown() {
 function renderStats() {
   document.getElementById('statAttendees').textContent = state.attendees.length;
   document.getElementById('statSites').textContent     = Object.keys(state.siteClaims).length;
-  document.getElementById('statGear').textContent      = state.gear.filter(g => g.packed).length;
 }
 
 // ── Map ──────────────────────────────────────────────────────
@@ -304,7 +297,7 @@ function deleteAttendee(attendeeId) {
   syncToFirestore();
 }
 
-// ── Gear ─────────────────────────────────────────────────────
+// ── Gear (static packing list) ────────────────────────────────
 function renderGearCategories() {
   const container = document.getElementById('gearCategories');
   if (!container) return;
@@ -325,40 +318,19 @@ function renderGearList() {
   if (!list) return;
 
   const filtered = state.activeGearCat === 'all'
-    ? state.gear
-    : state.gear.filter(g => g.category === state.activeGearCat);
-
-  if (filtered.length === 0) {
-    list.innerHTML = '<div class="empty-state">No items in this category yet.</div>';
-    return;
-  }
+    ? DEFAULT_GEAR
+    : DEFAULT_GEAR.filter(g => g.category === state.activeGearCat);
 
   list.innerHTML = filtered.map(g => {
     const cat = GEAR_CATEGORIES.find(c => c.id === g.category) || { label: g.category };
     return `
-      <div class="gear-item ${g.packed ? 'packed' : ''}">
-        <div class="gear-checkbox ${g.packed ? 'checked' : ''}" onclick="toggleGear('${g.id}')"></div>
-        <div class="gear-item-info">
-          <div class="gear-item-name">${esc(g.name)}</div>
-          ${g.owner
-            ? `<div class="gear-item-owner">Brought by: ${esc(g.owner)}</div>`
-            : '<div class="gear-item-owner" style="color:var(--border)">Unassigned</div>'}
-        </div>
+      <div class="gear-item">
+        <span class="gear-item-bullet">·</span>
+        <span class="gear-item-name">${esc(g.name)}</span>
         <span class="gear-item-cat">${cat.label}</span>
-        <button class="gear-delete" onclick="deleteGear('${g.id}')" title="Remove">✕</button>
       </div>
     `;
   }).join('');
-}
-
-function toggleGear(id) {
-  const item = state.gear.find(g => g.id === id);
-  if (item) { item.packed = !item.packed; syncToFirestore(); }
-}
-
-function deleteGear(id) {
-  state.gear = state.gear.filter(g => g.id !== id);
-  syncToFirestore();
 }
 
 // ── Itinerary ────────────────────────────────────────────────
@@ -526,6 +498,8 @@ document.addEventListener('DOMContentLoaded', () => {
   renderTrails();
   renderInfo();
   renderCountdown();
+  renderGearCategories();
+  renderGearList();
   setInterval(renderCountdown, 1000);
   initTabs();
 
@@ -581,30 +555,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     syncToFirestore();
     closeModal('attendeeModal');
-  });
-
-  // ── Add gear ──
-  document.getElementById('addGearBtn').addEventListener('click', () => {
-    document.getElementById('gearItemName').value  = '';
-    document.getElementById('gearItemOwner').value = '';
-    openModal('gearModal');
-  });
-
-  document.getElementById('gearModalClose').addEventListener('click', () => closeModal('gearModal'));
-  document.getElementById('gearModal').addEventListener('click', e => {
-    if (e.target.id === 'gearModal') closeModal('gearModal');
-  });
-
-  document.getElementById('saveGearBtn').addEventListener('click', () => {
-    const name     = document.getElementById('gearItemName').value.trim();
-    const category = document.getElementById('gearItemCategory').value;
-    const owner    = document.getElementById('gearItemOwner').value.trim();
-
-    if (!name) { document.getElementById('gearItemName').focus(); return; }
-
-    state.gear.push({ id: uid(), name, category, owner, packed: false });
-    syncToFirestore();
-    closeModal('gearModal');
   });
 
   // ── Add potluck ──
@@ -664,7 +614,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'Escape') {
       closeSiteModal();
       closeModal('attendeeModal');
-      closeModal('gearModal');
       closeModal('potluckModal');
       closeModal('tshirtModal');
     }

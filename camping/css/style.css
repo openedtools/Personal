@@ -552,13 +552,8 @@ body {
 .attendee-delete:hover { color: var(--red); }
 
 /* ── GEAR ─────────────────────────────────────────── */
-.gear-toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 16px;
+.gear-categories-wrap {
   margin-bottom: 24px;
-  flex-wrap: wrap;
 }
 
 .gear-categories {
@@ -588,61 +583,31 @@ body {
 
 .gear-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 8px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 6px;
 }
 
 .gear-item {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 12px 16px;
-  transition: opacity 0.2s;
+  padding: 10px 14px;
 }
 
-.gear-item.packed { opacity: 0.5; }
-
-.gear-checkbox {
-  width: 20px; height: 20px;
-  border-radius: 4px;
-  border: 2px solid var(--border);
-  background: var(--bg);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.gear-item-bullet {
+  color: var(--terracotta);
+  font-size: 1.2rem;
+  line-height: 1;
   flex-shrink: 0;
-  transition: all 0.2s;
 }
-
-.gear-checkbox.checked {
-  background: var(--green);
-  border-color: var(--green);
-}
-
-.gear-checkbox.checked::after {
-  content: '✓';
-  color: white;
-  font-size: 0.75rem;
-  font-weight: 600;
-}
-
-.gear-item-info { flex: 1; min-width: 0; }
 
 .gear-item-name {
+  flex: 1;
   font-size: 0.9rem;
   color: var(--text);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.gear-item-owner {
-  font-size: 0.75rem;
-  color: var(--muted);
 }
 
 .gear-item-cat {
@@ -655,18 +620,6 @@ body {
   white-space: nowrap;
   flex-shrink: 0;
 }
-
-.gear-delete {
-  background: none;
-  border: none;
-  color: var(--border);
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: color 0.2s;
-  padding: 0 4px;
-}
-
-.gear-delete:hover { color: var(--red); }
 
 /* ── ITINERARY ────────────────────────────────────── */
 .itinerary-timeline {
@@ -1211,8 +1164,6 @@ footer p {
   .countdown-num { font-size: 1.6rem; min-width: 40px; }
 
   .tab-content { padding: 40px 16px 60px; }
-
-  .gear-toolbar { flex-direction: column; }
 
   .itinerary-timeline::before { display: none; }
   .day-marker { width: 36px; }
