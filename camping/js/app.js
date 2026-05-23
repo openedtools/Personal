@@ -92,14 +92,15 @@ function initMobileMenu() {
 }
 
 // ── Trip day grid ────────────────────────────────────────────
-// Columns Wed Nov 25 → Mon Nov 30 (6 days inclusive)
+// Columns Sun Nov 22 → Sat Nov 28 (7 days inclusive)
 const TRIP_DAYS = [
+  { iso: '2026-11-22', dow: 'Sun', day: 22 },
+  { iso: '2026-11-23', dow: 'Mon', day: 23 },
+  { iso: '2026-11-24', dow: 'Tue', day: 24 },
   { iso: '2026-11-25', dow: 'Wed', day: 25 },
   { iso: '2026-11-26', dow: 'Thu', day: 26 },
   { iso: '2026-11-27', dow: 'Fri', day: 27 },
   { iso: '2026-11-28', dow: 'Sat', day: 28 },
-  { iso: '2026-11-29', dow: 'Sun', day: 29 },
-  { iso: '2026-11-30', dow: 'Mon', day: 30 },
 ];
 
 function dayIndex(iso) {
@@ -166,7 +167,7 @@ function migrateAttendees(attendees) {
     kids:      0,
     setup:     'Tent',
     arrival:   a.arrival   || '2026-11-25',
-    departure: a.departure || '2026-11-30',
+    departure: a.departure || '2026-11-28',
     note:      a.note      || '',
   }));
 }
@@ -190,7 +191,7 @@ function renderAll() {
 
 // ── Countdown ────────────────────────────────────────────────
 function renderCountdown() {
-  const target = new Date('2026-11-25T12:00:00');
+  const target = new Date('2026-11-22T12:00:00');
   const diff   = target - new Date();
   const el     = document.getElementById('countdown');
   if (!el) return;
@@ -446,6 +447,10 @@ function renderGearList() {
 function renderItinerary() {
   const el = document.getElementById('itineraryTimeline');
   if (!el) return;
+  if (ITINERARY.length === 0) {
+    el.innerHTML = `<div class="itinerary-tbd">TBD — itinerary coming together. Check back closer to the trip.</div>`;
+    return;
+  }
   el.innerHTML = ITINERARY.map(day => `
     <div class="itinerary-day">
       <div class="day-marker">
@@ -632,7 +637,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('camperKids').value      = '0';
     document.getElementById('camperSetup').value     = 'Tent';
     document.getElementById('camperArrival').value   = '2026-11-25';
-    document.getElementById('camperDeparture').value = '2026-11-30';
+    document.getElementById('camperDeparture').value = '2026-11-28';
     document.getElementById('camperNote').value      = '';
     openModal('camperModal');
   });
@@ -663,7 +668,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('resOwner').value     = '';
     document.getElementById('resSites').value     = '';
     document.getElementById('resArrival').value   = '2026-11-25';
-    document.getElementById('resDeparture').value = '2026-11-30';
+    document.getElementById('resDeparture').value = '2026-11-28';
     document.getElementById('resNote').value      = '';
     openModal('reservationModal');
   });

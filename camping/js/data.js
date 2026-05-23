@@ -5,65 +5,7 @@
 // Avatar / Gantt bar colors — cycled by camper index
 const AVATAR_COLORS = ['#c4622d','#2d6bc4','#6bc42d','#c42d8a','#2dc4b0','#c4a02d','#8a2dc4'];
 
-const ITINERARY = [
-  {
-    date: "Wed, Nov 25", day: "Day 1", title: "Arrival Day",
-    activities: [
-      "Drive in, set up camp before dark — golden hour over the boulders",
-      "First campfire, introductions, snacks & drinks",
-      "Stargazing: Joshua Tree has near-zero light pollution — Milky Way visible",
-      "Settle in and soak it up"
-    ]
-  },
-  {
-    date: "Thu, Nov 26", day: "Day 2", title: "Thanksgiving in the Desert",
-    activities: [
-      "Morning: easy hike to Skull Rock (1.7 mi loop from the campground)",
-      "Afternoon: big group Thanksgiving feast at camp",
-      "Turkey (or tofurky), sides, and all the fixings — campfire style",
-      "Evening: bonfire, s'mores, live music if anyone brought a guitar",
-      "Night hike if weather cooperates"
-    ]
-  },
-  {
-    date: "Fri, Nov 27", day: "Day 3", title: "Hike & Explore",
-    activities: [
-      "Morning: Ryan Mountain summit hike (3 mi, sweeping 360° views)",
-      "Afternoon: Cholla Cactus Garden — otherworldly loop",
-      "Arch Rock Nature Trail (1.3 mi) — massive boulder arch",
-      "Sunset at Keys View overlook — views to the Salton Sea",
-      "Happy hour, cooking dinner together"
-    ]
-  },
-  {
-    date: "Sat, Nov 28", day: "Day 4", title: "Rock Climbing + Adventure Day",
-    activities: [
-      "Morning: Jumbo Rocks area bouldering (no experience needed)",
-      "Afternoon: Hidden Valley Nature Trail (1 mi loop)",
-      "Cap Rock Nature Trail — giant cap-shaped boulders",
-      "Sunset happy hour at camp",
-      "Last big campfire night"
-    ]
-  },
-  {
-    date: "Sun, Nov 29", day: "Day 5", title: "Slow Morning + Wind Down",
-    activities: [
-      "Lazy morning — coffee, breakfast burritos, no rush",
-      "Short stroll: Skull Rock or Split Rock loop",
-      "Pack up site, Leave No Trace cleanup",
-      "Final group photos with the Joshuas",
-      "Some head home, some linger"
-    ]
-  },
-  {
-    date: "Mon, Nov 30", day: "Day 6", title: "Last Campers Out",
-    activities: [
-      "Final pack up for any stragglers",
-      "Stop at 29 Palms for breakfast on the way out",
-      "Safe travels home — until next year"
-    ]
-  }
-];
+const ITINERARY = [];
 
 const TRAILS = [
   { name:"Skull Rock Nature Trail", difficulty:"easy", distance:"1.7 mi", time:"~1 hr", elevation:"minimal", desc:"Starts right at Jumbo Rocks campground. Wind through boulder formations to the iconic skull-shaped rock. Interpretive signs along the way." },
