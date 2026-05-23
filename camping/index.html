@@ -6,7 +6,7 @@
   <title>Desert Turkey 2026 · Jumbo Rocks · Thanksgiving 2026</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=8" />
+  <link rel="stylesheet" href="css/style.css?v=9" />
 </head>
 <body>
 
@@ -148,7 +148,7 @@
     <div class="modal-overlay" id="reservationModal">
       <div class="modal">
         <button class="modal-close" id="reservationModalClose">✕</button>
-        <h3>Add Reservation</h3>
+        <h3 id="reservationModalTitle">Add Reservation</h3>
         <div class="form-group">
           <label>Reservation Holder</label>
           <input type="text" id="resOwner" placeholder="Who booked this?" maxlength="30" />
@@ -190,14 +190,14 @@
       </div>
     </div>
 
-    <!-- Add Camper Modal -->
+    <!-- Add / Edit Camper Modal -->
     <div class="modal-overlay" id="camperModal">
       <div class="modal">
         <button class="modal-close" id="camperModalClose">✕</button>
-        <h3>Add Yourself</h3>
+        <h3 id="camperModalTitle">Add Camper</h3>
         <div class="form-group">
           <label>Your Name</label>
-          <input type="text" id="camperName" placeholder="" maxlength="30" />
+          <input type="text" id="camperName" placeholder="" maxlength="40" />
         </div>
         <div class="form-group">
           <label>Setup</label>
@@ -229,9 +229,9 @@
         </div>
         <div class="form-group">
           <label>Note (optional)</label>
-          <input type="text" id="camperNote" placeholder="e.g. Bringing the big tent!" maxlength="80" />
+          <input type="text" id="camperNote" placeholder="" maxlength="120" />
         </div>
-        <button class="btn btn-primary" id="saveCamperBtn">Add Me to the Trip</button>
+        <button class="btn btn-primary" id="saveCamperBtn">Add to Trip</button>
       </div>
     </div>
   </div><!-- /tab-campers -->
@@ -259,9 +259,39 @@
     <div class="tab-content">
       <div class="section-header">
         <h2>Itinerary</h2>
-        <p class="section-desc">Five days in the desert. Subject to vibes.</p>
+        <p class="section-desc">A living plan — anyone can add or edit days.</p>
+      </div>
+      <div class="itinerary-toolbar">
+        <button class="btn btn-primary" id="addItineraryBtn">+ Add Day</button>
       </div>
       <div class="itinerary-timeline" id="itineraryTimeline"></div>
+    </div>
+
+    <!-- Add / Edit Itinerary Day Modal -->
+    <div class="modal-overlay" id="itineraryModal">
+      <div class="modal">
+        <button class="modal-close" id="itineraryModalClose">✕</button>
+        <h3 id="itineraryModalTitle">Add Day</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Day label</label>
+            <input type="text" id="itDay" placeholder="e.g. Day 1" maxlength="20" />
+          </div>
+          <div class="form-group">
+            <label>Date</label>
+            <input type="text" id="itDate" placeholder="e.g. Wed, Nov 25" maxlength="40" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Title</label>
+          <input type="text" id="itTitle" placeholder="e.g. Arrival day" maxlength="80" />
+        </div>
+        <div class="form-group">
+          <label>Activities (one per line)</label>
+          <textarea id="itActivities" rows="6" placeholder="Drive in &amp; set up camp&#10;Group campfire after dark&#10;Stargazing"></textarea>
+        </div>
+        <button class="btn btn-primary" id="saveItineraryBtn">Add Day</button>
+      </div>
     </div>
   </div><!-- /tab-itinerary -->
 
@@ -335,10 +365,10 @@
     <div class="modal-overlay" id="potluckModal">
       <div class="modal">
         <button class="modal-close" id="potluckModalClose">✕</button>
-        <h3>Sign Up for Potluck</h3>
+        <h3 id="potluckModalTitle">Sign Up for Potluck</h3>
         <div class="form-group">
           <label>Your Name</label>
-          <input type="text" id="potluckName" placeholder="First Name" maxlength="30" />
+          <input type="text" id="potluckName" placeholder="" maxlength="40" />
         </div>
         <div class="form-group">
           <label>What are you bringing?</label>
@@ -412,10 +442,10 @@
     <div class="modal-overlay" id="tshirtModal">
       <div class="modal">
         <button class="modal-close" id="tshirtModalClose">✕</button>
-        <h3>Add T-Shirt Order</h3>
+        <h3 id="tshirtModalTitle">Add T-Shirt Order</h3>
         <div class="form-group">
           <label>Your Name</label>
-          <input type="text" id="tshirtName" placeholder="First Name" maxlength="30" />
+          <input type="text" id="tshirtName" placeholder="" maxlength="40" />
         </div>
         <div class="form-group">
           <label>Size</label>
@@ -456,8 +486,8 @@
   <!-- Firebase SDK (v10 compat build — no bundler needed) -->
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-  <script src="js/firebase-config.js?v=8"></script>
-  <script src="js/data.js?v=8"></script>
-  <script src="js/app.js?v=8"></script>
+  <script src="js/firebase-config.js?v=9"></script>
+  <script src="js/data.js?v=9"></script>
+  <script src="js/app.js?v=9"></script>
 </body>
 </html>

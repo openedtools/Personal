@@ -669,6 +669,46 @@ body {
 
 .attendee-delete:hover { color: var(--red); }
 
+/* When buttons are grouped, the container holds the absolute position */
+.card-actions {
+  position: absolute;
+  top: 10px; right: 10px;
+  display: flex;
+  gap: 4px;
+  z-index: 2;
+}
+
+.card-actions .attendee-delete,
+.card-actions .card-edit {
+  position: static;
+  top: auto; right: auto;
+}
+
+.card-edit {
+  background: none;
+  border: none;
+  color: var(--border);
+  font-size: 0.95rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: color 0.2s, background 0.2s;
+}
+
+.card-edit:hover { color: var(--terracotta); background: rgba(196,98,45,0.08); }
+
+/* Reservation card actions live inside the card-header (flex row), not absolute */
+.res-card-header .card-actions {
+  position: static;
+  top: auto; right: auto;
+}
+
+/* Itinerary actions positioned inside .day-content */
+.itinerary-actions {
+  top: 10px; right: 12px;
+}
+
 /* ── GEAR ─────────────────────────────────────────── */
 .gear-categories-wrap {
   margin-bottom: 24px;
@@ -1116,6 +1156,52 @@ a.trail-name:hover { color: var(--terracotta); border-bottom-color: var(--terrac
 }
 
 .table-delete:hover { color: var(--red); }
+
+.table-edit {
+  background: none;
+  border: none;
+  color: var(--border);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: color 0.2s;
+  padding: 0 4px;
+  margin-right: 2px;
+}
+
+.table-edit:hover { color: var(--terracotta); }
+
+.row-actions {
+  white-space: nowrap;
+  text-align: right;
+}
+
+/* ── ITINERARY editing ────────────────────────────── */
+.itinerary-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.itinerary-day .day-content {
+  position: relative;
+}
+
+textarea {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  padding: 10px 14px;
+  font-size: 0.95rem;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  transition: border-color 0.2s;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+textarea:focus { border-color: var(--terracotta); }
 
 /* ── T-SHIRTS ─────────────────────────────────────── */
 .shirt-mockup-area {

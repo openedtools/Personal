@@ -1,10 +1,12 @@
 // ============================================================
 // Desert Turkey 2026 — App Logic
-// Data model:
+// Data model (Firestore document — synced with merge:true so
+// unknown fields are preserved):
 //   campers:          [{ id, name, adults, kids, setup, arrival, departure, note }]
 //   siteReservations: [{ id, reservedBy, sites:[{siteNum,usedBy}], arrival, departure, note }]
 //   potluck:          [{ id, name, dish, category, note }]
 //   tshirts:          [{ id, name, size, qty, note }]
+//   itinerary:        [{ id, day, date, title, activities:[string] }]
 // ============================================================
 
 // ── Password gate ────────────────────────────────────────────
@@ -63,16 +65,8 @@ function initMobileMenu() {
   const menu      = document.getElementById('mobileMenu');
   const backdrop  = document.getElementById('menuBackdrop');
 
-  function openMenu() {
-    hamburger.classList.add('open');
-    menu.classList.add('open');
-    backdrop.classList.add('open');
-  }
-  function closeMenu() {
-    hamburger.classList.remove('open');
-    menu.classList.remove('open');
-    backdrop.classList.remove('open');
-  }
+  function openMenu()  { hamburger.classList.add('open');    menu.classList.add('open');    backdrop.classList.add('open'); }
+  function closeMenu() { hamburger.classList.remove('open'); menu.classList.remove('open'); backdrop.classList.remove('open'); }
 
   hamburger.addEventListener('click', () => {
     hamburger.classList.contains('open') ? closeMenu() : openMenu();
@@ -89,18 +83,72 @@ let state = {
   siteReservations: [],
   potluck:          [],
   tshirts:          [],
+  itinerary:        [],
   activeGearCat:    'all',
   loaded:           false,
 };
 
+// Track which entry is being edited (id, or null for new)
+const editing = {
+  camper: null, reservation: null, potluck: null, tshirt: null, itinerary: null,
+};
+
 // ── Firestore sync ───────────────────────────────────────────
+// merge:true — Firestore preserves any fields the client doesn't
+// touch. This protects legacy data and any keys added by a newer
+// client version from being wiped by an older tab.
 function syncToFirestore() {
   return TRIP_DOC.set({
     campers:          state.campers,
     siteReservations: state.siteReservations,
     potluck:          state.potluck,
     tshirts:          state.tshirts,
-  });
+    itinerary:        state.itinerary,
+  }, { merge: true });
+}
+
+// One-time migration of pre-redesign data (attendees / siteClaims)
+// into the current schema. Returns true if anything was migrated.
+function migrateLegacyShape(data) {
+  let migrated = false;
+
+  if ((!data.campers || data.campers.length === 0) && Array.isArray(data.attendees) && data.attendees.length > 0) {
+    state.campers = data.attendees.map(a => ({
+      id:        a.id || uid(),
+      name:      a.name || '',
+      adults:    1,
+      kids:      0,
+      setup:     'Tent',
+      arrival:   a.arrival   || '2026-11-25',
+      departure: a.departure || '2026-11-28',
+      note:      a.note      || '',
+    }));
+    migrated = true;
+  }
+
+  if ((!data.siteReservations || data.siteReservations.length === 0)
+      && data.siteClaims && typeof data.siteClaims === 'object') {
+    // Best-effort: group claims by attendee
+    const byAttendee = {};
+    for (const [siteNum, attId] of Object.entries(data.siteClaims)) {
+      if (!byAttendee[attId]) byAttendee[attId] = [];
+      byAttendee[attId].push(siteNum);
+    }
+    state.siteReservations = Object.entries(byAttendee).map(([attId, siteNums]) => {
+      const att = (data.attendees || []).find(a => a.id === attId);
+      return {
+        id:         uid(),
+        reservedBy: att ? att.name : 'Unknown',
+        sites:      siteNums.map(n => ({ siteNum: String(n), usedBy: att ? att.name : '' })),
+        arrival:    att ? att.arrival   : '2026-11-25',
+        departure:  att ? att.departure : '2026-11-28',
+        note:       '',
+      };
+    });
+    if (state.siteReservations.length > 0) migrated = true;
+  }
+
+  return migrated;
 }
 
 function initFirestore() {
@@ -110,15 +158,19 @@ function initFirestore() {
       setSyncStatus('live');
       if (snap.exists) {
         const data             = snap.data();
-        state.campers          = data.campers          || [];
-        state.siteReservations = data.siteReservations || [];
-        state.potluck          = data.potluck          || [];
-        state.tshirts          = data.tshirts          || [];
+        state.campers          = Array.isArray(data.campers)          ? data.campers          : [];
+        state.siteReservations = Array.isArray(data.siteReservations) ? data.siteReservations : [];
+        state.potluck          = Array.isArray(data.potluck)          ? data.potluck          : [];
+        state.tshirts          = Array.isArray(data.tshirts)          ? data.tshirts          : [];
+        state.itinerary        = Array.isArray(data.itinerary)        ? data.itinerary        : [];
+
+        if (migrateLegacyShape(data)) {
+          // Save migrated data back — uses merge so legacy keys stay
+          // in place as a backup until we explicitly remove them.
+          syncToFirestore();
+        }
       } else {
-        state.campers          = [];
-        state.siteReservations = [];
-        state.potluck          = [];
-        state.tshirts          = [];
+        // No document yet — initialize an empty one.
         syncToFirestore();
       }
       state.loaded = true;
@@ -143,6 +195,7 @@ function renderAll() {
   renderSiteReservations();
   renderPotluck();
   renderTshirts();
+  renderItinerary();
 }
 
 // ── Countdown ────────────────────────────────────────────────
@@ -201,7 +254,6 @@ function renderArrivalTimeline() {
 
   let html = `<div class="gantt-wrap"><div class="gantt-table">`;
 
-  // Header
   html += `<div class="gantt-header-row">
     <div class="gantt-label-col gantt-col-header">Camper</div>
     <div class="gantt-days-header">
@@ -213,7 +265,6 @@ function renderArrivalTimeline() {
     </div>
   </div>`;
 
-  // Rows
   state.campers.forEach((c, i) => {
     const color    = AVATAR_COLORS[i % AVATAR_COLORS.length];
     const initial  = (c.name || '?')[0].toUpperCase();
@@ -266,11 +317,16 @@ function renderCampers() {
     const initial = (c.name || '?')[0].toUpperCase();
     const adults  = Number(c.adults) || 1;
     const kids    = Number(c.kids)   || 0;
-    const peopleTxt = adults + (kids > 0 ? ` adult${adults !== 1 ? 's' : ''} · ${kids} kid${kids !== 1 ? 's' : ''}` : ` adult${adults !== 1 ? 's' : ''}`);
+    const peopleTxt = adults + (kids > 0
+      ? ` adult${adults !== 1 ? 's' : ''} · ${kids} kid${kids !== 1 ? 's' : ''}`
+      : ` adult${adults !== 1 ? 's' : ''}`);
 
     return `
       <div class="attendee-card">
-        <button class="attendee-delete" onclick="deleteCamper('${esc(c.id)}')" title="Remove">✕</button>
+        <div class="card-actions">
+          <button class="card-edit" onclick="openCamperModal('${esc(c.id)}')" title="Edit">✎</button>
+          <button class="attendee-delete" onclick="deleteCamper('${esc(c.id)}')" title="Remove">✕</button>
+        </div>
         <div class="attendee-avatar" style="background:${color}">${initial}</div>
         <div class="attendee-name">${esc(c.name)}</div>
         ${c.setup ? `<span class="camper-setup-badge">${esc(c.setup)}</span>` : ''}
@@ -287,6 +343,42 @@ function deleteCamper(camperId) {
   if (!confirm(`Remove ${c.name} from the trip?`)) return;
   state.campers = state.campers.filter(x => x.id !== camperId);
   syncToFirestore();
+}
+
+function openCamperModal(camperId) {
+  const c = camperId ? state.campers.find(x => x.id === camperId) : null;
+  editing.camper = c ? c.id : null;
+  document.getElementById('camperModalTitle').textContent = c ? 'Edit Camper' : 'Add Camper';
+  document.getElementById('saveCamperBtn').textContent    = c ? 'Save Changes' : 'Add to Trip';
+  document.getElementById('camperName').value      = c ? (c.name || '')        : '';
+  document.getElementById('camperAdults').value    = c ? String(c.adults || 1) : '1';
+  document.getElementById('camperKids').value      = c ? String(c.kids   || 0) : '0';
+  document.getElementById('camperSetup').value     = c ? (c.setup || 'Tent')   : 'Tent';
+  document.getElementById('camperArrival').value   = c ? (c.arrival   || '2026-11-25') : '2026-11-25';
+  document.getElementById('camperDeparture').value = c ? (c.departure || '2026-11-28') : '2026-11-28';
+  document.getElementById('camperNote').value      = c ? (c.note || '')        : '';
+  openModal('camperModal');
+}
+
+function saveCamper() {
+  const name      = document.getElementById('camperName').value.trim();
+  const adults    = parseInt(document.getElementById('camperAdults').value) || 1;
+  const kids      = parseInt(document.getElementById('camperKids').value)   || 0;
+  const setup     = document.getElementById('camperSetup').value;
+  const arrival   = document.getElementById('camperArrival').value;
+  const departure = document.getElementById('camperDeparture').value;
+  const note      = document.getElementById('camperNote').value.trim();
+
+  if (!name) { document.getElementById('camperName').focus(); return; }
+
+  if (editing.camper) {
+    const idx = state.campers.findIndex(c => c.id === editing.camper);
+    if (idx >= 0) state.campers[idx] = { id: editing.camper, name, adults, kids, setup, arrival, departure, note };
+  } else {
+    state.campers.push({ id: uid(), name, adults, kids, setup, arrival, departure, note });
+  }
+  syncToFirestore();
+  closeModal('camperModal');
 }
 
 // ── Site Reservations ─────────────────────────────────────────
@@ -315,7 +407,10 @@ function renderSiteReservations() {
             <span class="res-owner">${esc(res.reservedBy)}</span>
             <span class="res-dates">${fmtDate(res.arrival)} → ${fmtDate(res.departure)}</span>
           </div>
-          <button class="attendee-delete" onclick="deleteReservation('${esc(res.id)}')" title="Remove reservation">✕</button>
+          <div class="card-actions">
+            <button class="card-edit" onclick="openReservationModal('${esc(res.id)}')" title="Edit reservation">✎</button>
+            <button class="attendee-delete" onclick="deleteReservation('${esc(res.id)}')" title="Remove reservation">✕</button>
+          </div>
         </div>
         ${res.note ? `<div class="res-note">"${esc(res.note)}"</div>` : ''}
         <div class="res-sites-list">${sitesHtml}</div>
@@ -363,6 +458,52 @@ function deleteReservation(resId) {
   syncToFirestore();
 }
 
+function openReservationModal(resId) {
+  const r = resId ? state.siteReservations.find(x => x.id === resId) : null;
+  editing.reservation = r ? r.id : null;
+  document.getElementById('reservationModalTitle').textContent = r ? 'Edit Reservation' : 'Add Reservation';
+  document.getElementById('saveReservationBtn').textContent    = r ? 'Save Changes'     : 'Save Reservation';
+  document.getElementById('resOwner').value     = r ? (r.reservedBy || '') : '';
+  document.getElementById('resSiteNums').value  = r ? (r.sites || []).map(s => s.siteNum).join(', ') : '';
+  document.getElementById('resArrival').value   = r ? (r.arrival   || '2026-11-25') : '2026-11-25';
+  document.getElementById('resDeparture').value = r ? (r.departure || '2026-11-28') : '2026-11-28';
+  document.getElementById('resNote').value      = r ? (r.note || '') : '';
+  openModal('reservationModal');
+}
+
+function saveReservation() {
+  const reservedBy  = document.getElementById('resOwner').value.trim();
+  const siteNumsRaw = document.getElementById('resSiteNums').value.trim();
+  const arrival     = document.getElementById('resArrival').value;
+  const departure   = document.getElementById('resDeparture').value;
+  const note        = document.getElementById('resNote').value.trim();
+
+  if (!reservedBy)  { document.getElementById('resOwner').focus();    return; }
+  if (!siteNumsRaw) { document.getElementById('resSiteNums').focus(); return; }
+
+  const requested = siteNumsRaw.split(/[\s,]+/).map(s => s.trim()).filter(Boolean);
+
+  if (editing.reservation) {
+    const idx = state.siteReservations.findIndex(r => r.id === editing.reservation);
+    if (idx >= 0) {
+      // Preserve existing `usedBy` for sites that are still in the list
+      const oldSites = state.siteReservations[idx].sites || [];
+      const newSites = requested.map(siteNum => {
+        const prev = oldSites.find(s => s.siteNum === siteNum);
+        return { siteNum, usedBy: prev ? prev.usedBy : '' };
+      });
+      state.siteReservations[idx] = {
+        id: editing.reservation, reservedBy, sites: newSites, arrival, departure, note,
+      };
+    }
+  } else {
+    const sites = requested.map(siteNum => ({ siteNum, usedBy: '' }));
+    state.siteReservations.push({ id: uid(), reservedBy, sites, arrival, departure, note });
+  }
+  syncToFirestore();
+  closeModal('reservationModal');
+}
+
 // ── Gear (static packing list) ────────────────────────────────
 function renderGearCategories() {
   const container = document.getElementById('gearCategories');
@@ -395,28 +536,74 @@ function renderGearList() {
   }).join('');
 }
 
-// ── Itinerary ────────────────────────────────────────────────
+// ── Itinerary (editable + Firestore-backed) ──────────────────
 function renderItinerary() {
   const el = document.getElementById('itineraryTimeline');
   if (!el) return;
-  if (ITINERARY.length === 0) {
-    el.innerHTML = `<div class="itinerary-tbd">TBD — itinerary coming together. Check back closer to the trip.</div>`;
+  if (!state.itinerary || state.itinerary.length === 0) {
+    el.innerHTML = `<div class="itinerary-tbd">TBD — itinerary coming together. Use <strong>+ Add Day</strong> to start filling it in.</div>`;
     return;
   }
-  el.innerHTML = ITINERARY.map(day => `
+  el.innerHTML = state.itinerary.map(day => `
     <div class="itinerary-day">
       <div class="day-marker">
         <div class="day-dot"></div>
-        <div class="day-num">${esc(day.day)}</div>
+        <div class="day-num">${esc(day.day || '')}</div>
       </div>
       <div class="day-content">
-        <div class="day-date">${esc(day.date)}</div>
-        <div class="day-title">${esc(day.title)}</div>
-        <ul class="day-activities">
-          ${day.activities.map(a => `<li>${esc(a)}</li>`).join('')}
-        </ul>
+        <div class="card-actions itinerary-actions">
+          <button class="card-edit" onclick="openItineraryModal('${esc(day.id)}')" title="Edit">✎</button>
+          <button class="attendee-delete" onclick="deleteItinerary('${esc(day.id)}')" title="Remove">✕</button>
+        </div>
+        ${day.date  ? `<div class="day-date">${esc(day.date)}</div>`   : ''}
+        ${day.title ? `<div class="day-title">${esc(day.title)}</div>` : ''}
+        ${Array.isArray(day.activities) && day.activities.length
+          ? `<ul class="day-activities">${day.activities.map(a => `<li>${esc(a)}</li>`).join('')}</ul>`
+          : ''}
       </div>
     </div>`).join('');
+}
+
+function openItineraryModal(dayId) {
+  const d = dayId ? state.itinerary.find(x => x.id === dayId) : null;
+  editing.itinerary = d ? d.id : null;
+  document.getElementById('itineraryModalTitle').textContent = d ? 'Edit Day' : 'Add Day';
+  document.getElementById('saveItineraryBtn').textContent    = d ? 'Save Changes' : 'Add Day';
+  document.getElementById('itDay').value        = d ? (d.day || '')   : '';
+  document.getElementById('itDate').value       = d ? (d.date || '')  : '';
+  document.getElementById('itTitle').value      = d ? (d.title || '') : '';
+  document.getElementById('itActivities').value = d && Array.isArray(d.activities) ? d.activities.join('\n') : '';
+  openModal('itineraryModal');
+}
+
+function saveItinerary() {
+  const day        = document.getElementById('itDay').value.trim();
+  const date       = document.getElementById('itDate').value.trim();
+  const title      = document.getElementById('itTitle').value.trim();
+  const activities = document.getElementById('itActivities').value
+    .split('\n').map(s => s.trim()).filter(Boolean);
+
+  if (!date && !title && activities.length === 0 && !day) {
+    document.getElementById('itDate').focus();
+    return;
+  }
+
+  if (editing.itinerary) {
+    const idx = state.itinerary.findIndex(x => x.id === editing.itinerary);
+    if (idx >= 0) state.itinerary[idx] = { id: editing.itinerary, day, date, title, activities };
+  } else {
+    state.itinerary.push({ id: uid(), day, date, title, activities });
+  }
+  syncToFirestore();
+  closeModal('itineraryModal');
+}
+
+function deleteItinerary(dayId) {
+  const d = state.itinerary.find(x => x.id === dayId);
+  if (!d) return;
+  if (!confirm(`Remove "${d.title || d.date || 'this day'}" from the itinerary?`)) return;
+  state.itinerary = state.itinerary.filter(x => x.id !== dayId);
+  syncToFirestore();
 }
 
 // ── Trails ───────────────────────────────────────────────────
@@ -484,7 +671,10 @@ function renderPotluck() {
       <td>${esc(p.dish)}</td>
       <td><span class="potluck-badge cat-${esc(p.category)}">${esc(POTLUCK_CAT_LABELS[p.category] || p.category)}</span></td>
       <td style="color:var(--muted);font-style:italic">${esc(p.note)}</td>
-      <td><button class="table-delete" onclick="deletePotluck('${esc(p.id)}')" title="Remove">✕</button></td>
+      <td class="row-actions">
+        <button class="table-edit"   onclick="openPotluckModal('${esc(p.id)}')" title="Edit">✎</button>
+        <button class="table-delete" onclick="deletePotluck('${esc(p.id)}')"   title="Remove">✕</button>
+      </td>
     </tr>`).join('');
 }
 
@@ -494,6 +684,36 @@ function deletePotluck(id) {
   if (!confirm(`Remove ${entry.name}'s entry from the potluck?`)) return;
   state.potluck = state.potluck.filter(p => p.id !== id);
   syncToFirestore();
+}
+
+function openPotluckModal(id) {
+  const p = id ? state.potluck.find(x => x.id === id) : null;
+  editing.potluck = p ? p.id : null;
+  document.getElementById('potluckModalTitle').textContent = p ? 'Edit Potluck Entry' : 'Sign Up for Potluck';
+  document.getElementById('savePotluckBtn').textContent    = p ? 'Save Changes'       : 'Add to Potluck';
+  document.getElementById('potluckName').value     = p ? (p.name || '') : '';
+  document.getElementById('potluckDish').value     = p ? (p.dish || '') : '';
+  document.getElementById('potluckCategory').value = p ? (p.category || 'main') : 'main';
+  document.getElementById('potluckNote').value     = p ? (p.note || '') : '';
+  openModal('potluckModal');
+}
+
+function savePotluck() {
+  const name     = document.getElementById('potluckName').value.trim();
+  const dish     = document.getElementById('potluckDish').value.trim();
+  const category = document.getElementById('potluckCategory').value;
+  const note     = document.getElementById('potluckNote').value.trim();
+  if (!name) { document.getElementById('potluckName').focus(); return; }
+  if (!dish) { document.getElementById('potluckDish').focus(); return; }
+
+  if (editing.potluck) {
+    const idx = state.potluck.findIndex(p => p.id === editing.potluck);
+    if (idx >= 0) state.potluck[idx] = { id: editing.potluck, name, dish, category, note };
+  } else {
+    state.potluck.push({ id: uid(), name, dish, category, note });
+  }
+  syncToFirestore();
+  closeModal('potluckModal');
 }
 
 // ── T-shirts ──────────────────────────────────────────────────
@@ -510,7 +730,10 @@ function renderTshirts() {
       <td><strong style="color:var(--terracotta)">${esc(t.size)}</strong></td>
       <td>${esc(String(t.qty))}</td>
       <td style="color:var(--muted);font-style:italic">${esc(t.note)}</td>
-      <td><button class="table-delete" onclick="deleteTshirt('${esc(t.id)}')" title="Remove">✕</button></td>
+      <td class="row-actions">
+        <button class="table-edit"   onclick="openTshirtModal('${esc(t.id)}')" title="Edit">✎</button>
+        <button class="table-delete" onclick="deleteTshirt('${esc(t.id)}')"   title="Remove">✕</button>
+      </td>
     </tr>`).join('');
 
   const summary = document.getElementById('tshirtSummary');
@@ -533,6 +756,35 @@ function deleteTshirt(id) {
   syncToFirestore();
 }
 
+function openTshirtModal(id) {
+  const t = id ? state.tshirts.find(x => x.id === id) : null;
+  editing.tshirt = t ? t.id : null;
+  document.getElementById('tshirtModalTitle').textContent = t ? 'Edit T-Shirt Order' : 'Add T-Shirt Order';
+  document.getElementById('saveTshirtBtn').textContent    = t ? 'Save Changes'       : 'Add Order';
+  document.getElementById('tshirtName').value = t ? (t.name || '') : '';
+  document.getElementById('tshirtSize').value = t ? (t.size || 'M') : 'M';
+  document.getElementById('tshirtQty').value  = t ? String(t.qty || 1) : '1';
+  document.getElementById('tshirtNote').value = t ? (t.note || '') : '';
+  openModal('tshirtModal');
+}
+
+function saveTshirt() {
+  const name = document.getElementById('tshirtName').value.trim();
+  const size = document.getElementById('tshirtSize').value;
+  const qty  = document.getElementById('tshirtQty').value;
+  const note = document.getElementById('tshirtNote').value.trim();
+  if (!name) { document.getElementById('tshirtName').focus(); return; }
+
+  if (editing.tshirt) {
+    const idx = state.tshirts.findIndex(t => t.id === editing.tshirt);
+    if (idx >= 0) state.tshirts[idx] = { id: editing.tshirt, name, size, qty: Number(qty), note };
+  } else {
+    state.tshirts.push({ id: uid(), name, size, qty: Number(qty), note });
+  }
+  syncToFirestore();
+  closeModal('tshirtModal');
+}
+
 // ── Modal helpers ────────────────────────────────────────────
 function openModal(id)  { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
@@ -542,7 +794,8 @@ function esc(str) {
   if (str == null) return '';
   return String(str)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 function fmtDate(iso) {
@@ -581,125 +834,46 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ── Add camper ──
-  document.getElementById('addCamperBtn').addEventListener('click', () => {
-    document.getElementById('camperName').value      = '';
-    document.getElementById('camperAdults').value    = '1';
-    document.getElementById('camperKids').value      = '0';
-    document.getElementById('camperArrival').value   = '2026-11-25';
-    document.getElementById('camperDeparture').value = '2026-11-28';
-    document.getElementById('camperNote').value      = '';
-    openModal('camperModal');
-  });
-
+  // ── Camper modal wiring ──
+  document.getElementById('addCamperBtn').addEventListener('click', () => openCamperModal(null));
   document.getElementById('camperModalClose').addEventListener('click', () => closeModal('camperModal'));
-  document.getElementById('camperModal').addEventListener('click', e => {
-    if (e.target.id === 'camperModal') closeModal('camperModal');
-  });
+  document.getElementById('camperModal').addEventListener('click', e => { if (e.target.id === 'camperModal') closeModal('camperModal'); });
+  document.getElementById('saveCamperBtn').addEventListener('click', saveCamper);
 
-  document.getElementById('saveCamperBtn').addEventListener('click', () => {
-    const name      = document.getElementById('camperName').value.trim();
-    const adults    = parseInt(document.getElementById('camperAdults').value) || 1;
-    const kids      = parseInt(document.getElementById('camperKids').value)   || 0;
-    const setup     = document.getElementById('camperSetup').value;
-    const arrival   = document.getElementById('camperArrival').value;
-    const departure = document.getElementById('camperDeparture').value;
-    const note      = document.getElementById('camperNote').value.trim();
-
-    if (!name) { document.getElementById('camperName').focus(); return; }
-
-    state.campers.push({ id: uid(), name, adults, kids, setup, arrival, departure, note });
-    syncToFirestore();
-    closeModal('camperModal');
-  });
-
-  // ── Add reservation ──
-  document.getElementById('addReservationBtn').addEventListener('click', () => {
-    document.getElementById('resOwner').value     = '';
-    document.getElementById('resSiteNums').value  = '';
-    document.getElementById('resArrival').value   = '2026-11-25';
-    document.getElementById('resDeparture').value = '2026-11-28';
-    document.getElementById('resNote').value      = '';
-    openModal('reservationModal');
-  });
-
+  // ── Reservation modal wiring ──
+  document.getElementById('addReservationBtn').addEventListener('click', () => openReservationModal(null));
   document.getElementById('reservationModalClose').addEventListener('click', () => closeModal('reservationModal'));
-  document.getElementById('reservationModal').addEventListener('click', e => {
-    if (e.target.id === 'reservationModal') closeModal('reservationModal');
-  });
+  document.getElementById('reservationModal').addEventListener('click', e => { if (e.target.id === 'reservationModal') closeModal('reservationModal'); });
+  document.getElementById('saveReservationBtn').addEventListener('click', saveReservation);
 
-  document.getElementById('saveReservationBtn').addEventListener('click', () => {
-    const reservedBy    = document.getElementById('resOwner').value.trim();
-    const siteNumsRaw   = document.getElementById('resSiteNums').value.trim();
-    const arrival       = document.getElementById('resArrival').value;
-    const departure     = document.getElementById('resDeparture').value;
-    const note          = document.getElementById('resNote').value.trim();
+  // ── Itinerary modal wiring ──
+  const addItBtn = document.getElementById('addItineraryBtn');
+  if (addItBtn) addItBtn.addEventListener('click', () => openItineraryModal(null));
+  const itClose = document.getElementById('itineraryModalClose');
+  if (itClose) itClose.addEventListener('click', () => closeModal('itineraryModal'));
+  const itModal = document.getElementById('itineraryModal');
+  if (itModal) itModal.addEventListener('click', e => { if (e.target.id === 'itineraryModal') closeModal('itineraryModal'); });
+  const saveItBtn = document.getElementById('saveItineraryBtn');
+  if (saveItBtn) saveItBtn.addEventListener('click', saveItinerary);
 
-    if (!reservedBy)  { document.getElementById('resOwner').focus();    return; }
-    if (!siteNumsRaw) { document.getElementById('resSiteNums').focus(); return; }
-
-    const sites = siteNumsRaw.split(/[\s,]+/)
-      .map(s => s.trim()).filter(Boolean)
-      .map(siteNum => ({ siteNum, usedBy: '' }));
-
-    state.siteReservations.push({ id: uid(), reservedBy, sites, arrival, departure, note });
-    syncToFirestore();
-    closeModal('reservationModal');
-  });
-
-  // ── Add potluck ──
-  document.getElementById('addPotluckBtn').addEventListener('click', () => {
-    document.getElementById('potluckName').value = '';
-    document.getElementById('potluckDish').value = '';
-    document.getElementById('potluckNote').value = '';
-    openModal('potluckModal');
-  });
-
+  // ── Potluck modal wiring ──
+  document.getElementById('addPotluckBtn').addEventListener('click', () => openPotluckModal(null));
   document.getElementById('potluckModalClose').addEventListener('click', () => closeModal('potluckModal'));
-  document.getElementById('potluckModal').addEventListener('click', e => {
-    if (e.target.id === 'potluckModal') closeModal('potluckModal');
-  });
+  document.getElementById('potluckModal').addEventListener('click', e => { if (e.target.id === 'potluckModal') closeModal('potluckModal'); });
+  document.getElementById('savePotluckBtn').addEventListener('click', savePotluck);
 
-  document.getElementById('savePotluckBtn').addEventListener('click', () => {
-    const name     = document.getElementById('potluckName').value.trim();
-    const dish     = document.getElementById('potluckDish').value.trim();
-    const category = document.getElementById('potluckCategory').value;
-    const note     = document.getElementById('potluckNote').value.trim();
-    if (!name) { document.getElementById('potluckName').focus(); return; }
-    if (!dish) { document.getElementById('potluckDish').focus(); return; }
-    state.potluck.push({ id: uid(), name, dish, category, note });
-    syncToFirestore();
-    closeModal('potluckModal');
-  });
-
-  // ── Add t-shirt ──
-  document.getElementById('addTshirtBtn').addEventListener('click', () => {
-    document.getElementById('tshirtName').value = '';
-    document.getElementById('tshirtNote').value = '';
-    openModal('tshirtModal');
-  });
-
+  // ── T-shirt modal wiring ──
+  document.getElementById('addTshirtBtn').addEventListener('click', () => openTshirtModal(null));
   document.getElementById('tshirtModalClose').addEventListener('click', () => closeModal('tshirtModal'));
-  document.getElementById('tshirtModal').addEventListener('click', e => {
-    if (e.target.id === 'tshirtModal') closeModal('tshirtModal');
-  });
-
-  document.getElementById('saveTshirtBtn').addEventListener('click', () => {
-    const name = document.getElementById('tshirtName').value.trim();
-    const size = document.getElementById('tshirtSize').value;
-    const qty  = document.getElementById('tshirtQty').value;
-    const note = document.getElementById('tshirtNote').value.trim();
-    if (!name) { document.getElementById('tshirtName').focus(); return; }
-    state.tshirts.push({ id: uid(), name, size, qty: Number(qty), note });
-    syncToFirestore();
-    closeModal('tshirtModal');
-  });
+  document.getElementById('tshirtModal').addEventListener('click', e => { if (e.target.id === 'tshirtModal') closeModal('tshirtModal'); });
+  document.getElementById('saveTshirtBtn').addEventListener('click', saveTshirt);
 
   // ── Keyboard close ──
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
       closeModal('camperModal');
       closeModal('reservationModal');
+      closeModal('itineraryModal');
       closeModal('potluckModal');
       closeModal('tshirtModal');
     }
