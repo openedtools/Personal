@@ -924,7 +924,11 @@ function renderTshirts() {
 
   const summary = document.getElementById('tshirtSummary');
   if (summary) {
-    const sizes  = ['XS','S','M','L','XL','2XL'];
+    const sizes  = [
+      'XS','S','M','L','XL','2XL',
+      'Youth XS','Youth S','Youth M','Youth L','Youth XL',
+      '2T','3T','4T','5T',
+    ];
     const counts = {};
     state.tshirts.forEach(t => { counts[t.size] = (counts[t.size] || 0) + Number(t.qty); });
     const total  = Object.values(counts).reduce((a,b) => a + b, 0);
