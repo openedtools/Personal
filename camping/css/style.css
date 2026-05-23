@@ -204,11 +204,15 @@ body {
   background: rgba(40, 20, 0, 0.35);
   z-index: 97;
   opacity: 0;
+  /* Stay click-through until the menu is actually open — otherwise
+     this transparent layer eats every tap on the mobile site. */
+  pointer-events: none;
   transition: opacity 0.22s ease;
 }
 
 .menu-backdrop.open {
   opacity: 1;
+  pointer-events: auto;
 }
 
 .mobile-menu {
