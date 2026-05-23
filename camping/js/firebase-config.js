@@ -38,3 +38,13 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db       = firebase.firestore();
 const TRIP_DOC = db.collection('trips').doc('thanksgiving-2026');
+
+// ============================================================
+// BACKUP MIRROR (Google Sheets via Apps Script)
+// ------------------------------------------------------------
+// Paste the deployed Apps Script Web App URL between the quotes
+// below. See camping/backup/README.md for one-time setup. If
+// blank, the site works exactly as before — backup is just off.
+// ============================================================
+const BACKUP_WEBHOOK_URL = '';
+const BACKUP_SECRET      = 'desert-turkey-2026';
