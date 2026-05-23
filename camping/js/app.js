@@ -249,9 +249,11 @@ function renderCountdown() {
   }
 
   if (nav) {
-    if      (days > 1)  nav.textContent = `${days} days to the desert`;
-    else if (days === 1) nav.textContent = "1 day · tomorrow!";
-    else                 nav.textContent = `${hours}h ${minutes}m to go`;
+    // Short form on mobile so it fits next to the hamburger
+    const tight = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
+    if      (days > 1)   nav.textContent = tight ? `${days} days` : `${days} days to the desert`;
+    else if (days === 1) nav.textContent = tight ? '1 day!'       : "1 day · tomorrow!";
+    else                 nav.textContent = `${hours}h ${minutes}m`;
   }
 }
 
