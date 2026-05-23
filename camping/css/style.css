@@ -1688,17 +1688,49 @@ footer p {
 }
 
 /* ── SITES TAB ────────────────────────────────────── */
+.sites-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+}
+
+.sites-col { min-width: 0; }
+
+.col-heading-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.col-heading {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.25rem;
+  color: var(--text);
+}
+
+.btn-sm {
+  padding: 6px 14px;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+}
+
 .sites-map-reference {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   overflow: hidden;
   margin-bottom: 8px;
+  position: relative;
 }
 
 .sites-map-reference .map-wrap {
-  overflow-x: auto;
+  overflow: auto;
   -webkit-overflow-scrolling: touch;
+  max-height: 75vh;
 }
 
 .sites-map-reference .map-base-img {
@@ -1707,12 +1739,65 @@ footer p {
   height: auto;
   display: block;
   filter: sepia(0.2) brightness(0.98) contrast(1.04);
+  cursor: zoom-in;
 }
 
-.reservations-toolbar {
+/* ── Image lightbox (full-screen map view) ─────────── */
+.image-lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 10, 0, 0.94);
+  z-index: 300;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.image-lightbox.open { display: flex; }
+
+.lightbox-img-wrap {
+  max-width: 100%;
+  max-height: 100%;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
   display: flex;
-  justify-content: flex-end;
-  margin-bottom: 20px;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-lightbox img {
+  max-width: none;
+  max-height: 92vh;
+  width: auto;
+  height: auto;
+  display: block;
+  cursor: zoom-out;
+  border-radius: 6px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+}
+
+.lightbox-close {
+  position: fixed;
+  top: 18px; right: 22px;
+  background: rgba(245,238,216,0.96);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 1.1rem;
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s;
+  z-index: 1;
+}
+
+.lightbox-close:hover {
+  background: var(--terracotta);
+  color: white;
+  border-color: var(--terracotta);
 }
 
 .reservations-grid {
@@ -1860,4 +1945,11 @@ footer p {
   .gantt-date { font-size: 0.65rem; }
   .reservations-grid { grid-template-columns: 1fr; }
   .form-row { grid-template-columns: 1fr 1fr; }
+}
+
+/* Stack the Sites tab on narrower viewports — side-by-side only
+   when there's room for the map to stay readable. */
+@media (max-width: 980px) {
+  .sites-layout { grid-template-columns: 1fr; gap: 36px; }
+  .sites-map-reference .map-wrap { max-height: 60vh; }
 }

@@ -889,6 +889,20 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('tshirtModal').addEventListener('click', e => { if (e.target.id === 'tshirtModal') closeModal('tshirtModal'); });
   document.getElementById('saveTshirtBtn').addEventListener('click', saveTshirt);
 
+  // ── Map lightbox wiring ──
+  const expandBtn   = document.getElementById('mapExpandBtn');
+  const lightbox    = document.getElementById('mapLightbox');
+  const lightboxImg = document.getElementById('mapImg');
+  const lightboxX   = document.getElementById('lightboxClose');
+  if (expandBtn)   expandBtn.addEventListener('click', () => openModal('mapLightbox'));
+  if (lightboxImg) lightboxImg.addEventListener('click', () => openModal('mapLightbox'));
+  if (lightboxX)   lightboxX.addEventListener('click', () => closeModal('mapLightbox'));
+  if (lightbox)    lightbox.addEventListener('click', e => {
+    // Click outside the image closes; clicking the image itself
+    // can also close (zoom-out cursor hint).
+    if (e.target === lightbox || e.target.tagName === 'IMG') closeModal('mapLightbox');
+  });
+
   // ── Keyboard close ──
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
@@ -897,6 +911,7 @@ document.addEventListener('DOMContentLoaded', () => {
       closeModal('itineraryModal');
       closeModal('potluckModal');
       closeModal('tshirtModal');
+      closeModal('mapLightbox');
     }
   });
 });
