@@ -489,7 +489,7 @@ body {
 }
 
 .gantt-label {
-  flex: 0 0 180px;
+  flex: 0 0 240px;
   padding: 12px 14px;
   display: flex;
   align-items: center;
@@ -522,9 +522,9 @@ body {
   font-family: 'Playfair Display', serif;
   font-size: 0.95rem;
   color: var(--text);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.25;
 }
 
 .gantt-headcount {
@@ -1114,10 +1114,78 @@ body {
 .difficulty-hard     { background: #f8d8c8; color: #7a2010; border: 1px solid #d89878; }
 
 .trail-name {
+  display: inline-block;
   font-family: 'Playfair Display', serif;
   font-size: 1.2rem;
   color: var(--text);
   margin-bottom: 8px;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color 0.18s, border-color 0.18s;
+}
+
+a.trail-name { color: var(--text); cursor: pointer; }
+a.trail-name:hover { color: var(--terracotta); border-bottom-color: var(--terracotta); }
+
+.trail-links {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.trail-link, .info-link {
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  color: var(--terracotta);
+  text-decoration: none;
+  border-bottom: 1px dashed transparent;
+  transition: border-color 0.18s, color 0.18s;
+}
+
+.trail-link:hover, .info-link:hover {
+  border-bottom-color: var(--terracotta);
+  color: var(--amber);
+}
+
+.info-links {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.ext-arrow {
+  display: inline-block;
+  font-size: 0.7em;
+  opacity: 0.7;
+  transform: translateY(-1px);
+}
+
+.section-links {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.ext-link {
+  font-size: 0.85rem;
+  color: var(--terracotta);
+  text-decoration: none;
+  border-bottom: 1px dashed var(--border);
+  padding-bottom: 2px;
+  transition: border-color 0.18s, color 0.18s;
+}
+
+.ext-link:hover {
+  border-bottom-color: var(--terracotta);
+  color: var(--amber);
 }
 
 .trail-stats {
@@ -1515,7 +1583,7 @@ footer p {
   .countdown-num { font-size: 1.5rem; min-width: 38px; }
 
   .gantt-section { padding: 36px 12px 48px; }
-  .gantt-label   { flex: 0 0 130px; padding: 10px 10px; gap: 8px; }
+  .gantt-label   { flex: 0 0 170px; padding: 10px 10px; gap: 8px; }
   .gantt-name    { font-size: 0.85rem; }
   .gantt-setup   { font-size: 0.65rem; }
   .gantt-bar     { padding: 0 8px; }
