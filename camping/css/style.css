@@ -35,7 +35,7 @@ body {
   font-size: 16px;
   line-height: 1.6;
   overflow-x: hidden;
-  /* space for fixed top-nav + tab-bar */
+  /* space for fixed top-nav (56px) + tab-bar (44px) */
   padding-top: 100px;
 }
 
@@ -91,21 +91,26 @@ body {
 #topNav {
   position: fixed;
   top: 0; left: 0; right: 0;
-  height: 52px;
+  height: 56px;
   z-index: 100;
-  background: rgba(245, 238, 216, 0.96);
-  backdrop-filter: blur(10px);
+  background: rgba(245, 238, 216, 0.97);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
+  /* GPU-composite to reduce address-bar jitter on mobile */
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 .top-nav-inner {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 20px;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
 }
 
 .nav-logo {
@@ -113,12 +118,130 @@ body {
   font-size: 1rem;
   color: var(--terracotta);
   white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .sync-status {
   display: flex;
   align-items: center;
   gap: 6px;
+}
+
+/* ── HAMBURGER ────────────────────────────────────── */
+.mobile-controls {
+  display: none;
+  align-items: center;
+  gap: 10px;
+}
+
+.current-tab-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px 4px;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+
+.hamburger:hover { background: var(--surface2); }
+
+.hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--text);
+  border-radius: 2px;
+  transition: transform 0.22s ease, opacity 0.22s ease;
+  transform-origin: center;
+}
+
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* ── MOBILE MENU ──────────────────────────────────── */
+.menu-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(40, 20, 0, 0.35);
+  z-index: 97;
+  opacity: 0;
+  transition: opacity 0.22s ease;
+}
+
+.menu-backdrop.open {
+  opacity: 1;
+}
+
+.mobile-menu {
+  display: none;
+  position: fixed;
+  top: 56px; left: 0; right: 0;
+  z-index: 98;
+  background: var(--bg);
+  border-bottom: 2px solid var(--border);
+  box-shadow: 0 8px 32px rgba(60,30,0,0.14);
+  transform: translateY(-110%);
+  transition: transform 0.26s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mobile-menu.open { transform: translateY(0); }
+
+.mobile-menu-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+}
+
+.mobile-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 16px 8px;
+  background: var(--bg);
+  border: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.mobile-tab span { font-size: 1.4rem; line-height: 1; }
+
+.mobile-tab.active {
+  background: var(--surface);
+  color: var(--terracotta);
+  font-weight: 600;
+}
+
+.mobile-tab:hover:not(.active) {
+  background: var(--surface2);
+  color: var(--text);
 }
 
 .sync-dot {
@@ -144,17 +267,18 @@ body {
   color: var(--muted);
 }
 
-/* ── TAB BAR ──────────────────────────────────────── */
+/* ── TAB BAR (desktop) ────────────────────────────── */
 .tab-bar-wrap {
   position: fixed;
-  top: 52px; left: 0; right: 0;
-  height: 48px;
+  top: 56px; left: 0; right: 0;
+  height: 44px;
   z-index: 99;
   background: var(--surface);
-  border-bottom: 2px solid var(--border);
+  border-bottom: 1px solid var(--border);
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
+  transform: translateZ(0);
 }
 
 .tab-bar-wrap::-webkit-scrollbar { display: none; }
@@ -162,25 +286,25 @@ body {
 .tab-bar {
   display: flex;
   min-width: max-content;
-  padding: 0 16px;
+  padding: 0 20px;
   height: 100%;
   align-items: stretch;
 }
 
 .tab-btn {
-  padding: 0 18px;
+  padding: 0 16px;
   background: none;
   border: none;
   border-bottom: 2px solid transparent;
-  margin-bottom: -2px;
+  margin-bottom: -1px;
   font-family: 'Inter', sans-serif;
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   font-weight: 500;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
   color: var(--muted);
   cursor: pointer;
-  transition: color 0.2s, border-color 0.2s;
+  transition: color 0.18s, border-color 0.18s;
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -193,12 +317,20 @@ body {
 }
 
 /* ── TAB PANELS ───────────────────────────────────── */
+@keyframes tabFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 .tab-panel {
   display: none;
   min-height: calc(100vh - 100px);
 }
 
-.tab-panel.active { display: block; }
+.tab-panel.active {
+  display: block;
+  animation: tabFadeIn 0.18s ease forwards;
+}
 
 .tab-content {
   max-width: 1100px;
@@ -1138,18 +1270,31 @@ footer p {
 
 /* ── RESPONSIVE ───────────────────────────────────── */
 @media (max-width: 768px) {
-  body { padding-top: 100px; }
+  /* Single nav bar: only 56px header on mobile */
+  body { padding-top: 56px; }
 
-  #hero { padding: 50px 16px 40px; }
+  /* Hide desktop tab bar, show hamburger + mobile menu */
+  .tab-bar-wrap { display: none; }
+  .mobile-controls { display: flex; }
+  .mobile-menu { display: block; }
+  .menu-backdrop { display: block; }
 
-  .stats-bar { gap: 0; }
-  .stat { padding: 8px 20px; }
+  .tab-panel { min-height: calc(100vh - 56px); }
+
+  #hero { padding: 48px 20px 36px; }
+
+  .hero-title { font-size: clamp(2.2rem, 10vw, 3.2rem); }
+
+  .stats-bar { gap: 0; padding: 16px 12px; }
+  .stat { padding: 6px 16px; }
   .stat-divider { display: none; }
 
-  .countdown { gap: 10px; }
-  .countdown-num { font-size: 1.6rem; min-width: 40px; }
+  .countdown { gap: 8px; }
+  .countdown-num { font-size: 1.5rem; min-width: 38px; }
 
-  .tab-content { padding: 40px 16px 60px; }
+  .tab-content { padding: 32px 16px 56px; }
+
+  .section-header { margin-bottom: 32px; }
 
   .itinerary-timeline::before { display: none; }
   .day-marker { width: 36px; }
@@ -1158,8 +1303,13 @@ footer p {
 
   .potluck-toolbar { flex-direction: column; }
 
+  /* Hide note column on small screens */
   .signup-table th:nth-child(4),
   .signup-table td:nth-child(4) { display: none; }
+
+  /* Wider cards on mobile */
+  .attendees-grid { grid-template-columns: 1fr 1fr; }
+  .trails-grid, .info-grid { grid-template-columns: 1fr; }
 }
 
 /* Scrollbar styling */

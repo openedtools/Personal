@@ -31,16 +31,30 @@ function submitPassword() {
 }
 
 // ── Tab switching ─────────────────────────────────────────────
+const TAB_LABELS = {
+  welcome: 'Welcome', map: 'Map', campers: 'Campers', gear: 'Gear',
+  itinerary: 'Itinerary', trails: 'Trails', info: 'Info',
+  potluck: 'Potluck', tshirts: 'T-Shirts',
+};
+
 function switchTab(tabId) {
+  // Sync desktop tab bar
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.tab === tabId);
   });
+  // Sync mobile grid
+  document.querySelectorAll('.mobile-tab').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tab === tabId);
+  });
+  // Show/hide panels
   document.querySelectorAll('.tab-panel').forEach(panel => {
     panel.classList.toggle('active', panel.id === 'tab-' + tabId);
   });
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  // Update mobile current-tab label
+  const label = document.getElementById('currentTabLabel');
+  if (label) label.textContent = TAB_LABELS[tabId] || tabId;
 
-  // Re-render map when switching to it (markers need the panel visible)
+  window.scrollTo({ top: 0 });
   if (tabId === 'map') renderMap();
 }
 
@@ -48,10 +62,39 @@ function initTabs() {
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => switchTab(btn.dataset.tab));
   });
-
-  // Honour hash on load
   const hash = location.hash.replace('#', '');
   if (hash) switchTab(hash);
+}
+
+function initMobileMenu() {
+  const hamburger = document.getElementById('hamburger');
+  const menu      = document.getElementById('mobileMenu');
+  const backdrop  = document.getElementById('menuBackdrop');
+
+  function openMenu() {
+    hamburger.classList.add('open');
+    menu.classList.add('open');
+    backdrop.classList.add('open');
+  }
+
+  function closeMenu() {
+    hamburger.classList.remove('open');
+    menu.classList.remove('open');
+    backdrop.classList.remove('open');
+  }
+
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.contains('open') ? closeMenu() : openMenu();
+  });
+
+  backdrop.addEventListener('click', closeMenu);
+
+  document.querySelectorAll('.mobile-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      switchTab(btn.dataset.tab);
+      closeMenu();
+    });
+  });
 }
 
 // ── State ────────────────────────────────────────────────────
@@ -502,6 +545,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderGearList();
   setInterval(renderCountdown, 1000);
   initTabs();
+  initMobileMenu();
 
   // Password gate
   const pwOverlay = document.getElementById('pwOverlay');

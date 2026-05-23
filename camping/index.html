@@ -6,7 +6,7 @@
   <title>Desert Turkey 2026 · Jumbo Rocks · Thanksgiving 2026</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=3" />
+  <link rel="stylesheet" href="css/style.css?v=4" />
 </head>
 <body>
 
@@ -29,14 +29,22 @@
   <nav id="topNav">
     <div class="top-nav-inner">
       <span class="nav-logo">🦃 Desert Turkey 2026</span>
-      <span class="sync-status" id="syncStatus" title="Firestore sync status">
-        <span class="sync-dot" id="syncDot"></span>
-        <span class="sync-label" id="syncLabel">connecting…</span>
-      </span>
+      <div class="nav-right">
+        <span class="sync-status" id="syncStatus" title="Firestore sync status">
+          <span class="sync-dot" id="syncDot"></span>
+          <span class="sync-label" id="syncLabel">connecting…</span>
+        </span>
+        <div class="mobile-controls">
+          <span class="current-tab-label" id="currentTabLabel">Welcome</span>
+          <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
     </div>
   </nav>
 
-  <!-- TAB BAR -->
+  <!-- TAB BAR (desktop) -->
   <div class="tab-bar-wrap" id="tabBarWrap">
     <div class="tab-bar" id="tabBar">
       <button class="tab-btn active" data-tab="welcome">Welcome</button>
@@ -48,6 +56,24 @@
       <button class="tab-btn" data-tab="info">Info</button>
       <button class="tab-btn" data-tab="potluck">Potluck</button>
       <button class="tab-btn" data-tab="tshirts">T-Shirts</button>
+    </div>
+  </div>
+
+  <!-- MOBILE MENU BACKDROP -->
+  <div class="menu-backdrop" id="menuBackdrop"></div>
+
+  <!-- MOBILE MENU (hamburger panel) -->
+  <div class="mobile-menu" id="mobileMenu">
+    <div class="mobile-menu-grid">
+      <button class="mobile-tab active" data-tab="welcome"><span>🏠</span>Welcome</button>
+      <button class="mobile-tab" data-tab="map"><span>🗺️</span>Map</button>
+      <button class="mobile-tab" data-tab="campers"><span>🏕️</span>Campers</button>
+      <button class="mobile-tab" data-tab="gear"><span>🎒</span>Gear</button>
+      <button class="mobile-tab" data-tab="itinerary"><span>📋</span>Itinerary</button>
+      <button class="mobile-tab" data-tab="trails"><span>🥾</span>Trails</button>
+      <button class="mobile-tab" data-tab="info"><span>ℹ️</span>Info</button>
+      <button class="mobile-tab" data-tab="potluck"><span>🍽️</span>Potluck</button>
+      <button class="mobile-tab" data-tab="tshirts"><span>👕</span>T-Shirts</button>
     </div>
   </div>
 
@@ -381,9 +407,9 @@
   <!-- Firebase SDK (v10 compat build — no bundler needed) -->
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-  <script src="js/firebase-config.js?v=3"></script>
-  <script src="js/data.js?v=3"></script>
-  <script src="js/map.js?v=3"></script>
-  <script src="js/app.js?v=3"></script>
+  <script src="js/firebase-config.js?v=4"></script>
+  <script src="js/data.js?v=4"></script>
+  <script src="js/map.js?v=4"></script>
+  <script src="js/app.js?v=4"></script>
 </body>
 </html>
