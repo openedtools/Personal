@@ -6,7 +6,7 @@
   <title>Desert Turkey 2026 · Jumbo Rocks · Thanksgiving 2026</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=8" />
+  <link rel="stylesheet" href="css/style.css?v=9" />
 </head>
 <body>
 
@@ -66,8 +66,8 @@
   <div class="mobile-menu" id="mobileMenu">
     <div class="mobile-menu-grid">
       <button class="mobile-tab active" data-tab="welcome"><span>🏠</span>Welcome</button>
-      <button class="mobile-tab" data-tab="sites"><span>🗺️</span>Sites</button>
-      <button class="mobile-tab" data-tab="campers"><span>🏕️</span>Campers</button>
+      <button class="mobile-tab" data-tab="sites"><span>🏕️</span>Sites</button>
+      <button class="mobile-tab" data-tab="campers"><span>👥</span>Campers</button>
       <button class="mobile-tab" data-tab="gear"><span>🎒</span>Gear</button>
       <button class="mobile-tab" data-tab="itinerary"><span>📋</span>Itinerary</button>
       <button class="mobile-tab" data-tab="trails"><span>🥾</span>Trails</button>
@@ -82,7 +82,6 @@
   ═══════════════════════════════════════════════ -->
   <div class="tab-panel active" id="tab-welcome">
 
-    <!-- HERO -->
     <header id="hero">
       <div class="hero-content">
         <p class="hero-eyebrow">Joshua Tree National Park</p>
@@ -90,31 +89,32 @@
         <p class="hero-subtitle">Jumbo Rocks Campground · Thanksgiving 2026</p>
         <div class="hero-dates">November 22–28, 2026</div>
         <div class="countdown" id="countdown"></div>
-        <button class="hero-cta" onclick="switchTab('sites')">See the Sites</button>
+        <button class="hero-cta" onclick="switchTab('sites')">See the Campground Sites</button>
       </div>
     </header>
 
-    <!-- ARRIVAL/DEPARTURE GANTT -->
+    <!-- ARRIVAL TIMELINE (Gantt) -->
     <section class="gantt-section">
-      <div class="gantt-header-block">
-        <h2 class="gantt-heading">Arrivals &amp; Departures</h2>
-        <p class="gantt-sub">Who's there when. Auto-built from the Campers tab.</p>
-      </div>
-      <div class="gantt-wrap">
-        <div class="gantt" id="gantt"></div>
+      <div class="gantt-section-inner">
+        <div class="gantt-section-header">
+          <h2>Who's Coming When</h2>
+          <p>Arrival &amp; departure timeline — updates as campers register.</p>
+        </div>
+        <div id="arrivalTimeline"></div>
       </div>
     </section>
 
   </div><!-- /tab-welcome -->
 
   <!-- ═══════════════════════════════════════════════
-       SITES TAB
+       SITES TAB (formerly Map)
   ═══════════════════════════════════════════════ -->
   <div class="tab-panel" id="tab-sites">
     <div class="tab-content">
+
       <div class="section-header">
-        <h2>Sites &amp; Reservations</h2>
-        <p class="section-desc">Jumbo Rocks NPS map for orientation, plus who has which sites booked.</p>
+        <h2>Campground Map</h2>
+        <p class="section-desc">Reference map for Jumbo Rocks Campground — scroll to explore. Site numbers are marked on the map.</p>
         <div class="section-links">
           <a class="ext-link" href="https://www.recreation.gov/camping/campgrounds/272299" target="_blank" rel="noopener">Book on Recreation.gov <span class="ext-arrow">↗</span></a>
           <a class="ext-link" href="https://www.nps.gov/jotr/planyourvisit/jumborocks.htm" target="_blank" rel="noopener">NPS · Jumbo Rocks <span class="ext-arrow">↗</span></a>
@@ -122,21 +122,26 @@
         </div>
       </div>
 
-      <!-- Static NPS reference map -->
-      <div class="map-container">
+      <!-- Static map reference only — no markers, no interaction -->
+      <div class="sites-map-reference">
         <div class="map-wrap">
-          <div class="map-image-container">
-            <img src="img/PhotoshopExtension_Image_upscayl_2x_upscayl-standard-4x.png" alt="Jumbo Rocks Campground Map" class="map-base-img" />
-          </div>
+          <img src="img/PhotoshopExtension_Image_upscayl_2x_upscayl-standard-4x.png"
+               alt="Jumbo Rocks Campground Map" class="map-base-img" />
         </div>
       </div>
 
-      <!-- Reservation cards -->
-      <div class="reservations-header">
-        <h3 class="reservations-title">Reservations</h3>
+      <!-- Site Reservations -->
+      <div class="section-header" style="margin-top:56px">
+        <h2>Site Reservations</h2>
+        <p class="section-desc">Track who holds each reservation and who's sleeping where. Edit a site's occupant inline.</p>
+      </div>
+
+      <div class="reservations-toolbar">
         <button class="btn btn-primary" id="addReservationBtn">+ Add Reservation</button>
       </div>
-      <div class="reservations-list" id="reservationsList"></div>
+
+      <div class="reservations-grid" id="reservationsGrid"></div>
+
     </div>
 
     <!-- Add Reservation Modal -->
@@ -146,11 +151,12 @@
         <h3 id="reservationModalTitle">Add Reservation</h3>
         <div class="form-group">
           <label>Reservation Holder</label>
-          <input type="text" id="resOwner" placeholder="Who booked it?" maxlength="40" />
+          <input type="text" id="resOwner" placeholder="Who booked this?" maxlength="30" />
         </div>
         <div class="form-group">
-          <label>Site Numbers (comma-separated)</label>
-          <input type="text" id="resSites" placeholder="e.g. 4, 5, 6, 7" maxlength="120" />
+          <label>Site Numbers</label>
+          <input type="text" id="resSiteNums" placeholder="e.g. 4, 5, 6" maxlength="80" />
+          <p class="form-hint">Separate multiple sites with commas</p>
         </div>
         <div class="form-group">
           <label>Arrival → Departure</label>
@@ -162,7 +168,7 @@
         </div>
         <div class="form-group">
           <label>Note (optional)</label>
-          <input type="text" id="resNote" placeholder="e.g. confirmation #ABC123" maxlength="120" />
+          <input type="text" id="resNote" placeholder="e.g. recreation.gov confirmation #" maxlength="80" />
         </div>
         <button class="btn btn-primary" id="saveReservationBtn">Save Reservation</button>
       </div>
@@ -176,32 +182,22 @@
     <div class="tab-content">
       <div class="section-header">
         <h2>Who's Coming</h2>
-        <p class="section-desc">Add yourself so the timeline knows when you'll be in the desert.</p>
+        <p class="section-desc">Add yourself to let everyone know you'll be there.</p>
       </div>
-      <div class="campers-grid" id="campersGrid"></div>
+      <div class="attendees-grid" id="campersGrid"></div>
       <div style="text-align:center;margin-top:8px">
-        <button class="btn btn-primary" id="addCamperBtn">+ Add Camper</button>
+        <button class="btn btn-primary" id="addCamperBtn">+ Add Yourself</button>
       </div>
     </div>
 
-    <!-- Add Camper Modal -->
+    <!-- Add / Edit Camper Modal -->
     <div class="modal-overlay" id="camperModal">
       <div class="modal">
         <button class="modal-close" id="camperModalClose">✕</button>
         <h3 id="camperModalTitle">Add Camper</h3>
         <div class="form-group">
-          <label>Name</label>
+          <label>Your Name</label>
           <input type="text" id="camperName" placeholder="" maxlength="40" />
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Adults</label>
-            <input type="number" id="camperAdults" min="0" max="20" value="1" />
-          </div>
-          <div class="form-group">
-            <label>Kids</label>
-            <input type="number" id="camperKids" min="0" max="20" value="0" />
-          </div>
         </div>
         <div class="form-group">
           <label>Setup</label>
@@ -213,6 +209,16 @@
             <option value="Cabin">Cabin</option>
           </select>
         </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Adults</label>
+            <input type="number" id="camperAdults" value="1" min="1" max="20" />
+          </div>
+          <div class="form-group">
+            <label>Kids</label>
+            <input type="number" id="camperKids" value="0" min="0" max="20" />
+          </div>
+        </div>
         <div class="form-group">
           <label>Arrival → Departure</label>
           <div class="date-range">
@@ -223,9 +229,9 @@
         </div>
         <div class="form-group">
           <label>Note (optional)</label>
-          <input type="text" id="camperNote" placeholder="e.g. arriving late Wed night" maxlength="120" />
+          <input type="text" id="camperNote" placeholder="" maxlength="120" />
         </div>
-        <button class="btn btn-primary" id="saveCamperBtn">Save</button>
+        <button class="btn btn-primary" id="saveCamperBtn">Add to Trip</button>
       </div>
     </div>
   </div><!-- /tab-campers -->
@@ -253,9 +259,39 @@
     <div class="tab-content">
       <div class="section-header">
         <h2>Itinerary</h2>
-        <p class="section-desc">Five days in the desert. Subject to vibes.</p>
+        <p class="section-desc">A living plan — anyone can add or edit days.</p>
+      </div>
+      <div class="itinerary-toolbar">
+        <button class="btn btn-primary" id="addItineraryBtn">+ Add Day</button>
       </div>
       <div class="itinerary-timeline" id="itineraryTimeline"></div>
+    </div>
+
+    <!-- Add / Edit Itinerary Day Modal -->
+    <div class="modal-overlay" id="itineraryModal">
+      <div class="modal">
+        <button class="modal-close" id="itineraryModalClose">✕</button>
+        <h3 id="itineraryModalTitle">Add Day</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Day label</label>
+            <input type="text" id="itDay" placeholder="e.g. Day 1" maxlength="20" />
+          </div>
+          <div class="form-group">
+            <label>Date</label>
+            <input type="text" id="itDate" placeholder="e.g. Wed, Nov 25" maxlength="40" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Title</label>
+          <input type="text" id="itTitle" placeholder="e.g. Arrival day" maxlength="80" />
+        </div>
+        <div class="form-group">
+          <label>Activities (one per line)</label>
+          <textarea id="itActivities" rows="6" placeholder="Drive in &amp; set up camp&#10;Group campfire after dark&#10;Stargazing"></textarea>
+        </div>
+        <button class="btn btn-primary" id="saveItineraryBtn">Add Day</button>
+      </div>
     </div>
   </div><!-- /tab-itinerary -->
 
@@ -329,10 +365,10 @@
     <div class="modal-overlay" id="potluckModal">
       <div class="modal">
         <button class="modal-close" id="potluckModalClose">✕</button>
-        <h3>Sign Up for Potluck</h3>
+        <h3 id="potluckModalTitle">Sign Up for Potluck</h3>
         <div class="form-group">
           <label>Your Name</label>
-          <input type="text" id="potluckName" placeholder="First Name" maxlength="30" />
+          <input type="text" id="potluckName" placeholder="" maxlength="40" />
         </div>
         <div class="form-group">
           <label>What are you bringing?</label>
@@ -365,7 +401,6 @@
   <div class="tab-panel" id="tab-tshirts">
     <div class="tab-content">
 
-      <!-- Shirt mockup area -->
       <div class="shirt-mockup-area">
         <div class="mockup-placeholder">
           <span class="mockup-icon">👕</span>
@@ -407,10 +442,10 @@
     <div class="modal-overlay" id="tshirtModal">
       <div class="modal">
         <button class="modal-close" id="tshirtModalClose">✕</button>
-        <h3>Add T-Shirt Order</h3>
+        <h3 id="tshirtModalTitle">Add T-Shirt Order</h3>
         <div class="form-group">
           <label>Your Name</label>
-          <input type="text" id="tshirtName" placeholder="First Name" maxlength="30" />
+          <input type="text" id="tshirtName" placeholder="" maxlength="40" />
         </div>
         <div class="form-group">
           <label>Size</label>
@@ -451,8 +486,8 @@
   <!-- Firebase SDK (v10 compat build — no bundler needed) -->
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-  <script src="js/firebase-config.js?v=8"></script>
-  <script src="js/data.js?v=8"></script>
-  <script src="js/app.js?v=8"></script>
+  <script src="js/firebase-config.js?v=9"></script>
+  <script src="js/data.js?v=9"></script>
+  <script src="js/app.js?v=9"></script>
 </body>
 </html>

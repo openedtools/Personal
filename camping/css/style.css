@@ -438,190 +438,44 @@ body {
 
 .hero-cta:hover { background: #b05020; transform: translateY(-2px); }
 
-/* ── WELCOME GANTT ─────────────────────────────────── */
-.gantt-section {
+/* ── STATS BAR ────────────────────────────────────── */
+.stats-bar {
   background: var(--surface);
   border-bottom: 1px solid var(--border);
-  padding: 48px 24px 64px;
-}
-
-.gantt-header-block {
-  text-align: center;
-  max-width: 760px;
-  margin: 0 auto 28px;
-}
-
-.gantt-heading {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(1.4rem, 3.2vw, 2rem);
-  color: var(--text);
-  margin-bottom: 6px;
-}
-
-.gantt-sub {
-  color: var(--muted);
-  font-size: 0.9rem;
-}
-
-.gantt-wrap {
-  max-width: 1000px;
-  margin: 0 auto;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-.gantt {
-  min-width: 640px;
-}
-
-.gantt-header,
-.gantt-row {
   display: flex;
-  align-items: stretch;
-}
-
-.gantt-header {
-  border-bottom: 1px solid var(--border);
-  background: var(--surface);
-}
-
-.gantt-label {
-  flex: 0 0 240px;
-  padding: 12px 14px;
-  display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 10px;
-  border-right: 1px solid var(--border);
+  padding: 20px 24px;
+  gap: 0;
+  flex-wrap: wrap;
 }
 
-.gantt-label-head {
-  font-size: 0.7rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--muted);
-  font-weight: 500;
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 40px;
 }
 
-.gantt-swatch {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  background: var(--terracotta);
-}
-
-.gantt-label-text {
-  min-width: 0;
-  overflow: hidden;
-}
-
-.gantt-name {
+.stat-num {
   font-family: 'Playfair Display', serif;
-  font-size: 0.95rem;
-  color: var(--text);
-  white-space: normal;
-  word-break: break-word;
-  line-height: 1.25;
-}
-
-.gantt-headcount {
-  font-family: 'Inter', sans-serif;
-  font-size: 0.75rem;
-  color: var(--muted);
-  font-weight: 400;
-}
-
-.gantt-setup {
-  font-size: 0.72rem;
-  color: var(--muted);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.gantt-track {
-  flex: 1;
-  position: relative;
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  min-height: 52px;
-}
-
-.gantt-track-head {
-  min-height: auto;
-}
-
-.gantt-day-head {
-  border-right: 1px dashed var(--border);
-  padding: 10px 6px;
-  text-align: center;
-}
-
-.gantt-day-head:last-child {
-  border-right: none;
-}
-
-.gantt-dow {
-  font-size: 0.7rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font-size: 2rem;
   color: var(--terracotta);
-  font-weight: 500;
+  line-height: 1;
 }
 
-.gantt-date {
-  font-size: 0.72rem;
+.stat-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
   color: var(--muted);
-  margin-top: 2px;
+  margin-top: 4px;
 }
 
-.gantt-cell {
-  border-right: 1px dashed var(--border);
-}
-
-.gantt-cell:last-child {
-  border-right: none;
-}
-
-.gantt-row {
-  border-top: 1px solid var(--border);
-}
-
-.gantt-row:first-child {
-  border-top: none;
-}
-
-.gantt-bar {
-  position: absolute;
-  top: 10px;
-  bottom: 10px;
-  border-radius: 100px;
-  background: var(--terracotta);
-  display: flex;
-  align-items: center;
-  padding: 0 12px;
-  overflow: hidden;
-  box-shadow: 0 1px 4px rgba(60,30,0,0.18);
-}
-
-.gantt-bar-text {
-  color: white;
-  font-size: 0.75rem;
-  font-weight: 500;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  letter-spacing: 0.03em;
-}
-
-.gantt-empty {
-  padding: 40px 24px;
-  text-align: center;
-  color: var(--muted);
-  font-style: italic;
-  font-size: 0.9rem;
+.stat-divider {
+  width: 1px;
+  height: 40px;
+  background: var(--border);
 }
 
 /* ── SECTION HEADER ───────────────────────────────── */
@@ -644,18 +498,43 @@ body {
   margin: 0 auto;
 }
 
-/* ── SITES TAB — static reference map ─────────────── */
+/* ── MAP ──────────────────────────────────────────── */
 .map-container {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  margin-bottom: 40px;
 }
+
+.map-legend {
+  display: flex;
+  gap: 24px;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.dot {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dot-available { background: var(--rock2); border: 1px solid var(--amber); }
+.dot-claimed   { background: var(--terracotta); }
 
 .map-wrap { overflow-x: auto; }
 
 .map-image-container {
+  position: relative;
   width: 100%;
   min-width: 600px;
   user-select: none;
@@ -668,144 +547,57 @@ body {
   filter: sepia(0.25) brightness(0.98) contrast(1.05);
 }
 
-/* ── RESERVATIONS ─────────────────────────────────── */
-.reservations-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-  gap: 16px;
-  flex-wrap: wrap;
+.map-markers-layer {
+  position: absolute;
+  inset: 0;
 }
 
-.reservations-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.4rem;
-  color: var(--text);
-}
-
-.reservations-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 16px;
-}
-
-.res-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 20px 22px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.res-card-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 12px;
-}
-
-.res-owner {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.15rem;
-  color: var(--text);
-}
-
-.res-dates {
-  font-size: 0.78rem;
-  color: var(--muted);
-  letter-spacing: 0.03em;
-  margin-top: 2px;
-}
-
-.res-note {
-  font-size: 0.8rem;
-  color: var(--muted);
-  font-style: italic;
-}
-
-.res-delete {
-  background: none;
-  border: none;
-  color: var(--border);
-  font-size: 1rem;
+.site-marker {
+  position: absolute;
+  width: 11px; height: 11px;
+  border-radius: 50%;
+  background: var(--rock2);
+  border: 1.5px solid var(--amber);
+  transform: translate(-50%, -50%);
   cursor: pointer;
-  line-height: 1;
-  padding: 0 4px;
-  transition: color 0.2s;
-}
-
-.res-delete:hover { color: var(--red); }
-
-.res-sites {
+  transition: transform 0.15s;
   display: flex;
-  flex-direction: column;
-  gap: 6px;
-  border-top: 1px solid var(--border);
-  padding-top: 12px;
-}
-
-.res-site-row {
-  display: grid;
-  grid-template-columns: 72px 1fr;
   align-items: center;
-  gap: 10px;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 6px 12px;
-  transition: border-color 0.2s;
-}
-
-.res-site-row:focus-within {
-  border-color: var(--terracotta);
-}
-
-.res-site-num {
-  font-family: 'Playfair Display', serif;
-  font-size: 0.95rem;
-  color: var(--terracotta);
+  justify-content: center;
+  font-size: 5px;
+  color: white;
   font-weight: 700;
-}
-
-.res-site-input {
-  border: none;
-  background: transparent;
-  padding: 6px 0;
   font-family: 'Inter', sans-serif;
-  font-size: 0.88rem;
-  color: var(--text);
-  outline: none;
-  width: 100%;
+  z-index: 1;
 }
 
-.res-site-input::placeholder {
-  color: var(--muted);
-  font-style: italic;
-  opacity: 0.7;
+.site-marker:hover {
+  transform: translate(-50%, -50%) scale(2);
+  z-index: 10;
 }
 
-.res-site-empty { background: var(--surface); }
-
-.res-empty {
-  text-align: center;
-  color: var(--muted);
-  font-style: italic;
-  font-size: 0.85rem;
-  padding: 12px;
+.site-marker.claimed {
+  width: 15px; height: 15px;
+  font-size: 7px;
+  background: var(--terracotta);
+  border: 2px solid rgba(255,255,255,0.6);
+  z-index: 2;
 }
 
-/* ── CAMPERS ──────────────────────────────────────── */
-.campers-grid {
+.site-marker.claimed:hover {
+  transform: translate(-50%, -50%) scale(1.7);
+  z-index: 10;
+}
+
+/* ── ATTENDEES ────────────────────────────────────── */
+.attendees-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 16px;
   margin-bottom: 32px;
 }
 
-.camper-card {
+.attendee-card {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -814,82 +606,56 @@ body {
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.camper-card:hover {
+.attendee-card:hover {
   border-color: var(--terracotta);
   box-shadow: 0 2px 12px rgba(196,98,45,0.12);
 }
 
-.camper-head {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 10px;
-}
-
-.camper-avatar {
-  width: 44px; height: 44px;
+.attendee-avatar {
+  width: 48px; height: 48px;
   border-radius: 50%;
   background: var(--terracotta);
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: 'Playfair Display', serif;
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   color: white;
-  flex-shrink: 0;
+  margin-bottom: 12px;
 }
 
-.camper-head-text {
-  min-width: 0;
-  flex: 1;
-}
-
-.camper-name {
+.attendee-name {
   font-family: 'Playfair Display', serif;
   font-size: 1.1rem;
   color: var(--text);
-  margin-bottom: 4px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  margin-bottom: 6px;
 }
 
-.camper-meta {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 6px 8px;
-}
-
-.camper-setup-pill {
+.attendee-site {
   display: inline-block;
-  font-size: 0.68rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 2px 9px;
-  border-radius: 100px;
   background: var(--terracotta);
   color: white;
+  font-size: 0.7rem;
   font-weight: 500;
+  letter-spacing: 0.08em;
+  padding: 2px 10px;
+  border-radius: 100px;
+  margin-bottom: 8px;
 }
 
-.camper-people {
-  font-size: 0.75rem;
-  color: var(--muted);
-}
-
-.camper-dates {
-  font-size: 0.82rem;
+.attendee-dates {
+  font-size: 0.8rem;
   color: var(--muted);
   margin-bottom: 6px;
 }
 
-.camper-note {
+.attendee-note {
   font-size: 0.8rem;
   color: var(--muted);
   font-style: italic;
 }
 
-.camper-delete {
+.attendee-delete {
   position: absolute;
   top: 12px; right: 12px;
   background: none;
@@ -901,7 +667,47 @@ body {
   transition: color 0.2s;
 }
 
-.camper-delete:hover { color: var(--red); }
+.attendee-delete:hover { color: var(--red); }
+
+/* When buttons are grouped, the container holds the absolute position */
+.card-actions {
+  position: absolute;
+  top: 10px; right: 10px;
+  display: flex;
+  gap: 4px;
+  z-index: 2;
+}
+
+.card-actions .attendee-delete,
+.card-actions .card-edit {
+  position: static;
+  top: auto; right: auto;
+}
+
+.card-edit {
+  background: none;
+  border: none;
+  color: var(--border);
+  font-size: 0.95rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: color 0.2s, background 0.2s;
+}
+
+.card-edit:hover { color: var(--terracotta); background: rgba(196,98,45,0.08); }
+
+/* Reservation card actions live inside the card-header (flex row), not absolute */
+.res-card-header .card-actions {
+  position: static;
+  top: auto; right: auto;
+}
+
+/* Itinerary actions positioned inside .day-content */
+.itinerary-actions {
+  top: 10px; right: 12px;
+}
 
 /* ── GEAR ─────────────────────────────────────────── */
 .gear-categories-wrap {
@@ -1351,6 +1157,52 @@ a.trail-name:hover { color: var(--terracotta); border-bottom-color: var(--terrac
 
 .table-delete:hover { color: var(--red); }
 
+.table-edit {
+  background: none;
+  border: none;
+  color: var(--border);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: color 0.2s;
+  padding: 0 4px;
+  margin-right: 2px;
+}
+
+.table-edit:hover { color: var(--terracotta); }
+
+.row-actions {
+  white-space: nowrap;
+  text-align: right;
+}
+
+/* ── ITINERARY editing ────────────────────────────── */
+.itinerary-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.itinerary-day .day-content {
+  position: relative;
+}
+
+textarea {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  padding: 10px 14px;
+  font-size: 0.95rem;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  transition: border-color 0.2s;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+textarea:focus { border-color: var(--terracotta); }
+
 /* ── T-SHIRTS ─────────────────────────────────────── */
 .shirt-mockup-area {
   background: var(--surface);
@@ -1452,6 +1304,35 @@ a.trail-name:hover { color: var(--terracotta); border-bottom-color: var(--terrac
 
 .modal-close:hover { color: var(--text); }
 
+/* Site modal specific */
+.site-info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.9rem;
+}
+
+.site-info-row:last-child { border-bottom: none; }
+
+.site-info-label { color: var(--muted); }
+.site-info-value { color: var(--text); font-weight: 500; }
+
+.site-claimed-by {
+  background: var(--surface);
+  border: 1px solid var(--terracotta);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin: 16px 0;
+}
+
+.site-claimed-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  color: var(--terracotta);
+  margin-bottom: 4px;
+}
+
 /* ── FORMS ────────────────────────────────────────── */
 .form-group { margin-bottom: 18px; }
 
@@ -1493,13 +1374,6 @@ a.trail-name:hover { color: var(--terracotta); border-bottom-color: var(--terrac
 
 .date-range input { flex: 1; }
 .date-range span { color: var(--muted); }
-
-.form-row {
-  display: flex;
-  gap: 12px;
-}
-
-.form-row .form-group { flex: 1; }
 
 /* ── BUTTONS ──────────────────────────────────────── */
 .btn {
@@ -1579,15 +1453,12 @@ footer p {
 
   .hero-title { font-size: clamp(2.2rem, 10vw, 3.2rem); }
 
+  .stats-bar { gap: 0; padding: 16px 12px; }
+  .stat { padding: 6px 16px; }
+  .stat-divider { display: none; }
+
   .countdown { gap: 8px; }
   .countdown-num { font-size: 1.5rem; min-width: 38px; }
-
-  .gantt-section { padding: 36px 12px 48px; }
-  .gantt-label   { flex: 0 0 170px; padding: 10px 10px; gap: 8px; }
-  .gantt-name    { font-size: 0.85rem; }
-  .gantt-setup   { font-size: 0.65rem; }
-  .gantt-bar     { padding: 0 8px; }
-  .gantt-bar-text { font-size: 0.7rem; }
 
   .tab-content { padding: 32px 16px 56px; }
 
@@ -1599,14 +1470,13 @@ footer p {
   .modal { padding: 24px 20px; }
 
   .potluck-toolbar { flex-direction: column; }
-  .reservations-header { flex-direction: column; align-items: stretch; }
 
   /* Hide note column on small screens */
   .signup-table th:nth-child(4),
   .signup-table td:nth-child(4) { display: none; }
 
-  .campers-grid { grid-template-columns: 1fr; }
-  .reservations-list { grid-template-columns: 1fr; }
+  /* Wider cards on mobile */
+  .attendees-grid { grid-template-columns: 1fr 1fr; }
   .trails-grid, .info-grid { grid-template-columns: 1fr; }
 }
 
@@ -1615,3 +1485,379 @@ footer p {
 ::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--rock); }
+
+/* ── GANTT TIMELINE (Welcome tab) ─────────────────── */
+.gantt-section {
+  padding: 56px 24px 72px;
+  border-top: 1px solid var(--border);
+}
+
+.gantt-section-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.gantt-section-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.gantt-section-header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.gantt-section-header p {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.gantt-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  -webkit-overflow-scrolling: touch;
+}
+
+.gantt-table {
+  min-width: 560px;
+}
+
+.gantt-header-row {
+  display: flex;
+  background: var(--surface2);
+  border-bottom: 2px solid var(--border);
+}
+
+.gantt-row {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  min-height: 56px;
+}
+
+.gantt-row:last-child { border-bottom: none; }
+
+.gantt-label-col {
+  width: 220px;
+  min-width: 220px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-right: 2px solid var(--border);
+  flex-shrink: 0;
+}
+
+.gantt-col-header {
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  align-items: flex-end;
+  padding-bottom: 10px;
+}
+
+.gantt-days-header {
+  flex: 1;
+  display: flex;
+}
+
+.gantt-header-day {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 4px;
+  border-right: 1px solid var(--border);
+}
+
+.gantt-header-day:last-child { border-right: none; }
+
+.gantt-dow {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--terracotta);
+  line-height: 1;
+}
+
+.gantt-date {
+  font-size: 0.72rem;
+  color: var(--text);
+  margin-top: 3px;
+  white-space: nowrap;
+}
+
+.gantt-days-area {
+  flex: 1;
+  position: relative;
+  display: flex;
+}
+
+.gantt-cell {
+  flex: 1;
+  border-right: 1px solid var(--border);
+  opacity: 0.5;
+}
+
+.gantt-cell:last-child { border-right: none; }
+
+.gantt-bar {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 26px;
+  border-radius: 100px;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  z-index: 2;
+  opacity: 0.88;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+}
+
+.gantt-bar-label {
+  font-size: 0.65rem;
+  color: white;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gantt-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 0.9rem;
+  color: white;
+  flex-shrink: 0;
+}
+
+.gantt-name-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.gantt-camper-name {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text);
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.25;
+}
+
+.gantt-setup-type {
+  font-size: 0.62rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 1px;
+}
+
+/* ── CAMPER CARD ADDITIONS ────────────────────────── */
+.camper-setup-badge {
+  display: inline-block;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  padding: 2px 10px;
+  border-radius: 100px;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.camper-people {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+/* ── SITES TAB ────────────────────────────────────── */
+.sites-map-reference {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.sites-map-reference .map-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.sites-map-reference .map-base-img {
+  width: 100%;
+  min-width: 500px;
+  height: auto;
+  display: block;
+  filter: sepia(0.2) brightness(0.98) contrast(1.04);
+}
+
+.reservations-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.reservations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.reservation-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px 22px;
+  position: relative;
+  transition: border-color 0.2s;
+}
+
+.reservation-card:hover {
+  border-color: var(--amber);
+}
+
+.res-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.res-card-title {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.res-owner {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  color: var(--text);
+}
+
+.res-dates {
+  font-size: 0.78rem;
+  color: var(--terracotta);
+  letter-spacing: 0.03em;
+}
+
+.res-note {
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-style: italic;
+  margin-bottom: 12px;
+}
+
+.res-sites-list {
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.res-site-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.res-site-row:last-child { border-bottom: none; }
+
+.res-site-num {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--muted);
+  min-width: 50px;
+  flex-shrink: 0;
+}
+
+.res-site-user {
+  flex: 1;
+  font-size: 0.88rem;
+  color: var(--text);
+}
+
+.res-site-open {
+  color: var(--muted);
+  font-style: italic;
+}
+
+.res-site-edit-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  padding: 3px 10px;
+  border-radius: 100px;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: border-color 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+
+.res-site-edit-btn:hover {
+  border-color: var(--terracotta);
+  color: var(--terracotta);
+}
+
+.res-site-input {
+  flex: 1;
+  background: var(--bg);
+  border: 1px solid var(--terracotta);
+  border-radius: var(--radius);
+  color: var(--text);
+  padding: 4px 8px;
+  font-size: 0.88rem;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  width: 100%;
+}
+
+/* ── FORM ADDITIONS ───────────────────────────────── */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.form-hint {
+  font-size: 0.73rem;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+/* ── RESPONSIVE ADDITIONS ─────────────────────────── */
+@media (max-width: 768px) {
+  .gantt-section { padding: 40px 16px 56px; }
+  .gantt-label-col { width: 160px; min-width: 160px; padding: 8px 10px; gap: 7px; }
+  .gantt-avatar { width: 24px; height: 24px; font-size: 0.75rem; }
+  .gantt-camper-name { font-size: 0.78rem; }
+  .gantt-setup-type { display: none; }
+  .gantt-bar { height: 20px; padding: 0 7px; }
+  .gantt-bar-label { font-size: 0.58rem; }
+  .gantt-date { font-size: 0.65rem; }
+  .reservations-grid { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr 1fr; }
+}
