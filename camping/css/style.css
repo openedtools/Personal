@@ -2299,3 +2299,15 @@ footer p {
 @media (max-width: 560px) {
   .weather-grid { grid-template-columns: repeat(3, 1fr); }
 }
+
+/* ── Campers tab: mirrored timeline wrapper ──────── */
+.campers-timeline-wrap { margin: 0 0 28px; }
+
+.campers-timeline-heading {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  color: var(--text);
+  margin-bottom: 10px;
+  text-align: center;
+  letter-spacing: 0.02em;
+}
