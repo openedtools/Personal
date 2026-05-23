@@ -292,7 +292,7 @@ function renderWeather() {
       const obj = JSON.parse(raw);
       if (obj && obj.ts && Date.now() - obj.ts < WEATHER_CACHE_TTL) cached = obj.data;
     }
-  } catch {}
+  } catch (e) {}
 
   if (cached) {
     paintWeather(cached);
@@ -310,7 +310,7 @@ function fetchWeather() {
         paintFallback();
         return;
       }
-      try { localStorage.setItem(WEATHER_CACHE_KEY, JSON.stringify({ ts: Date.now(), data })); } catch {}
+      try { localStorage.setItem(WEATHER_CACHE_KEY, JSON.stringify({ ts: Date.now(), data })); } catch (e) {}
       paintWeather(data);
     })
     .catch(() => paintFallback());
@@ -526,32 +526,32 @@ function deleteCamper(camperId) {
 function openCamperModal(camperId) {
   const c = camperId ? state.campers.find(x => x.id === camperId) : null;
   editing.camper = c ? c.id : null;
-  document.getElementById('camperModalTitle').textContent = c ? 'Edit Camper' : 'Add Camper';
-  document.getElementById('saveCamperBtn').textContent    = c ? 'Save Changes' : 'Add to Trip';
-  document.getElementById('camperName').value      = c ? (c.name || '')        : '';
-  document.getElementById('camperAdults').value    = c ? String(c.adults || 1) : '1';
-  document.getElementById('camperKids').value      = c ? String(c.kids   || 0) : '0';
-  document.getElementById('camperSetup').value     = c ? (c.setup || 'Tent')   : 'Tent';
-  document.getElementById('camperRsvp').value      = c ? (c.rsvp  || 'Confirmed') : 'Confirmed';
-  document.getElementById('camperArrival').value   = c ? (c.arrival   || '2026-11-25') : '2026-11-25';
-  document.getElementById('camperDeparture').value = c ? (c.departure || '2026-11-28') : '2026-11-28';
-  document.getElementById('camperEmergency').value = c ? (c.emergency || '')   : '';
-  document.getElementById('camperNote').value      = c ? (c.note || '')        : '';
+  setText('camperModalTitle', c ? 'Edit Camper' : 'Add Camper');
+  setText('saveCamperBtn',    c ? 'Save Changes' : 'Add to Trip');
+  setField('camperName',      c ? c.name      : '');
+  setField('camperAdults',    c ? String(c.adults || 1) : '1');
+  setField('camperKids',      c ? String(c.kids   || 0) : '0');
+  setField('camperSetup',     c ? (c.setup || 'Tent')   : 'Tent');
+  setField('camperRsvp',      c ? (c.rsvp  || 'Confirmed') : 'Confirmed');
+  setField('camperArrival',   c ? (c.arrival   || '2026-11-25') : '2026-11-25');
+  setField('camperDeparture', c ? (c.departure || '2026-11-28') : '2026-11-28');
+  setField('camperEmergency', c ? c.emergency : '');
+  setField('camperNote',      c ? c.note      : '');
   openModal('camperModal');
 }
 
 function saveCamper() {
-  const name      = document.getElementById('camperName').value.trim();
-  const adults    = parseInt(document.getElementById('camperAdults').value) || 1;
-  const kids      = parseInt(document.getElementById('camperKids').value)   || 0;
-  const setup     = document.getElementById('camperSetup').value;
-  const rsvp      = document.getElementById('camperRsvp').value || 'Confirmed';
-  const arrival   = document.getElementById('camperArrival').value;
-  const departure = document.getElementById('camperDeparture').value;
-  const emergency = document.getElementById('camperEmergency').value.trim();
-  const note      = document.getElementById('camperNote').value.trim();
+  const name      = getField('camperName').trim();
+  const adults    = parseInt(getField('camperAdults', '1')) || 1;
+  const kids      = parseInt(getField('camperKids',   '0')) || 0;
+  const setup     = getField('camperSetup', 'Tent');
+  const rsvp      = getField('camperRsvp',  'Confirmed') || 'Confirmed';
+  const arrival   = getField('camperArrival',   '2026-11-25');
+  const departure = getField('camperDeparture', '2026-11-28');
+  const emergency = getField('camperEmergency').trim();
+  const note      = getField('camperNote').trim();
 
-  if (!name) { document.getElementById('camperName').focus(); return; }
+  if (!name) { const el = document.getElementById('camperName'); if (el) el.focus(); return; }
 
   const record = { name, adults, kids, setup, rsvp, arrival, departure, emergency, note };
 
@@ -645,13 +645,13 @@ function deleteReservation(resId) {
 function openReservationModal(resId) {
   const r = resId ? state.siteReservations.find(x => x.id === resId) : null;
   editing.reservation = r ? r.id : null;
-  document.getElementById('reservationModalTitle').textContent = r ? 'Edit Reservation' : 'Add Reservation';
-  document.getElementById('saveReservationBtn').textContent    = r ? 'Save Changes'     : 'Save Reservation';
-  document.getElementById('resOwner').value     = r ? (r.reservedBy || '') : '';
-  document.getElementById('resSiteNums').value  = r ? (r.sites || []).map(s => s.siteNum).join(', ') : '';
-  document.getElementById('resArrival').value   = r ? (r.arrival   || '2026-11-25') : '2026-11-25';
-  document.getElementById('resDeparture').value = r ? (r.departure || '2026-11-28') : '2026-11-28';
-  document.getElementById('resNote').value      = r ? (r.note || '') : '';
+  setText('reservationModalTitle', r ? 'Edit Reservation' : 'Add Reservation');
+  setText('saveReservationBtn',    r ? 'Save Changes'     : 'Save Reservation');
+  setField('resOwner',     r ? r.reservedBy : '');
+  setField('resSiteNums',  r ? (r.sites || []).map(s => s.siteNum).join(', ') : '');
+  setField('resArrival',   r ? (r.arrival   || '2026-11-25') : '2026-11-25');
+  setField('resDeparture', r ? (r.departure || '2026-11-28') : '2026-11-28');
+  setField('resNote',      r ? r.note : '');
   openModal('reservationModal');
 }
 
@@ -751,24 +751,24 @@ function renderItinerary() {
 function openItineraryModal(dayId) {
   const d = dayId ? state.itinerary.find(x => x.id === dayId) : null;
   editing.itinerary = d ? d.id : null;
-  document.getElementById('itineraryModalTitle').textContent = d ? 'Edit Day' : 'Add Day';
-  document.getElementById('saveItineraryBtn').textContent    = d ? 'Save Changes' : 'Add Day';
-  document.getElementById('itDay').value        = d ? (d.day || '')   : '';
-  document.getElementById('itDate').value       = d ? (d.date || '')  : '';
-  document.getElementById('itTitle').value      = d ? (d.title || '') : '';
-  document.getElementById('itActivities').value = d && Array.isArray(d.activities) ? d.activities.join('\n') : '';
+  setText('itineraryModalTitle', d ? 'Edit Day' : 'Add Day');
+  setText('saveItineraryBtn',    d ? 'Save Changes' : 'Add Day');
+  setField('itDay',        d ? d.day   : '');
+  setField('itDate',       d ? d.date  : '');
+  setField('itTitle',      d ? d.title : '');
+  setField('itActivities', d && Array.isArray(d.activities) ? d.activities.join('\n') : '');
   openModal('itineraryModal');
 }
 
 function saveItinerary() {
-  const day        = document.getElementById('itDay').value.trim();
-  const date       = document.getElementById('itDate').value.trim();
-  const title      = document.getElementById('itTitle').value.trim();
-  const activities = document.getElementById('itActivities').value
+  const day        = getField('itDay').trim();
+  const date       = getField('itDate').trim();
+  const title      = getField('itTitle').trim();
+  const activities = getField('itActivities')
     .split('\n').map(s => s.trim()).filter(Boolean);
 
   if (!date && !title && activities.length === 0 && !day) {
-    document.getElementById('itDate').focus();
+    const el = document.getElementById('itDate'); if (el) el.focus();
     return;
   }
 
@@ -873,22 +873,22 @@ function deletePotluck(id) {
 function openPotluckModal(id) {
   const p = id ? state.potluck.find(x => x.id === id) : null;
   editing.potluck = p ? p.id : null;
-  document.getElementById('potluckModalTitle').textContent = p ? 'Edit Potluck Entry' : 'Sign Up for Potluck';
-  document.getElementById('savePotluckBtn').textContent    = p ? 'Save Changes'       : 'Add to Potluck';
-  document.getElementById('potluckName').value     = p ? (p.name || '') : '';
-  document.getElementById('potluckDish').value     = p ? (p.dish || '') : '';
-  document.getElementById('potluckCategory').value = p ? (p.category || 'main') : 'main';
-  document.getElementById('potluckNote').value     = p ? (p.note || '') : '';
+  setText('potluckModalTitle', p ? 'Edit Potluck Entry' : 'Sign Up for Potluck');
+  setText('savePotluckBtn',    p ? 'Save Changes'       : 'Add to Potluck');
+  setField('potluckName',     p ? p.name : '');
+  setField('potluckDish',     p ? p.dish : '');
+  setField('potluckCategory', p ? (p.category || 'main') : 'main');
+  setField('potluckNote',     p ? p.note : '');
   openModal('potluckModal');
 }
 
 function savePotluck() {
-  const name     = document.getElementById('potluckName').value.trim();
-  const dish     = document.getElementById('potluckDish').value.trim();
-  const category = document.getElementById('potluckCategory').value;
-  const note     = document.getElementById('potluckNote').value.trim();
-  if (!name) { document.getElementById('potluckName').focus(); return; }
-  if (!dish) { document.getElementById('potluckDish').focus(); return; }
+  const name     = getField('potluckName').trim();
+  const dish     = getField('potluckDish').trim();
+  const category = getField('potluckCategory', 'main');
+  const note     = getField('potluckNote').trim();
+  if (!name) { const el = document.getElementById('potluckName'); if (el) el.focus(); return; }
+  if (!dish) { const el = document.getElementById('potluckDish'); if (el) el.focus(); return; }
 
   if (editing.potluck) {
     const idx = state.potluck.findIndex(p => p.id === editing.potluck);
@@ -943,21 +943,21 @@ function deleteTshirt(id) {
 function openTshirtModal(id) {
   const t = id ? state.tshirts.find(x => x.id === id) : null;
   editing.tshirt = t ? t.id : null;
-  document.getElementById('tshirtModalTitle').textContent = t ? 'Edit T-Shirt Order' : 'Add T-Shirt Order';
-  document.getElementById('saveTshirtBtn').textContent    = t ? 'Save Changes'       : 'Add Order';
-  document.getElementById('tshirtName').value = t ? (t.name || '') : '';
-  document.getElementById('tshirtSize').value = t ? (t.size || 'M') : 'M';
-  document.getElementById('tshirtQty').value  = t ? String(t.qty || 1) : '1';
-  document.getElementById('tshirtNote').value = t ? (t.note || '') : '';
+  setText('tshirtModalTitle', t ? 'Edit T-Shirt Order' : 'Add T-Shirt Order');
+  setText('saveTshirtBtn',    t ? 'Save Changes'       : 'Add Order');
+  setField('tshirtName', t ? t.name : '');
+  setField('tshirtSize', t ? (t.size || 'M')  : 'M');
+  setField('tshirtQty',  t ? String(t.qty || 1) : '1');
+  setField('tshirtNote', t ? t.note : '');
   openModal('tshirtModal');
 }
 
 function saveTshirt() {
-  const name = document.getElementById('tshirtName').value.trim();
-  const size = document.getElementById('tshirtSize').value;
-  const qty  = document.getElementById('tshirtQty').value;
-  const note = document.getElementById('tshirtNote').value.trim();
-  if (!name) { document.getElementById('tshirtName').focus(); return; }
+  const name = getField('tshirtName').trim();
+  const size = getField('tshirtSize', 'M');
+  const qty  = getField('tshirtQty', '1');
+  const note = getField('tshirtNote').trim();
+  if (!name) { const el = document.getElementById('tshirtName'); if (el) el.focus(); return; }
 
   if (editing.tshirt) {
     const idx = state.tshirts.findIndex(t => t.id === editing.tshirt);
@@ -970,8 +970,14 @@ function saveTshirt() {
 }
 
 // ── Modal helpers ────────────────────────────────────────────
-function openModal(id)  { document.getElementById(id).classList.add('open'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function openModal(id)  { const el = document.getElementById(id); if (el) el.classList.add('open'); }
+function closeModal(id) { const el = document.getElementById(id); if (el) el.classList.remove('open'); }
+
+// Defensive setters so a slightly-stale cached HTML can't break new
+// JS by throwing on a missing element. (No-op if id isn't in DOM.)
+function setField(id, val) { const el = document.getElementById(id); if (el) el.value = val == null ? '' : val; }
+function getField(id, def) { const el = document.getElementById(id); return el ? el.value : (def == null ? '' : def); }
+function setText (id, txt) { const el = document.getElementById(id); if (el) el.textContent = txt; }
 
 // ── Utility ──────────────────────────────────────────────────
 function esc(str) {
@@ -1007,76 +1013,68 @@ document.addEventListener('DOMContentLoaded', () => {
   initTabs();
   initMobileMenu();
 
+  // Safely attach a listener — no-op if the element doesn't exist
+  // in a slightly-stale cached HTML. Prevents one missing button
+  // from aborting all subsequent wiring.
+  const on = (id, ev, fn) => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener(ev, fn);
+  };
+
   // Password gate
   const pwOverlay = document.getElementById('pwOverlay');
   if (isAuthenticated()) {
-    pwOverlay.classList.add('hidden');
+    if (pwOverlay) pwOverlay.classList.add('hidden');
     initFirestore();
   } else {
-    document.getElementById('pwSubmit').addEventListener('click', submitPassword);
-    document.getElementById('pwInput').addEventListener('keydown', e => {
-      if (e.key === 'Enter') submitPassword();
-    });
+    on('pwSubmit', 'click', submitPassword);
+    on('pwInput',  'keydown', e => { if (e.key === 'Enter') submitPassword(); });
   }
 
   // ── Camper modal wiring ──
-  document.getElementById('addCamperBtn').addEventListener('click', () => openCamperModal(null));
-  document.getElementById('camperModalClose').addEventListener('click', () => closeModal('camperModal'));
+  on('addCamperBtn',     'click', () => openCamperModal(null));
+  on('camperModalClose', 'click', () => closeModal('camperModal'));
+  on('camperModal',      'click', e => { if (e.target.id === 'camperModal') closeModal('camperModal'); });
+  on('saveCamperBtn',    'click', saveCamper);
 
   // RSVP filter pills
-  const filter = document.getElementById('rsvpFilter');
-  if (filter) {
-    filter.addEventListener('click', e => {
-      const btn = e.target.closest('.rsvp-pill');
-      if (!btn) return;
-      state.activeRsvp = btn.dataset.rsvp;
-      renderCampers();
-    });
-  }
-
-  document.getElementById('camperModal').addEventListener('click', e => { if (e.target.id === 'camperModal') closeModal('camperModal'); });
-  document.getElementById('saveCamperBtn').addEventListener('click', saveCamper);
+  on('rsvpFilter', 'click', e => {
+    const btn = e.target.closest('.rsvp-pill');
+    if (!btn) return;
+    state.activeRsvp = btn.dataset.rsvp;
+    renderCampers();
+  });
 
   // ── Reservation modal wiring ──
-  document.getElementById('addReservationBtn').addEventListener('click', () => openReservationModal(null));
-  document.getElementById('reservationModalClose').addEventListener('click', () => closeModal('reservationModal'));
-  document.getElementById('reservationModal').addEventListener('click', e => { if (e.target.id === 'reservationModal') closeModal('reservationModal'); });
-  document.getElementById('saveReservationBtn').addEventListener('click', saveReservation);
+  on('addReservationBtn',     'click', () => openReservationModal(null));
+  on('reservationModalClose', 'click', () => closeModal('reservationModal'));
+  on('reservationModal',      'click', e => { if (e.target.id === 'reservationModal') closeModal('reservationModal'); });
+  on('saveReservationBtn',    'click', saveReservation);
 
   // ── Itinerary modal wiring ──
-  const addItBtn = document.getElementById('addItineraryBtn');
-  if (addItBtn) addItBtn.addEventListener('click', () => openItineraryModal(null));
-  const itClose = document.getElementById('itineraryModalClose');
-  if (itClose) itClose.addEventListener('click', () => closeModal('itineraryModal'));
-  const itModal = document.getElementById('itineraryModal');
-  if (itModal) itModal.addEventListener('click', e => { if (e.target.id === 'itineraryModal') closeModal('itineraryModal'); });
-  const saveItBtn = document.getElementById('saveItineraryBtn');
-  if (saveItBtn) saveItBtn.addEventListener('click', saveItinerary);
+  on('addItineraryBtn',     'click', () => openItineraryModal(null));
+  on('itineraryModalClose', 'click', () => closeModal('itineraryModal'));
+  on('itineraryModal',      'click', e => { if (e.target.id === 'itineraryModal') closeModal('itineraryModal'); });
+  on('saveItineraryBtn',    'click', saveItinerary);
 
   // ── Potluck modal wiring ──
-  document.getElementById('addPotluckBtn').addEventListener('click', () => openPotluckModal(null));
-  document.getElementById('potluckModalClose').addEventListener('click', () => closeModal('potluckModal'));
-  document.getElementById('potluckModal').addEventListener('click', e => { if (e.target.id === 'potluckModal') closeModal('potluckModal'); });
-  document.getElementById('savePotluckBtn').addEventListener('click', savePotluck);
+  on('addPotluckBtn',     'click', () => openPotluckModal(null));
+  on('potluckModalClose', 'click', () => closeModal('potluckModal'));
+  on('potluckModal',      'click', e => { if (e.target.id === 'potluckModal') closeModal('potluckModal'); });
+  on('savePotluckBtn',    'click', savePotluck);
 
   // ── T-shirt modal wiring ──
-  document.getElementById('addTshirtBtn').addEventListener('click', () => openTshirtModal(null));
-  document.getElementById('tshirtModalClose').addEventListener('click', () => closeModal('tshirtModal'));
-  document.getElementById('tshirtModal').addEventListener('click', e => { if (e.target.id === 'tshirtModal') closeModal('tshirtModal'); });
-  document.getElementById('saveTshirtBtn').addEventListener('click', saveTshirt);
+  on('addTshirtBtn',     'click', () => openTshirtModal(null));
+  on('tshirtModalClose', 'click', () => closeModal('tshirtModal'));
+  on('tshirtModal',      'click', e => { if (e.target.id === 'tshirtModal') closeModal('tshirtModal'); });
+  on('saveTshirtBtn',    'click', saveTshirt);
 
   // ── Map lightbox wiring ──
-  const expandBtn   = document.getElementById('mapExpandBtn');
-  const lightbox    = document.getElementById('mapLightbox');
-  const lightboxImg = document.getElementById('mapImg');
-  const lightboxX   = document.getElementById('lightboxClose');
-  if (expandBtn)   expandBtn.addEventListener('click', () => openModal('mapLightbox'));
-  if (lightboxImg) lightboxImg.addEventListener('click', () => openModal('mapLightbox'));
-  if (lightboxX)   lightboxX.addEventListener('click', () => closeModal('mapLightbox'));
-  if (lightbox)    lightbox.addEventListener('click', e => {
-    // Click outside the image closes; clicking the image itself
-    // can also close (zoom-out cursor hint).
-    if (e.target === lightbox || e.target.tagName === 'IMG') closeModal('mapLightbox');
+  on('mapExpandBtn',  'click', () => openModal('mapLightbox'));
+  on('mapImg',        'click', () => openModal('mapLightbox'));
+  on('lightboxClose', 'click', () => closeModal('mapLightbox'));
+  on('mapLightbox',   'click', e => {
+    if (e.target.id === 'mapLightbox' || e.target.tagName === 'IMG') closeModal('mapLightbox');
   });
 
   // ── Keyboard close ──
