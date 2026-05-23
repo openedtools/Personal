@@ -423,31 +423,46 @@ function renderItinerary() {
 function renderTrails() {
   const grid = document.getElementById('trailsGrid');
   if (!grid) return;
-  grid.innerHTML = TRAILS.map(t => `
-    <div class="trail-card">
-      <span class="trail-difficulty difficulty-${t.difficulty}">${t.difficulty}</span>
-      <div class="trail-name">${esc(t.name)}</div>
-      <div class="trail-stats">
-        <span class="trail-stat"><span>Distance</span>${esc(t.distance)}</span>
-        <span class="trail-stat"><span>Time</span>${esc(t.time)}</span>
-        <span class="trail-stat"><span>Gain</span>${esc(t.elevation)}</span>
-      </div>
-      <div class="trail-desc">${esc(t.desc)}</div>
-    </div>`).join('');
+  grid.innerHTML = TRAILS.map(t => {
+    const nameHtml = t.url
+      ? `<a class="trail-name" href="${esc(t.url)}" target="_blank" rel="noopener">${esc(t.name)} <span class="ext-arrow">↗</span></a>`
+      : `<div class="trail-name">${esc(t.name)}</div>`;
+    const linkRow = [];
+    if (t.url)    linkRow.push(`<a class="trail-link" href="${esc(t.url)}"    target="_blank" rel="noopener">NPS ↗</a>`);
+    if (t.altUrl) linkRow.push(`<a class="trail-link" href="${esc(t.altUrl)}" target="_blank" rel="noopener">AllTrails ↗</a>`);
+    return `
+      <div class="trail-card">
+        <span class="trail-difficulty difficulty-${t.difficulty}">${t.difficulty}</span>
+        ${nameHtml}
+        <div class="trail-stats">
+          <span class="trail-stat"><span>Distance</span>${esc(t.distance)}</span>
+          <span class="trail-stat"><span>Time</span>${esc(t.time)}</span>
+          <span class="trail-stat"><span>Gain</span>${esc(t.elevation)}</span>
+        </div>
+        <div class="trail-desc">${esc(t.desc)}</div>
+        ${linkRow.length ? `<div class="trail-links">${linkRow.join('')}</div>` : ''}
+      </div>`;
+  }).join('');
 }
 
 // ── Info cards ───────────────────────────────────────────────
 function renderInfo() {
   const grid = document.getElementById('infoGrid');
   if (!grid) return;
-  grid.innerHTML = INFO_CARDS.map(card => `
-    <div class="info-card">
-      <span class="info-icon">${card.icon}</span>
-      <div class="info-title">${esc(card.title)}</div>
-      <ul class="info-items">
-        ${card.items.map(item => `<li>${esc(item)}</li>`).join('')}
-      </ul>
-    </div>`).join('');
+  grid.innerHTML = INFO_CARDS.map(card => {
+    const links = (card.links || []).map(l =>
+      `<a class="info-link" href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)} <span class="ext-arrow">↗</span></a>`
+    ).join('');
+    return `
+      <div class="info-card">
+        <span class="info-icon">${card.icon}</span>
+        <div class="info-title">${esc(card.title)}</div>
+        <ul class="info-items">
+          ${card.items.map(item => `<li>${esc(item)}</li>`).join('')}
+        </ul>
+        ${links ? `<div class="info-links">${links}</div>` : ''}
+      </div>`;
+  }).join('');
 }
 
 // ── Potluck ───────────────────────────────────────────────────

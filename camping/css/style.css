@@ -880,10 +880,78 @@ body {
 .difficulty-hard     { background: #f8d8c8; color: #7a2010; border: 1px solid #d89878; }
 
 .trail-name {
+  display: inline-block;
   font-family: 'Playfair Display', serif;
   font-size: 1.2rem;
   color: var(--text);
   margin-bottom: 8px;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color 0.18s, border-color 0.18s;
+}
+
+a.trail-name { color: var(--text); cursor: pointer; }
+a.trail-name:hover { color: var(--terracotta); border-bottom-color: var(--terracotta); }
+
+.trail-links {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.trail-link, .info-link {
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  color: var(--terracotta);
+  text-decoration: none;
+  border-bottom: 1px dashed transparent;
+  transition: border-color 0.18s, color 0.18s;
+}
+
+.trail-link:hover, .info-link:hover {
+  border-bottom-color: var(--terracotta);
+  color: var(--amber);
+}
+
+.info-links {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.ext-arrow {
+  display: inline-block;
+  font-size: 0.7em;
+  opacity: 0.7;
+  transform: translateY(-1px);
+}
+
+.section-links {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.ext-link {
+  font-size: 0.85rem;
+  color: var(--terracotta);
+  text-decoration: none;
+  border-bottom: 1px dashed var(--border);
+  padding-bottom: 2px;
+  transition: border-color 0.18s, color 0.18s;
+}
+
+.ext-link:hover {
+  border-bottom-color: var(--terracotta);
+  color: var(--amber);
 }
 
 .trail-stats {
@@ -1387,8 +1455,8 @@ footer p {
 .gantt-row:last-child { border-bottom: none; }
 
 .gantt-label-col {
-  width: 160px;
-  min-width: 160px;
+  width: 220px;
+  min-width: 220px;
   padding: 10px 14px;
   display: flex;
   align-items: center;
@@ -1499,9 +1567,9 @@ footer p {
   font-size: 0.85rem;
   font-weight: 500;
   color: var(--text);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.25;
 }
 
 .gantt-setup-type {
@@ -1697,7 +1765,7 @@ footer p {
 /* ── RESPONSIVE ADDITIONS ─────────────────────────── */
 @media (max-width: 768px) {
   .gantt-section { padding: 40px 16px 56px; }
-  .gantt-label-col { width: 120px; min-width: 120px; padding: 8px 10px; gap: 7px; }
+  .gantt-label-col { width: 160px; min-width: 160px; padding: 8px 10px; gap: 7px; }
   .gantt-avatar { width: 24px; height: 24px; font-size: 0.75rem; }
   .gantt-camper-name { font-size: 0.78rem; }
   .gantt-setup-type { display: none; }
