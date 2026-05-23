@@ -98,13 +98,34 @@ const editing = {
 // touch. This protects legacy data and any keys added by a newer
 // client version from being wiped by an older tab.
 function syncToFirestore() {
-  return TRIP_DOC.set({
+  const payload = {
     campers:          state.campers,
     siteReservations: state.siteReservations,
     potluck:          state.potluck,
     tshirts:          state.tshirts,
     itinerary:        state.itinerary,
-  }, { merge: true });
+  };
+  postBackup(payload); // fire-and-forget mirror to Google Sheets
+  return TRIP_DOC.set(payload, { merge: true });
+}
+
+// Mirror writes to a Google Sheets backup (Apps Script Web App).
+// Best-effort: failures never block the real Firestore write.
+// Uses no-cors so we don't need a CORS preflight on the script.
+function postBackup(payload) {
+  if (typeof BACKUP_WEBHOOK_URL !== 'string' || !BACKUP_WEBHOOK_URL) return;
+  try {
+    fetch(BACKUP_WEBHOOK_URL, {
+      method:    'POST',
+      mode:      'no-cors',
+      keepalive: true,
+      body: JSON.stringify({
+        secret:  BACKUP_SECRET,
+        ts:      new Date().toISOString(),
+        payload,
+      }),
+    }).catch(() => {});
+  } catch (e) { /* ignore */ }
 }
 
 // One-time migration of pre-redesign data (attendees / siteClaims)
