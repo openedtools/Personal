@@ -147,7 +147,7 @@ function renderAll() {
 
 // ── Countdown ────────────────────────────────────────────────
 function renderCountdown() {
-  const target = new Date('2026-11-25T12:00:00');
+  const target = new Date('2026-11-22T12:00:00');
   const diff   = target - new Date();
   const el     = document.getElementById('countdown');
   if (!el) return;
@@ -172,14 +172,15 @@ function renderCountdown() {
 }
 
 // ── Arrival Timeline (Gantt) ──────────────────────────────────
-const TRIP_START = new Date('2026-11-25T00:00:00');
+const TRIP_START = new Date('2026-11-22T00:00:00');
 const GANTT_DAYS = [
+  { dow: 'Sun', date: 'Nov 22' },
+  { dow: 'Mon', date: 'Nov 23' },
+  { dow: 'Tue', date: 'Nov 24' },
   { dow: 'Wed', date: 'Nov 25' },
   { dow: 'Thu', date: 'Nov 26' },
   { dow: 'Fri', date: 'Nov 27' },
   { dow: 'Sat', date: 'Nov 28' },
-  { dow: 'Sun', date: 'Nov 29' },
-  { dow: 'Mon', date: 'Nov 30' },
 ];
 
 function dayIndex(isoDate) {
@@ -398,6 +399,10 @@ function renderGearList() {
 function renderItinerary() {
   const el = document.getElementById('itineraryTimeline');
   if (!el) return;
+  if (ITINERARY.length === 0) {
+    el.innerHTML = `<div class="itinerary-tbd">TBD — itinerary coming together. Check back closer to the trip.</div>`;
+    return;
+  }
   el.innerHTML = ITINERARY.map(day => `
     <div class="itinerary-day">
       <div class="day-marker">
@@ -567,7 +572,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('camperAdults').value    = '1';
     document.getElementById('camperKids').value      = '0';
     document.getElementById('camperArrival').value   = '2026-11-25';
-    document.getElementById('camperDeparture').value = '2026-11-30';
+    document.getElementById('camperDeparture').value = '2026-11-28';
     document.getElementById('camperNote').value      = '';
     openModal('camperModal');
   });
@@ -598,7 +603,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('resOwner').value     = '';
     document.getElementById('resSiteNums').value  = '';
     document.getElementById('resArrival').value   = '2026-11-25';
-    document.getElementById('resDeparture').value = '2026-11-30';
+    document.getElementById('resDeparture').value = '2026-11-28';
     document.getElementById('resNote').value      = '';
     openModal('reservationModal');
   });
