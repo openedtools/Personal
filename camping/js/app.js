@@ -8,7 +8,7 @@
 // ============================================================
 
 // ── Password gate ────────────────────────────────────────────
-const TRIP_PASS = 'ieatturkeyinthedesert';
+const TRIP_PASS = '2026';
 
 function isAuthenticated() {
   return sessionStorage.getItem('dt2026_auth') === '1';
