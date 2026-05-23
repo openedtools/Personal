@@ -1317,3 +1317,379 @@ footer p {
 ::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--rock); }
+
+/* ── GANTT TIMELINE (Welcome tab) ─────────────────── */
+.gantt-section {
+  padding: 56px 24px 72px;
+  border-top: 1px solid var(--border);
+}
+
+.gantt-section-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.gantt-section-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.gantt-section-header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.gantt-section-header p {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.gantt-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  -webkit-overflow-scrolling: touch;
+}
+
+.gantt-table {
+  min-width: 560px;
+}
+
+.gantt-header-row {
+  display: flex;
+  background: var(--surface2);
+  border-bottom: 2px solid var(--border);
+}
+
+.gantt-row {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  min-height: 56px;
+}
+
+.gantt-row:last-child { border-bottom: none; }
+
+.gantt-label-col {
+  width: 160px;
+  min-width: 160px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-right: 2px solid var(--border);
+  flex-shrink: 0;
+}
+
+.gantt-col-header {
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  align-items: flex-end;
+  padding-bottom: 10px;
+}
+
+.gantt-days-header {
+  flex: 1;
+  display: flex;
+}
+
+.gantt-header-day {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 4px;
+  border-right: 1px solid var(--border);
+}
+
+.gantt-header-day:last-child { border-right: none; }
+
+.gantt-dow {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--terracotta);
+  line-height: 1;
+}
+
+.gantt-date {
+  font-size: 0.72rem;
+  color: var(--text);
+  margin-top: 3px;
+  white-space: nowrap;
+}
+
+.gantt-days-area {
+  flex: 1;
+  position: relative;
+  display: flex;
+}
+
+.gantt-cell {
+  flex: 1;
+  border-right: 1px solid var(--border);
+  opacity: 0.5;
+}
+
+.gantt-cell:last-child { border-right: none; }
+
+.gantt-bar {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 26px;
+  border-radius: 100px;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  z-index: 2;
+  opacity: 0.88;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+}
+
+.gantt-bar-label {
+  font-size: 0.65rem;
+  color: white;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gantt-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 0.9rem;
+  color: white;
+  flex-shrink: 0;
+}
+
+.gantt-name-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.gantt-camper-name {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gantt-setup-type {
+  font-size: 0.62rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 1px;
+}
+
+/* ── CAMPER CARD ADDITIONS ────────────────────────── */
+.camper-setup-badge {
+  display: inline-block;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  padding: 2px 10px;
+  border-radius: 100px;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.camper-people {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+/* ── SITES TAB ────────────────────────────────────── */
+.sites-map-reference {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.sites-map-reference .map-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.sites-map-reference .map-base-img {
+  width: 100%;
+  min-width: 500px;
+  height: auto;
+  display: block;
+  filter: sepia(0.2) brightness(0.98) contrast(1.04);
+}
+
+.reservations-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.reservations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.reservation-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px 22px;
+  position: relative;
+  transition: border-color 0.2s;
+}
+
+.reservation-card:hover {
+  border-color: var(--amber);
+}
+
+.res-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.res-card-title {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.res-owner {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  color: var(--text);
+}
+
+.res-dates {
+  font-size: 0.78rem;
+  color: var(--terracotta);
+  letter-spacing: 0.03em;
+}
+
+.res-note {
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-style: italic;
+  margin-bottom: 12px;
+}
+
+.res-sites-list {
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.res-site-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.res-site-row:last-child { border-bottom: none; }
+
+.res-site-num {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--muted);
+  min-width: 50px;
+  flex-shrink: 0;
+}
+
+.res-site-user {
+  flex: 1;
+  font-size: 0.88rem;
+  color: var(--text);
+}
+
+.res-site-open {
+  color: var(--muted);
+  font-style: italic;
+}
+
+.res-site-edit-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  padding: 3px 10px;
+  border-radius: 100px;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: border-color 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+
+.res-site-edit-btn:hover {
+  border-color: var(--terracotta);
+  color: var(--terracotta);
+}
+
+.res-site-input {
+  flex: 1;
+  background: var(--bg);
+  border: 1px solid var(--terracotta);
+  border-radius: var(--radius);
+  color: var(--text);
+  padding: 4px 8px;
+  font-size: 0.88rem;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  width: 100%;
+}
+
+/* ── FORM ADDITIONS ───────────────────────────────── */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.form-hint {
+  font-size: 0.73rem;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+/* ── RESPONSIVE ADDITIONS ─────────────────────────── */
+@media (max-width: 768px) {
+  .gantt-section { padding: 40px 16px 56px; }
+  .gantt-label-col { width: 120px; min-width: 120px; padding: 8px 10px; gap: 7px; }
+  .gantt-avatar { width: 24px; height: 24px; font-size: 0.75rem; }
+  .gantt-camper-name { font-size: 0.78rem; }
+  .gantt-setup-type { display: none; }
+  .gantt-bar { height: 20px; padding: 0 7px; }
+  .gantt-bar-label { font-size: 0.58rem; }
+  .gantt-date { font-size: 0.65rem; }
+  .reservations-grid { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr 1fr; }
+}

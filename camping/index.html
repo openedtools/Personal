@@ -6,7 +6,7 @@
   <title>Desert Turkey 2026 · Jumbo Rocks · Thanksgiving 2026</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=4" />
+  <link rel="stylesheet" href="css/style.css?v=5" />
 </head>
 <body>
 
@@ -48,7 +48,7 @@
   <div class="tab-bar-wrap" id="tabBarWrap">
     <div class="tab-bar" id="tabBar">
       <button class="tab-btn active" data-tab="welcome">Welcome</button>
-      <button class="tab-btn" data-tab="map">Map</button>
+      <button class="tab-btn" data-tab="sites">Sites</button>
       <button class="tab-btn" data-tab="campers">Campers</button>
       <button class="tab-btn" data-tab="gear">Gear</button>
       <button class="tab-btn" data-tab="itinerary">Itinerary</button>
@@ -66,8 +66,8 @@
   <div class="mobile-menu" id="mobileMenu">
     <div class="mobile-menu-grid">
       <button class="mobile-tab active" data-tab="welcome"><span>🏠</span>Welcome</button>
-      <button class="mobile-tab" data-tab="map"><span>🗺️</span>Map</button>
-      <button class="mobile-tab" data-tab="campers"><span>🏕️</span>Campers</button>
+      <button class="mobile-tab" data-tab="sites"><span>🏕️</span>Sites</button>
+      <button class="mobile-tab" data-tab="campers"><span>👥</span>Campers</button>
       <button class="mobile-tab" data-tab="gear"><span>🎒</span>Gear</button>
       <button class="mobile-tab" data-tab="itinerary"><span>📋</span>Itinerary</button>
       <button class="mobile-tab" data-tab="trails"><span>🥾</span>Trails</button>
@@ -82,7 +82,6 @@
   ═══════════════════════════════════════════════ -->
   <div class="tab-panel active" id="tab-welcome">
 
-    <!-- HERO -->
     <header id="hero">
       <div class="hero-content">
         <p class="hero-eyebrow">Joshua Tree National Park</p>
@@ -90,56 +89,86 @@
         <p class="hero-subtitle">Jumbo Rocks Campground · Thanksgiving 2026</p>
         <div class="hero-dates">November 25–30, 2026</div>
         <div class="countdown" id="countdown"></div>
-        <button class="hero-cta" onclick="switchTab('map')">See the Campground Map</button>
+        <button class="hero-cta" onclick="switchTab('sites')">See the Campground Sites</button>
       </div>
-
     </header>
 
-    <!-- QUICK STATS -->
-    <section class="stats-bar">
-      <div class="stat"><span class="stat-num" id="statAttendees">0</span><span class="stat-label">Campers</span></div>
-      <div class="stat-divider"></div>
-      <div class="stat"><span class="stat-num" id="statSites">0</span><span class="stat-label">Sites Claimed</span></div>
-      <div class="stat-divider"></div>
-      <div class="stat"><span class="stat-num" id="statNights">5</span><span class="stat-label">Nights</span></div>
-      <div class="stat-divider"></div>
-      <div class="stat"><span class="stat-num">🏕️</span><span class="stat-label">Thanksgiving 2026</span></div>
+    <!-- ARRIVAL TIMELINE (Gantt) -->
+    <section class="gantt-section">
+      <div class="gantt-section-inner">
+        <div class="gantt-section-header">
+          <h2>Who's Coming When</h2>
+          <p>Arrival &amp; departure timeline — updates as campers register.</p>
+        </div>
+        <div id="arrivalTimeline"></div>
+      </div>
     </section>
 
   </div><!-- /tab-welcome -->
 
   <!-- ═══════════════════════════════════════════════
-       MAP TAB
+       SITES TAB (formerly Map)
   ═══════════════════════════════════════════════ -->
-  <div class="tab-panel" id="tab-map">
+  <div class="tab-panel" id="tab-sites">
     <div class="tab-content">
+
       <div class="section-header">
         <h2>Campground Map</h2>
-        <p class="section-desc">Jumbo Rocks has 124 sites spread across the boulder formations. Click a site to claim it or see who's there.</p>
+        <p class="section-desc">Reference map for Jumbo Rocks Campground — scroll to explore. Site numbers are marked on the map.</p>
       </div>
-      <div class="map-container">
-        <div class="map-legend" id="mapLegend">
-          <span class="legend-item"><span class="dot dot-available"></span>Available</span>
-          <span class="legend-item"><span class="dot dot-claimed"></span>Claimed</span>
-        </div>
+
+      <!-- Static map reference only — no markers, no interaction -->
+      <div class="sites-map-reference">
         <div class="map-wrap">
-          <div class="map-image-container">
-            <img src="img/PhotoshopExtension_Image_upscayl_2x_upscayl-standard-4x.png" alt="Jumbo Rocks Campground Map" class="map-base-img" />
-            <div class="map-markers-layer" id="mapMarkersLayer"></div>
-          </div>
+          <img src="img/PhotoshopExtension_Image_upscayl_2x_upscayl-standard-4x.png"
+               alt="Jumbo Rocks Campground Map" class="map-base-img" />
         </div>
       </div>
+
+      <!-- Site Reservations -->
+      <div class="section-header" style="margin-top:56px">
+        <h2>Site Reservations</h2>
+        <p class="section-desc">Track who holds each reservation and who's sleeping where. Edit a site's occupant inline.</p>
+      </div>
+
+      <div class="reservations-toolbar">
+        <button class="btn btn-primary" id="addReservationBtn">+ Add Reservation</button>
+      </div>
+
+      <div class="reservations-grid" id="reservationsGrid"></div>
+
     </div>
 
-    <!-- Site Claim Modal -->
-    <div class="modal-overlay" id="siteModal">
+    <!-- Add Reservation Modal -->
+    <div class="modal-overlay" id="reservationModal">
       <div class="modal">
-        <button class="modal-close" id="modalClose">✕</button>
-        <h3 id="modalTitle">Site #</h3>
-        <div id="modalContent"></div>
+        <button class="modal-close" id="reservationModalClose">✕</button>
+        <h3>Add Reservation</h3>
+        <div class="form-group">
+          <label>Reservation Holder</label>
+          <input type="text" id="resOwner" placeholder="Who booked this?" maxlength="30" />
+        </div>
+        <div class="form-group">
+          <label>Site Numbers</label>
+          <input type="text" id="resSiteNums" placeholder="e.g. 4, 5, 6" maxlength="80" />
+          <p class="form-hint">Separate multiple sites with commas</p>
+        </div>
+        <div class="form-group">
+          <label>Arrival → Departure</label>
+          <div class="date-range">
+            <input type="date" id="resArrival" />
+            <span>→</span>
+            <input type="date" id="resDeparture" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Note (optional)</label>
+          <input type="text" id="resNote" placeholder="e.g. recreation.gov confirmation #" maxlength="80" />
+        </div>
+        <button class="btn btn-primary" id="saveReservationBtn">Save Reservation</button>
       </div>
     </div>
-  </div><!-- /tab-map -->
+  </div><!-- /tab-sites -->
 
   <!-- ═══════════════════════════════════════════════
        CAMPERS TAB
@@ -150,38 +179,54 @@
         <h2>Who's Coming</h2>
         <p class="section-desc">Add yourself to let everyone know you'll be there.</p>
       </div>
-      <div class="attendees-grid" id="attendeesGrid"></div>
+      <div class="attendees-grid" id="campersGrid"></div>
       <div style="text-align:center;margin-top:8px">
-        <button class="btn btn-primary" id="addAttendeeBtn">+ Add Yourself</button>
+        <button class="btn btn-primary" id="addCamperBtn">+ Add Yourself</button>
       </div>
     </div>
 
-    <!-- Add Attendee Modal -->
-    <div class="modal-overlay" id="attendeeModal">
+    <!-- Add Camper Modal -->
+    <div class="modal-overlay" id="camperModal">
       <div class="modal">
-        <button class="modal-close" id="attendeeModalClose">✕</button>
+        <button class="modal-close" id="camperModalClose">✕</button>
         <h3>Add Yourself</h3>
         <div class="form-group">
           <label>Your Name</label>
-          <input type="text" id="attendeeName" placeholder="First Name" maxlength="30" />
+          <input type="text" id="camperName" placeholder="First Name" maxlength="30" />
         </div>
         <div class="form-group">
-          <label>Site # (if known)</label>
-          <input type="text" id="attendeeSite" placeholder="e.g. 42" maxlength="3" />
+          <label>Setup</label>
+          <select id="camperSetup">
+            <option value="Tent">Tent</option>
+            <option value="Van">Van</option>
+            <option value="RV">RV</option>
+            <option value="Car camping">Car camping</option>
+            <option value="Cabin">Cabin</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Adults</label>
+            <input type="number" id="camperAdults" value="1" min="1" max="20" />
+          </div>
+          <div class="form-group">
+            <label>Kids</label>
+            <input type="number" id="camperKids" value="0" min="0" max="20" />
+          </div>
         </div>
         <div class="form-group">
           <label>Arrival → Departure</label>
           <div class="date-range">
-            <input type="date" id="attendeeArrival" />
+            <input type="date" id="camperArrival" />
             <span>→</span>
-            <input type="date" id="attendeeDeparture" />
+            <input type="date" id="camperDeparture" />
           </div>
         </div>
         <div class="form-group">
           <label>Note (optional)</label>
-          <input type="text" id="attendeeNote" placeholder="e.g. Bringing the big tent!" maxlength="80" />
+          <input type="text" id="camperNote" placeholder="e.g. Bringing the big tent!" maxlength="80" />
         </div>
-        <button class="btn btn-primary" id="saveAttendeeBtn">Add Me to the Trip</button>
+        <button class="btn btn-primary" id="saveCamperBtn">Add Me to the Trip</button>
       </div>
     </div>
   </div><!-- /tab-campers -->
@@ -321,7 +366,6 @@
   <div class="tab-panel" id="tab-tshirts">
     <div class="tab-content">
 
-      <!-- Shirt mockup area -->
       <div class="shirt-mockup-area">
         <div class="mockup-placeholder">
           <span class="mockup-icon">👕</span>
@@ -407,9 +451,8 @@
   <!-- Firebase SDK (v10 compat build — no bundler needed) -->
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-  <script src="js/firebase-config.js?v=4"></script>
-  <script src="js/data.js?v=4"></script>
-  <script src="js/map.js?v=4"></script>
-  <script src="js/app.js?v=4"></script>
+  <script src="js/firebase-config.js?v=5"></script>
+  <script src="js/data.js?v=5"></script>
+  <script src="js/app.js?v=5"></script>
 </body>
 </html>
