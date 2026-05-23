@@ -6,7 +6,7 @@
   <title>Desert Turkey 2026 · Jumbo Rocks · Thanksgiving 2026</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=11" />
+  <link rel="stylesheet" href="css/style.css?v=12" />
 </head>
 <body>
 
@@ -113,8 +113,8 @@
     <div class="tab-content">
 
       <div class="section-header">
-        <h2>Campground Map</h2>
-        <p class="section-desc">Reference map for Jumbo Rocks Campground — scroll to explore. Site numbers are marked on the map.</p>
+        <h2>Sites &amp; Reservations</h2>
+        <p class="section-desc">Map for orientation on the left, reservations on the right. Tap the map to expand it.</p>
         <div class="section-links">
           <a class="ext-link" href="https://www.recreation.gov/camping/campgrounds/272299" target="_blank" rel="noopener">Book on Recreation.gov <span class="ext-arrow">↗</span></a>
           <a class="ext-link" href="https://www.nps.gov/jotr/planyourvisit/jumborocks.htm" target="_blank" rel="noopener">NPS · Jumbo Rocks <span class="ext-arrow">↗</span></a>
@@ -122,26 +122,38 @@
         </div>
       </div>
 
-      <!-- Static map reference only — no markers, no interaction -->
-      <div class="sites-map-reference">
-        <div class="map-wrap">
-          <img src="img/PhotoshopExtension_Image_upscayl_2x_upscayl-standard-4x.png"
-               alt="Jumbo Rocks Campground Map" class="map-base-img" />
+      <div class="sites-layout">
+        <div class="sites-col sites-map-col">
+          <div class="col-heading-row">
+            <h3 class="col-heading">Campground Map</h3>
+            <button class="btn btn-outline btn-sm" id="mapExpandBtn" type="button" title="Open full size">⛶ Expand</button>
+          </div>
+          <div class="sites-map-reference">
+            <div class="map-wrap">
+              <img src="img/PhotoshopExtension_Image_upscayl_2x_upscayl-standard-4x.png"
+                   alt="Jumbo Rocks Campground Map" class="map-base-img"
+                   id="mapImg" />
+            </div>
+          </div>
+        </div>
+
+        <div class="sites-col sites-res-col">
+          <div class="col-heading-row">
+            <h3 class="col-heading">Reservations</h3>
+            <button class="btn btn-primary btn-sm" id="addReservationBtn">+ Add Reservation</button>
+          </div>
+          <div class="reservations-grid" id="reservationsGrid"></div>
         </div>
       </div>
+    </div>
 
-      <!-- Site Reservations -->
-      <div class="section-header" style="margin-top:56px">
-        <h2>Site Reservations</h2>
-        <p class="section-desc">Track who holds each reservation and who's sleeping where. Edit a site's occupant inline.</p>
+    <!-- Map full-screen lightbox -->
+    <div class="image-lightbox" id="mapLightbox" role="dialog" aria-label="Campground map full screen">
+      <button class="lightbox-close" id="lightboxClose" type="button" aria-label="Close">✕</button>
+      <div class="lightbox-img-wrap">
+        <img src="img/PhotoshopExtension_Image_upscayl_2x_upscayl-standard-4x.png"
+             alt="Jumbo Rocks Campground Map (full size)" />
       </div>
-
-      <div class="reservations-toolbar">
-        <button class="btn btn-primary" id="addReservationBtn">+ Add Reservation</button>
-      </div>
-
-      <div class="reservations-grid" id="reservationsGrid"></div>
-
     </div>
 
     <!-- Add Reservation Modal -->
@@ -486,8 +498,8 @@
   <!-- Firebase SDK (v10 compat build — no bundler needed) -->
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-  <script src="js/firebase-config.js?v=11"></script>
-  <script src="js/data.js?v=11"></script>
-  <script src="js/app.js?v=11"></script>
+  <script src="js/firebase-config.js?v=12"></script>
+  <script src="js/data.js?v=12"></script>
+  <script src="js/app.js?v=12"></script>
 </body>
 </html>
