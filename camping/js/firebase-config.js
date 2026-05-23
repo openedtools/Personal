@@ -46,5 +46,5 @@ const TRIP_DOC = db.collection('trips').doc('thanksgiving-2026');
 // below. See camping/backup/README.md for one-time setup. If
 // blank, the site works exactly as before — backup is just off.
 // ============================================================
-const BACKUP_WEBHOOK_URL = '';
+const BACKUP_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbySxD_29PeTpZJHxK8eL7pydcRhOuDlKjGQ3fWa1h2aD1vD8Mr4JsD9W0tcCcrkS-9XxA/exec';
 const BACKUP_SECRET      = 'desert-turkey-2026';
