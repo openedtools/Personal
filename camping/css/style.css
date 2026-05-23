@@ -133,6 +133,25 @@ body {
   gap: 6px;
 }
 
+.nav-countdown {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 100px;
+  background: rgba(196,98,45,0.10);
+  border: 1px solid rgba(196,98,45,0.35);
+  color: var(--terracotta);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .nav-countdown { font-size: 0.66rem; padding: 3px 8px; }
+}
+
 /* ── HAMBURGER ────────────────────────────────────── */
 .mobile-controls {
   display: none;
@@ -1687,6 +1706,97 @@ footer p {
   margin-bottom: 6px;
 }
 
+.card-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.rsvp-badge {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 2px 10px;
+  border-radius: 100px;
+  border: 1px solid transparent;
+}
+
+.rsvp-badge-confirmed { background: #d8f0d0; color: #2a5a20; border-color: #a8d898; }
+.rsvp-badge-tentative { background: #f8e8b8; color: #7a5010; border-color: #d8c070; }
+.rsvp-badge-out       { background: #f3dada; color: #7a2a20; border-color: #d89898; }
+
+/* Dim the whole card when someone is Out */
+.attendee-card.rsvp-out { opacity: 0.55; filter: grayscale(0.4); }
+
+.attendee-emergency {
+  font-size: 0.78rem;
+  color: var(--gold);
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--border);
+}
+
+/* ── RSVP filter pills (above campers grid) ───────── */
+.rsvp-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 22px;
+}
+
+.rsvp-pill {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 6px 14px;
+  border-radius: 100px;
+  font-size: 0.78rem;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+
+.rsvp-pill:hover { color: var(--text); border-color: var(--amber); }
+
+.rsvp-pill.active {
+  background: var(--terracotta);
+  border-color: var(--terracotta);
+  color: white;
+}
+
+/* Gantt: tentative campers get a striped bar */
+.gantt-bar-tentative {
+  background-image:
+    repeating-linear-gradient(45deg,
+      rgba(255,255,255,0.35) 0,
+      rgba(255,255,255,0.35) 6px,
+      transparent 6px,
+      transparent 12px) !important;
+  background-blend-mode: overlay;
+}
+
+.gantt-row-tentative .gantt-camper-name { opacity: 0.85; }
+
+.gantt-tentative-tag {
+  display: inline-block;
+  margin-left: 4px;
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #7a5010;
+  background: #f8e8b8;
+  border: 1px solid #d8c070;
+  border-radius: 100px;
+  padding: 1px 6px;
+  vertical-align: 1px;
+}
+
 /* ── SITES TAB ────────────────────────────────────── */
 .sites-layout {
   display: grid;
@@ -1751,30 +1861,43 @@ footer p {
   z-index: 300;
   align-items: center;
   justify-content: center;
-  padding: 24px;
+  padding: 24px 24px 56px;
 }
 
-.image-lightbox.open { display: flex; }
+.image-lightbox.open { display: flex; flex-direction: column; }
 
 .lightbox-img-wrap {
-  max-width: 100%;
-  max-height: 100%;
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
+  flex: 1;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+  min-height: 0;
 }
 
 .image-lightbox img {
-  max-width: none;
-  max-height: 92vh;
+  max-width: 100%;
+  max-height: 100%;
   width: auto;
   height: auto;
+  object-fit: contain;
   display: block;
-  cursor: zoom-out;
   border-radius: 6px;
   box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+}
+
+.lightbox-footer {
+  text-align: center;
+  padding: 12px 0 0;
+  color: rgba(245,238,216,0.8);
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+}
+
+.lightbox-footer a {
+  color: rgba(245,238,216,0.95);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .lightbox-close {
@@ -1952,4 +2075,215 @@ footer p {
 @media (max-width: 980px) {
   .sites-layout { grid-template-columns: 1fr; gap: 36px; }
   .sites-map-reference .map-wrap { max-height: 60vh; }
+}
+
+/* ── Hero CTA row (Welcome) ──────────────────────── */
+.hero-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+.hero-cta-secondary {
+  background: transparent;
+  color: var(--terracotta);
+  border: 1px solid var(--terracotta);
+  box-shadow: none;
+}
+
+.hero-cta-secondary:hover {
+  background: rgba(196,98,45,0.08);
+  color: var(--terracotta);
+}
+
+/* ═══════════════════════════════════════════════════
+   PRINT VIEW — collapses everything into a clean,
+   one-pass document. All tabs print sequentially.
+   ═══════════════════════════════════════════════════ */
+@media print {
+  body { padding-top: 0; background: white; color: black; font-size: 11pt; }
+  body * { box-shadow: none !important; text-shadow: none !important; }
+
+  /* Hide chrome and editing affordances */
+  #topNav, .tab-bar-wrap, .mobile-menu, .menu-backdrop, .hamburger,
+  .pw-overlay, .modal-overlay, .image-lightbox,
+  .hero-cta, .hero-cta-row,
+  .card-actions, .card-edit, .attendee-delete,
+  .table-edit, .table-delete, .row-actions th:last-child, .row-actions td:last-child,
+  .signup-table th:last-child, .signup-table td:last-child,
+  #addCamperBtn, #addReservationBtn, #addPotluckBtn, #addTshirtBtn, #addItineraryBtn,
+  #mapExpandBtn, .reservations-toolbar, .itinerary-toolbar,
+  .rsvp-filter, .gear-categories-wrap,
+  .res-site-edit-btn, .res-site-input,
+  .section-links, .info-links, .trail-links
+  { display: none !important; }
+
+  /* Show every tab — not just .active — sequentially */
+  .tab-panel { display: block !important; min-height: 0 !important; }
+  .tab-panel.active { animation: none !important; }
+  .tab-content { padding: 0 !important; max-width: none; }
+  #hero { padding: 16px 0 8px !important; border: none; }
+  .hero-title { font-size: 22pt !important; line-height: 1.1; }
+  .hero-subtitle, .hero-eyebrow, .hero-dates { color: #444 !important; }
+  .countdown { display: none !important; }
+
+  .section-header { margin-bottom: 16px; text-align: left; }
+  .section-header h2 { font-size: 16pt; color: black; }
+  .section-desc { color: #555; }
+
+  /* Each tab on its own page */
+  .tab-panel { page-break-before: always; }
+  #tab-welcome { page-break-before: avoid; }
+
+  /* Tighten grids for print */
+  .attendees-grid,
+  .reservations-grid { display: block !important; }
+  .attendee-card, .reservation-card, .info-card, .trail-card,
+  .itinerary-day {
+    background: white !important;
+    border: 1px solid #ccc !important;
+    border-radius: 4px !important;
+    page-break-inside: avoid;
+    margin-bottom: 8px !important;
+    padding: 10px 14px !important;
+  }
+
+  /* RSVP badges keep their color but flatten */
+  .rsvp-badge { border-width: 1px; }
+  .rsvp-badge-confirmed { background: #d8f0d0 !important; }
+  .rsvp-badge-tentative { background: #f8e8b8 !important; }
+  .rsvp-badge-out       { background: #f3dada !important; }
+
+  /* Sites tab: collapse to single column for print */
+  .sites-layout { display: block !important; }
+  .sites-map-reference .map-wrap { max-height: none !important; overflow: visible !important; }
+  .sites-map-reference .map-base-img { filter: none !important; max-height: 6in; width: auto; }
+
+  /* Gantt prints well at full width */
+  .gantt-section { padding: 8px 0 16px !important; background: white !important; }
+  .gantt-wrap { border: 1px solid #ccc; }
+  .gantt-bar { box-shadow: none !important; }
+
+  /* Tables */
+  .signup-table { font-size: 9pt; }
+  .signup-table th { background: #eee !important; color: black !important; }
+
+  /* Show URLs after links for paper */
+  .ext-link, .info-link, .trail-link, .trail-name {
+    color: black !important;
+    text-decoration: underline;
+  }
+
+  footer { border-top: 1px solid #ccc; padding-top: 8px; }
+  .nav-countdown { display: none !important; }
+
+  a[href^="http"]:after {
+    content: " (" attr(href) ")";
+    font-size: 8pt;
+    color: #555;
+    word-break: break-all;
+  }
+  /* Suppress URL annotation inside cards where it's already textual */
+  .info-card a[href^="http"]:after,
+  .trail-card a[href^="http"]:after,
+  .section-links a[href^="http"]:after { content: ""; }
+}
+
+/* ── Weather (Welcome tab) ────────────────────────── */
+.weather-section {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 40px 24px 56px;
+}
+
+.weather-section-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.weather-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.weather-header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.weather-header p {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.weather-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.weather-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 14px 10px;
+  text-align: center;
+  min-width: 0;
+}
+
+.weather-dow {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--terracotta);
+}
+
+.weather-date {
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.weather-icon {
+  font-size: 1.6rem;
+  line-height: 1;
+  margin: 4px 0;
+}
+
+.weather-temps {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.weather-temps .lo { color: var(--muted); margin-left: 4px; }
+
+.weather-precip {
+  margin-top: 4px;
+  font-size: 0.7rem;
+  color: var(--sky);
+}
+
+.weather-fallback {
+  background: var(--bg);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  text-align: center;
+  color: var(--muted);
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 900px) {
+  .weather-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media (max-width: 560px) {
+  .weather-grid { grid-template-columns: repeat(3, 1fr); }
 }

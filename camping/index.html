@@ -6,7 +6,7 @@
   <title>Desert Turkey 2026 · Jumbo Rocks · Thanksgiving 2026</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=12" />
+  <link rel="stylesheet" href="css/style.css?v=13" />
 </head>
 <body>
 
@@ -30,6 +30,7 @@
     <div class="top-nav-inner">
       <span class="nav-logo">🦃 Desert Turkey 2026</span>
       <div class="nav-right">
+        <span class="nav-countdown" id="navCountdown" title="Trip countdown">·</span>
         <span class="sync-status" id="syncStatus" title="Firestore sync status">
           <span class="sync-dot" id="syncDot"></span>
           <span class="sync-label" id="syncLabel">connecting…</span>
@@ -89,7 +90,10 @@
         <p class="hero-subtitle">Jumbo Rocks Campground · Thanksgiving 2026</p>
         <div class="hero-dates">November 22–28, 2026</div>
         <div class="countdown" id="countdown"></div>
-        <button class="hero-cta" onclick="switchTab('sites')">See the Campground Sites</button>
+        <div class="hero-cta-row">
+          <button class="hero-cta" onclick="switchTab('sites')">See the Campground Sites</button>
+          <button class="hero-cta hero-cta-secondary" onclick="window.print()" title="Print or save as PDF">🖨 Print summary</button>
+        </div>
       </div>
     </header>
 
@@ -101,6 +105,17 @@
           <p>Arrival &amp; departure timeline — updates as campers register.</p>
         </div>
         <div id="arrivalTimeline"></div>
+      </div>
+    </section>
+
+    <!-- WEATHER -->
+    <section class="weather-section">
+      <div class="weather-section-inner">
+        <div class="weather-header">
+          <h2>Weather for the Trip</h2>
+          <p id="weatherSub">Loading…</p>
+        </div>
+        <div class="weather-grid" id="weatherGrid"></div>
       </div>
     </section>
 
@@ -154,6 +169,10 @@
         <img src="img/PhotoshopExtension_Image_upscayl_2x_upscayl-standard-4x.png"
              alt="Jumbo Rocks Campground Map (full size)" />
       </div>
+      <div class="lightbox-footer">
+        <a href="img/PhotoshopExtension_Image_upscayl_2x_upscayl-standard-4x.png" target="_blank" rel="noopener">Open native resolution in a new tab ↗</a>
+        &nbsp;·&nbsp; Press Esc or click ✕ to close
+      </div>
     </div>
 
     <!-- Add Reservation Modal -->
@@ -196,6 +215,12 @@
         <h2>Who's Coming</h2>
         <p class="section-desc">Add yourself to let everyone know you'll be there.</p>
       </div>
+      <div class="rsvp-filter" id="rsvpFilter">
+        <button class="rsvp-pill active" data-rsvp="all">All</button>
+        <button class="rsvp-pill" data-rsvp="Confirmed">Confirmed</button>
+        <button class="rsvp-pill" data-rsvp="Tentative">Tentative</button>
+        <button class="rsvp-pill" data-rsvp="Out">Out</button>
+      </div>
       <div class="attendees-grid" id="campersGrid"></div>
       <div style="text-align:center;margin-top:8px">
         <button class="btn btn-primary" id="addCamperBtn">+ Add Yourself</button>
@@ -211,15 +236,25 @@
           <label>Your Name</label>
           <input type="text" id="camperName" placeholder="" maxlength="40" />
         </div>
-        <div class="form-group">
-          <label>Setup</label>
-          <select id="camperSetup">
-            <option value="Tent">Tent</option>
-            <option value="Van">Van</option>
-            <option value="RV">RV</option>
-            <option value="Car camping">Car camping</option>
-            <option value="Cabin">Cabin</option>
-          </select>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Setup</label>
+            <select id="camperSetup">
+              <option value="Tent">Tent</option>
+              <option value="Van">Van</option>
+              <option value="RV">RV</option>
+              <option value="Car camping">Car camping</option>
+              <option value="Cabin">Cabin</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Status</label>
+            <select id="camperRsvp">
+              <option value="Confirmed">Confirmed</option>
+              <option value="Tentative">Tentative</option>
+              <option value="Out">Out</option>
+            </select>
+          </div>
         </div>
         <div class="form-row">
           <div class="form-group">
@@ -238,6 +273,10 @@
             <span>→</span>
             <input type="date" id="camperDeparture" />
           </div>
+        </div>
+        <div class="form-group">
+          <label>Emergency contact (name only)</label>
+          <input type="text" id="camperEmergency" placeholder="Person to flag at camp if needed" maxlength="60" />
         </div>
         <div class="form-group">
           <label>Note (optional)</label>
@@ -498,8 +537,8 @@
   <!-- Firebase SDK (v10 compat build — no bundler needed) -->
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-  <script src="js/firebase-config.js?v=12"></script>
-  <script src="js/data.js?v=12"></script>
-  <script src="js/app.js?v=12"></script>
+  <script src="js/firebase-config.js?v=13"></script>
+  <script src="js/data.js?v=13"></script>
+  <script src="js/app.js?v=13"></script>
 </body>
 </html>
