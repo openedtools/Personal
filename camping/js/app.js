@@ -85,6 +85,8 @@ let state = {
   tshirts:          [],
   itinerary:        [],
   activeGearCat:    'all',
+  activeRsvp:       'all',  // 'all' | 'Confirmed' | 'Tentative' | 'Out'
+  weather:          null,   // cached forecast/climate (null until fetched)
   loaded:           false,
 };
 
@@ -224,10 +226,11 @@ function renderCountdown() {
   const target = new Date('2026-11-22T12:00:00');
   const diff   = target - new Date();
   const el     = document.getElementById('countdown');
-  if (!el) return;
+  const nav    = document.getElementById('navCountdown');
 
   if (diff <= 0) {
-    el.innerHTML = '<span style="color:var(--terracotta);font-family:\'Playfair Display\',serif;font-size:1.1rem;letter-spacing:0.05em">We\'re there! 🏕️</span>';
+    if (el) el.innerHTML = '<span style="color:var(--terracotta);font-family:\'Playfair Display\',serif;font-size:1.1rem;letter-spacing:0.05em">We\'re there! 🏕️</span>';
+    if (nav) nav.textContent = "We're there! 🏕️";
     return;
   }
 
@@ -236,13 +239,138 @@ function renderCountdown() {
   const minutes = Math.floor((diff % 3600000)  / 60000);
   const seconds = Math.floor((diff % 60000)    / 1000);
 
-  const unit = (num, lbl) => `
-    <div class="countdown-unit">
-      <span class="countdown-num">${String(num).padStart(2,'0')}</span>
-      <span class="countdown-label">${lbl}</span>
-    </div>`;
+  if (el) {
+    const unit = (num, lbl) => `
+      <div class="countdown-unit">
+        <span class="countdown-num">${String(num).padStart(2,'0')}</span>
+        <span class="countdown-label">${lbl}</span>
+      </div>`;
+    el.innerHTML = unit(days,'Days') + unit(hours,'Hrs') + unit(minutes,'Min') + unit(seconds,'Sec');
+  }
 
-  el.innerHTML = unit(days,'Days') + unit(hours,'Hrs') + unit(minutes,'Min') + unit(seconds,'Sec');
+  if (nav) {
+    if      (days > 1)  nav.textContent = `${days} days to the desert`;
+    else if (days === 1) nav.textContent = "1 day · tomorrow!";
+    else                 nav.textContent = `${hours}h ${minutes}m to go`;
+  }
+}
+
+// ── Weather (Open-Meteo, no API key) ──────────────────────────
+const WEATHER_CACHE_KEY = 'dt2026_weather_v1';
+const WEATHER_CACHE_TTL = 60 * 60 * 1000; // 1 hour
+const WEATHER_URL = 'https://api.open-meteo.com/v1/forecast'
+  + '?latitude=34.0108&longitude=-116.0503'
+  + '&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,weather_code'
+  + '&temperature_unit=fahrenheit&timezone=America%2FLos_Angeles'
+  + '&start_date=2026-11-22&end_date=2026-11-28';
+
+// WMO weather code → emoji. Coarse but readable.
+function weatherEmoji(code) {
+  if (code == null)               return '·';
+  if (code === 0)                 return '☀️';
+  if ([1,2].includes(code))       return '🌤';
+  if (code === 3)                 return '☁️';
+  if ([45,48].includes(code))     return '🌫';
+  if (code >= 51 && code <= 57)   return '🌦';
+  if (code >= 61 && code <= 67)   return '🌧';
+  if (code >= 71 && code <= 77)   return '🌨';
+  if (code >= 80 && code <= 82)   return '🌧';
+  if (code >= 95)                 return '⛈';
+  return '·';
+}
+
+function renderWeather() {
+  const grid = document.getElementById('weatherGrid');
+  const sub  = document.getElementById('weatherSub');
+  if (!grid || !sub) return;
+
+  // Try cache
+  let cached = null;
+  try {
+    const raw = localStorage.getItem(WEATHER_CACHE_KEY);
+    if (raw) {
+      const obj = JSON.parse(raw);
+      if (obj && obj.ts && Date.now() - obj.ts < WEATHER_CACHE_TTL) cached = obj.data;
+    }
+  } catch {}
+
+  if (cached) {
+    paintWeather(cached);
+  } else {
+    paintFallback('Loading forecast…');
+    fetchWeather();
+  }
+}
+
+function fetchWeather() {
+  fetch(WEATHER_URL)
+    .then(r => r.ok ? r.json() : null)
+    .then(data => {
+      if (!data || !data.daily || !data.daily.time || data.daily.time.length === 0) {
+        paintFallback();
+        return;
+      }
+      try { localStorage.setItem(WEATHER_CACHE_KEY, JSON.stringify({ ts: Date.now(), data })); } catch {}
+      paintWeather(data);
+    })
+    .catch(() => paintFallback());
+}
+
+function paintWeather(data) {
+  const grid = document.getElementById('weatherGrid');
+  const sub  = document.getElementById('weatherSub');
+  if (!grid || !sub) return;
+
+  const days = data.daily.time;
+  // If the API gave us mostly nulls (trip too far in future for forecast),
+  // fall back to climate text.
+  const valid = data.daily.temperature_2m_max.filter(v => v != null).length;
+  if (valid < days.length / 2) {
+    paintFallback();
+    return;
+  }
+
+  sub.textContent = 'Forecast from Open-Meteo. Refreshed hourly.';
+
+  const dow = (iso) => {
+    const d = new Date(iso + 'T12:00:00');
+    return ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()];
+  };
+
+  grid.innerHTML = days.map((iso, i) => {
+    const hi = data.daily.temperature_2m_max[i];
+    const lo = data.daily.temperature_2m_min[i];
+    const pp = data.daily.precipitation_probability_max[i];
+    const wc = data.daily.weather_code[i];
+    return `
+      <div class="weather-card">
+        <div class="weather-dow">${dow(iso)}</div>
+        <div class="weather-date">${fmtDate(iso)}</div>
+        <div class="weather-icon">${weatherEmoji(wc)}</div>
+        <div class="weather-temps">
+          <strong>${hi != null ? Math.round(hi) + '°' : '—'}</strong>
+          <span class="lo">${lo != null ? Math.round(lo) + '°' : ''}</span>
+        </div>
+        ${pp != null && pp > 0 ? `<div class="weather-precip">${pp}% precip</div>` : ''}
+      </div>`;
+  }).join('');
+}
+
+function paintFallback(loadingMsg) {
+  const grid = document.getElementById('weatherGrid');
+  const sub  = document.getElementById('weatherSub');
+  if (!grid || !sub) return;
+  if (loadingMsg) {
+    sub.textContent = loadingMsg;
+    grid.innerHTML = '';
+    return;
+  }
+  sub.textContent = 'Forecast available about 14 days out. Typical late-November Joshua Tree weather:';
+  grid.innerHTML = `
+    <div class="weather-fallback" style="grid-column: 1 / -1;">
+      <div style="font-size:2rem;margin-bottom:8px">🌤️</div>
+      Highs <strong>55–65°F</strong> · Lows <strong>30–40°F</strong> · Windy nights · Almost no chance of rain
+    </div>`;
 }
 
 // ── Arrival Timeline (Gantt) ──────────────────────────────────
@@ -287,6 +415,7 @@ function renderArrivalTimeline() {
   </div>`;
 
   state.campers.forEach((c, i) => {
+    if (rsvpOf(c) === 'Out') return; // skip "Out" on the Welcome timeline
     const color    = AVATAR_COLORS[i % AVATAR_COLORS.length];
     const initial  = (c.name || '?')[0].toUpperCase();
     const arrIdx   = dayIndex(c.arrival);
@@ -297,20 +426,21 @@ function renderArrivalTimeline() {
     const leftPct  = (barStart / N * 100).toFixed(2);
     const widthPct = ((barEnd - barStart + 1) / N * 100).toFixed(2);
     const barSpan  = barEnd - barStart + 1;
+    const tentative = rsvpOf(c) === 'Tentative';
 
     html += `
-      <div class="gantt-row">
+      <div class="gantt-row${tentative ? ' gantt-row-tentative' : ''}">
         <div class="gantt-label-col">
           <span class="gantt-avatar" style="background:${color}">${esc(initial)}</span>
           <div class="gantt-name-info">
-            <span class="gantt-camper-name">${esc(c.name)}</span>
+            <span class="gantt-camper-name">${esc(c.name)}${tentative ? ' <span class="gantt-tentative-tag">tentative</span>' : ''}</span>
             ${c.setup ? `<span class="gantt-setup-type">${esc(c.setup)}</span>` : ''}
           </div>
         </div>
         <div class="gantt-days-area">
           ${Array(N).fill(0).map(() => '<div class="gantt-cell"></div>').join('')}
           ${hasBar ? `
-            <div class="gantt-bar"
+            <div class="gantt-bar${tentative ? ' gantt-bar-tentative' : ''}"
                  style="left:${leftPct}%;width:${widthPct}%;background:${color};"
                  title="${esc(c.name)}: ${fmtDate(c.arrival)} → ${fmtDate(c.departure)}">
               ${barSpan >= 2 ? `<span class="gantt-bar-label">${fmtDate(c.arrival)} → ${fmtDate(c.departure)}</span>` : ''}
@@ -324,16 +454,37 @@ function renderArrivalTimeline() {
 }
 
 // ── Campers ───────────────────────────────────────────────────
+function rsvpOf(c) { return c.rsvp || 'Confirmed'; }
+
 function renderCampers() {
   const grid = document.getElementById('campersGrid');
   if (!grid) return;
 
-  if (state.campers.length === 0) {
-    grid.innerHTML = '<div class="empty-state">No campers yet — be the first to add yourself!</div>';
+  // Update filter pill counts + active state
+  const filterEl = document.getElementById('rsvpFilter');
+  if (filterEl) {
+    const counts = { all: state.campers.length, Confirmed: 0, Tentative: 0, Out: 0 };
+    state.campers.forEach(c => { counts[rsvpOf(c)] = (counts[rsvpOf(c)] || 0) + 1; });
+    filterEl.querySelectorAll('.rsvp-pill').forEach(btn => {
+      const k = btn.dataset.rsvp;
+      btn.classList.toggle('active', state.activeRsvp === k);
+      const label = (k === 'all' ? 'All' : k) + ` · ${counts[k] || 0}`;
+      btn.textContent = label;
+    });
+  }
+
+  const filtered = state.campers.filter(c =>
+    state.activeRsvp === 'all' || rsvpOf(c) === state.activeRsvp);
+
+  if (filtered.length === 0) {
+    grid.innerHTML = state.campers.length === 0
+      ? '<div class="empty-state">No campers yet — be the first to add yourself!</div>'
+      : `<div class="empty-state">Nobody with status "${esc(state.activeRsvp)}" yet.</div>`;
     return;
   }
 
-  grid.innerHTML = state.campers.map((c, i) => {
+  grid.innerHTML = filtered.map((c) => {
+    const i       = state.campers.findIndex(x => x.id === c.id); // stable color across filter changes
     const color   = AVATAR_COLORS[i % AVATAR_COLORS.length];
     const initial = (c.name || '?')[0].toUpperCase();
     const adults  = Number(c.adults) || 1;
@@ -341,18 +492,24 @@ function renderCampers() {
     const peopleTxt = adults + (kids > 0
       ? ` adult${adults !== 1 ? 's' : ''} · ${kids} kid${kids !== 1 ? 's' : ''}`
       : ` adult${adults !== 1 ? 's' : ''}`);
+    const rsvp    = rsvpOf(c);
+    const rsvpKey = rsvp.toLowerCase();
 
     return `
-      <div class="attendee-card">
+      <div class="attendee-card rsvp-${rsvpKey}">
         <div class="card-actions">
           <button class="card-edit" onclick="openCamperModal('${esc(c.id)}')" title="Edit">✎</button>
           <button class="attendee-delete" onclick="deleteCamper('${esc(c.id)}')" title="Remove">✕</button>
         </div>
         <div class="attendee-avatar" style="background:${color}">${initial}</div>
         <div class="attendee-name">${esc(c.name)}</div>
-        ${c.setup ? `<span class="camper-setup-badge">${esc(c.setup)}</span>` : ''}
+        <div class="card-badges">
+          ${c.setup ? `<span class="camper-setup-badge">${esc(c.setup)}</span>` : ''}
+          <span class="rsvp-badge rsvp-badge-${rsvpKey}">${esc(rsvp)}</span>
+        </div>
         <div class="camper-people">${esc(peopleTxt)}</div>
         ${(c.arrival && c.departure) ? `<div class="attendee-dates">${fmtDate(c.arrival)} → ${fmtDate(c.departure)}</div>` : ''}
+        ${c.emergency ? `<div class="attendee-emergency">🚨 Emergency contact: ${esc(c.emergency)}</div>` : ''}
         ${c.note ? `<div class="attendee-note">"${esc(c.note)}"</div>` : ''}
       </div>`;
   }).join('');
@@ -375,8 +532,10 @@ function openCamperModal(camperId) {
   document.getElementById('camperAdults').value    = c ? String(c.adults || 1) : '1';
   document.getElementById('camperKids').value      = c ? String(c.kids   || 0) : '0';
   document.getElementById('camperSetup').value     = c ? (c.setup || 'Tent')   : 'Tent';
+  document.getElementById('camperRsvp').value      = c ? (c.rsvp  || 'Confirmed') : 'Confirmed';
   document.getElementById('camperArrival').value   = c ? (c.arrival   || '2026-11-25') : '2026-11-25';
   document.getElementById('camperDeparture').value = c ? (c.departure || '2026-11-28') : '2026-11-28';
+  document.getElementById('camperEmergency').value = c ? (c.emergency || '')   : '';
   document.getElementById('camperNote').value      = c ? (c.note || '')        : '';
   openModal('camperModal');
 }
@@ -386,17 +545,21 @@ function saveCamper() {
   const adults    = parseInt(document.getElementById('camperAdults').value) || 1;
   const kids      = parseInt(document.getElementById('camperKids').value)   || 0;
   const setup     = document.getElementById('camperSetup').value;
+  const rsvp      = document.getElementById('camperRsvp').value || 'Confirmed';
   const arrival   = document.getElementById('camperArrival').value;
   const departure = document.getElementById('camperDeparture').value;
+  const emergency = document.getElementById('camperEmergency').value.trim();
   const note      = document.getElementById('camperNote').value.trim();
 
   if (!name) { document.getElementById('camperName').focus(); return; }
 
+  const record = { name, adults, kids, setup, rsvp, arrival, departure, emergency, note };
+
   if (editing.camper) {
     const idx = state.campers.findIndex(c => c.id === editing.camper);
-    if (idx >= 0) state.campers[idx] = { id: editing.camper, name, adults, kids, setup, arrival, departure, note };
+    if (idx >= 0) state.campers[idx] = { id: editing.camper, ...record };
   } else {
-    state.campers.push({ id: uid(), name, adults, kids, setup, arrival, departure, note });
+    state.campers.push({ id: uid(), ...record });
   }
   syncToFirestore();
   closeModal('camperModal');
@@ -839,6 +1002,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderCountdown();
   renderGearCategories();
   renderGearList();
+  renderWeather();
   setInterval(renderCountdown, 1000);
   initTabs();
   initMobileMenu();
@@ -858,6 +1022,18 @@ document.addEventListener('DOMContentLoaded', () => {
   // ── Camper modal wiring ──
   document.getElementById('addCamperBtn').addEventListener('click', () => openCamperModal(null));
   document.getElementById('camperModalClose').addEventListener('click', () => closeModal('camperModal'));
+
+  // RSVP filter pills
+  const filter = document.getElementById('rsvpFilter');
+  if (filter) {
+    filter.addEventListener('click', e => {
+      const btn = e.target.closest('.rsvp-pill');
+      if (!btn) return;
+      state.activeRsvp = btn.dataset.rsvp;
+      renderCampers();
+    });
+  }
+
   document.getElementById('camperModal').addEventListener('click', e => { if (e.target.id === 'camperModal') closeModal('camperModal'); });
   document.getElementById('saveCamperBtn').addEventListener('click', saveCamper);
 
