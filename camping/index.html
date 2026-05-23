@@ -6,7 +6,7 @@
   <title>Desert Turkey 2026 · Jumbo Rocks · Thanksgiving 2026</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=18" />
+  <link rel="stylesheet" href="css/style.css?v=19" />
 </head>
 <body>
 
@@ -216,6 +216,13 @@
         <h2>Who's Coming</h2>
         <p class="section-desc">Add yourself to let everyone know you'll be there.</p>
       </div>
+
+      <!-- Mirrored arrival/departure Gantt (same content as Welcome). -->
+      <div class="campers-timeline-wrap">
+        <h3 class="campers-timeline-heading">Arrival &amp; departure timeline</h3>
+        <div id="arrivalTimelineCampers"></div>
+      </div>
+
       <div class="rsvp-filter" id="rsvpFilter">
         <button class="rsvp-pill active" data-rsvp="all">All</button>
         <button class="rsvp-pill" data-rsvp="Confirmed">Confirmed</button>
@@ -553,8 +560,8 @@
   <!-- Firebase SDK (v10 compat build — no bundler needed) -->
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-  <script src="js/firebase-config.js?v=18"></script>
-  <script src="js/data.js?v=18"></script>
-  <script src="js/app.js?v=18"></script>
+  <script src="js/firebase-config.js?v=19"></script>
+  <script src="js/data.js?v=19"></script>
+  <script src="js/app.js?v=19"></script>
 </body>
 </html>

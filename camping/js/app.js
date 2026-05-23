@@ -393,13 +393,18 @@ function dayIndex(isoDate) {
 }
 
 function renderArrivalTimeline() {
-  const el = document.getElementById('arrivalTimeline');
-  if (!el) return;
+  // Render into every container present (Welcome + duplicate on Campers).
+  const targets = [
+    document.getElementById('arrivalTimeline'),
+    document.getElementById('arrivalTimelineCampers'),
+  ].filter(Boolean);
+  if (targets.length === 0) return;
 
   const N = GANTT_DAYS.length;
 
   if (state.campers.length === 0) {
-    el.innerHTML = '<div class="empty-state">Add campers to see the arrival timeline.</div>';
+    const empty = '<div class="empty-state">Add campers to see the arrival timeline.</div>';
+    targets.forEach(t => t.innerHTML = empty);
     return;
   }
 
@@ -417,7 +422,7 @@ function renderArrivalTimeline() {
   </div>`;
 
   state.campers.forEach((c, i) => {
-    if (rsvpOf(c) === 'Out') return; // skip "Out" on the Welcome timeline
+    if (rsvpOf(c) === 'Out') return; // skip "Out" on the timeline
     const color    = AVATAR_COLORS[i % AVATAR_COLORS.length];
     const initial  = (c.name || '?')[0].toUpperCase();
     const arrIdx   = dayIndex(c.arrival);
@@ -452,7 +457,7 @@ function renderArrivalTimeline() {
   });
 
   html += `</div></div>`;
-  el.innerHTML = html;
+  targets.forEach(t => t.innerHTML = html);
 }
 
 // ── Campers ───────────────────────────────────────────────────
