@@ -35,17 +35,23 @@ export const Dashboard: React.FC = () => {
   const objectives = useLiveQuery(() => db.objectives.toArray()) || [];
   
   const masterySnapshots = useLiveQuery(
-    () => db.masterySnapshots.where('user_id').equals(activeUserId).toArray(),
+    () => activeUserId
+      ? db.masterySnapshots.where('user_id').equals(activeUserId).toArray()
+      : db.masterySnapshots.filter(s => s.user_id === null).toArray(),
     [activeUserId]
   ) || [];
 
   const recentSessions = useLiveQuery(
-    () => db.sessions.where('user_id').equals(activeUserId).toArray(),
+    () => activeUserId
+      ? db.sessions.where('user_id').equals(activeUserId).toArray()
+      : db.sessions.filter(s => s.user_id === null).toArray(),
     [activeUserId]
   ) || [];
 
   const totalAttemptsCount = useLiveQuery(
-    () => db.attempts.where('user_id').equals(activeUserId).count(),
+    () => activeUserId
+      ? db.attempts.where('user_id').equals(activeUserId).count()
+      : db.attempts.filter(a => a.user_id === null).count(),
     [activeUserId]
   ) || 0;
 

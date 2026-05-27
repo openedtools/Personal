@@ -65,9 +65,9 @@ export const ReviewReport: React.FC = () => {
       setResourcesMap(rMap);
 
       // Fetch existing mistake journal entries for this session
-      const existingEntries = await db.mistakeJournal
-        .where('user_id').equals(activeUserId)
-        .toArray();
+      const existingEntries = await (activeUserId
+        ? db.mistakeJournal.where('user_id').equals(activeUserId).toArray()
+        : db.mistakeJournal.filter(e => e.user_id === null).toArray());
       
       const savedMap: Record<string, boolean> = {};
       const noteMap: Record<string, string> = {};
@@ -121,10 +121,10 @@ export const ReviewReport: React.FC = () => {
           const q = mapAccuracyToQuality(accuracy, 'medium');
 
           // Get existing mastery snapshot to retrieve SM-2 state
-          let snap = await db.masterySnapshots
-            .where('[user_id+objective_id]')
-            .equals([activeUserId, objId] as any)
-            .first();
+          let snap = await db.masterySnapshots.get(objId);
+          if (snap && snap.user_id !== activeUserId) {
+            snap = undefined;
+          }
 
           // Initialize SM-2 parameters
           let repetitions = 0;

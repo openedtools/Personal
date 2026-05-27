@@ -22,7 +22,9 @@ export const MistakeJournal: React.FC = () => {
 
   // 1. Fetch Mistake Journal and metadata
   const journalEntries = useLiveQuery(
-    () => db.mistakeJournal.where('user_id').equals(activeUserId).toArray(),
+    () => activeUserId
+      ? db.mistakeJournal.where('user_id').equals(activeUserId).toArray()
+      : db.mistakeJournal.filter(e => e.user_id === null).toArray(),
     [activeUserId]
   ) || [];
 

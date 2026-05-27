@@ -26,7 +26,9 @@ export const TaxonomyBrowser: React.FC = () => {
   const topics = useLiveQuery(() => db.topics.toArray()) || [];
   
   const masterySnapshots = useLiveQuery(
-    () => db.masterySnapshots.where('user_id').equals(activeUserId).toArray(),
+    () => activeUserId
+      ? db.masterySnapshots.where('user_id').equals(activeUserId).toArray()
+      : db.masterySnapshots.filter(s => s.user_id === null).toArray(),
     [activeUserId]
   ) || [];
 

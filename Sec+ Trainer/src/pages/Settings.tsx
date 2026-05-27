@@ -113,11 +113,21 @@ export const Settings: React.FC = () => {
       const activeUserId = user?.id || null;
 
       // Extract tables
-      const attempts = await db.attempts.where('user_id').equals(activeUserId).toArray();
-      const sessions = await db.sessions.where('user_id').equals(activeUserId).toArray();
-      const mistake_journal = await db.mistakeJournal.where('user_id').equals(activeUserId).toArray();
-      const resources = await db.resources.where('user_id').equals(activeUserId).toArray();
-      const mastery_snapshots = await db.masterySnapshots.where('user_id').equals(activeUserId).toArray();
+      const attempts = await (activeUserId 
+        ? db.attempts.where('user_id').equals(activeUserId).toArray() 
+        : db.attempts.filter(a => a.user_id === null).toArray());
+      const sessions = await (activeUserId 
+        ? db.sessions.where('user_id').equals(activeUserId).toArray() 
+        : db.sessions.filter(s => s.user_id === null).toArray());
+      const mistake_journal = await (activeUserId 
+        ? db.mistakeJournal.where('user_id').equals(activeUserId).toArray() 
+        : db.mistakeJournal.filter(m => m.user_id === null).toArray());
+      const resources = await (activeUserId 
+        ? db.resources.where('user_id').equals(activeUserId).toArray() 
+        : db.resources.filter(r => r.user_id === null).toArray());
+      const mastery_snapshots = await (activeUserId 
+        ? db.masterySnapshots.where('user_id').equals(activeUserId).toArray() 
+        : db.masterySnapshots.filter(s => s.user_id === null).toArray());
 
       const exportPayload = {
         version: 1,
