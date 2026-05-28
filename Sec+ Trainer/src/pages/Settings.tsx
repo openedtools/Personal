@@ -150,6 +150,9 @@ export const Settings: React.FC = () => {
       const mastery_snapshots = await (activeUserId 
         ? db.masterySnapshots.where('user_id').equals(activeUserId).toArray() 
         : db.masterySnapshots.filter(s => s.user_id === null).toArray());
+      const watched_resources = await (activeUserId 
+        ? db.watchedResources.where('user_id').equals(activeUserId).toArray() 
+        : db.watchedResources.filter(w => w.user_id === null).toArray());
 
       const exportPayload = {
         version: 1,
@@ -159,6 +162,7 @@ export const Settings: React.FC = () => {
         mastery_snapshots,
         mistake_journal,
         resources,
+        watched_resources,
       };
 
       // Generate downloadable blob file
@@ -206,7 +210,7 @@ export const Settings: React.FC = () => {
         const activeUserId = user?.id || null;
 
         // Perform merge write inside a transaction
-        await db.transaction('rw', [db.attempts, db.sessions, db.masterySnapshots, db.resources, db.mistakeJournal, db.syncQueue], async () => {
+        await db.transaction('rw', [db.attempts, db.sessions, db.masterySnapshots, db.resources, db.watchedResources, db.mistakeJournal, db.syncQueue], async () => {
           // Sync imported items to current user's profile
           for (const item of data.attempts) {
             const syncedItem = { ...item, user_id: activeUserId };
@@ -237,6 +241,16 @@ export const Settings: React.FC = () => {
             await db.resources.put(syncedItem);
             if (activeUserId) {
               await queueLocalChange('resources', item.resource_id, 'insert', syncedItem);
+            }
+          }
+
+          if (data.watched_resources) {
+            for (const item of data.watched_resources) {
+              const syncedItem = { ...item, user_id: activeUserId };
+              await db.watchedResources.put(syncedItem);
+              if (activeUserId) {
+                await queueLocalChange('watchedResources', item.watched_id, 'insert', syncedItem);
+              }
             }
           }
 

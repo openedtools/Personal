@@ -8,6 +8,7 @@ const TABLE_MAP: Record<string, { remote: string; pk: string }> = {
   attempts: { remote: 'attempts', pk: 'attempt_id' },
   masterySnapshots: { remote: 'mastery_snapshots', pk: 'objective_id' },
   resources: { remote: 'resources', pk: 'resource_id' },
+  watchedResources: { remote: 'watched_resources', pk: 'watched_id' },
   mistakeJournal: { remote: 'mistake_journal', pk: 'journal_id' },
 };
 
@@ -197,7 +198,7 @@ export async function migrateGuestData(userId: string) {
   console.log('Migrating guest/offline session data to user account:', userId);
   
   try {
-    await db.transaction('rw', [db.sessions, db.attempts, db.masterySnapshots, db.resources, db.mistakeJournal, db.syncQueue], async () => {
+    await db.transaction('rw', [db.sessions, db.attempts, db.masterySnapshots, db.resources, db.watchedResources, db.mistakeJournal, db.syncQueue], async () => {
       // 1. Sessions
       const guestSessions = await db.sessions.filter(s => s.user_id === '' || s.user_id === null).toArray();
       for (const session of guestSessions) {
@@ -243,7 +244,22 @@ export async function migrateGuestData(userId: string) {
         });
       }
 
-      // 4. Mastery Snapshots (Sync state of local mastery variables)
+      // 4. Watched Resources
+      const guestWatched = await db.watchedResources.filter(w => w.user_id === '' || w.user_id === null).toArray();
+      for (const watched of guestWatched) {
+        watched.user_id = userId;
+        watched.updated_at = new Date().toISOString();
+        await db.watchedResources.put(watched);
+        await db.syncQueue.add({
+          table_name: 'watchedResources',
+          record_id: watched.watched_id,
+          action: 'insert',
+          payload: watched,
+          timestamp: new Date().toISOString(),
+        });
+      }
+
+      // 5. Mastery Snapshots (Sync state of local mastery variables)
       const guestMastery = await db.masterySnapshots.toArray();
       for (const mastery of guestMastery) {
         mastery.user_id = userId;

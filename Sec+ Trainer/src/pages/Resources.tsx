@@ -18,10 +18,12 @@ export const Resources: React.FC = () => {
   const { user } = useApp();
   const activeUserId = user?.id || null;
 
-  // 1. Load resources and objectives from database
+  // 1. Load resources, objectives, and watched status from database
   const resources = useLiveQuery(() => db.resources.toArray()) || [];
   const objectives = useLiveQuery(() => db.objectives.toArray()) || [];
   const domains = useLiveQuery(() => db.domains.toArray()) || [];
+  const watchedList = useLiveQuery(() => db.watchedResources.toArray()) || [];
+  const watchedSet = new Set(watchedList.map(w => w.resource_id));
 
   // Form states for new custom resources
   const [showAddForm, setShowAddForm] = useState<boolean>(false);
@@ -35,7 +37,37 @@ export const Resources: React.FC = () => {
   const [filterDomain, setFilterDomain] = useState<string>('');
   const [filterObjective, setFilterObjective] = useState<string>('');
 
-  // 2. Add resource handler
+  // 2. Toggle resource watched state handler
+  const toggleWatched = async (resourceId: string) => {
+    try {
+      const existing = watchedList.find(w => w.resource_id === resourceId);
+      if (existing) {
+        // Unwatch
+        await db.watchedResources.delete(existing.watched_id);
+        if (activeUserId) {
+          await queueLocalChange('watchedResources', existing.watched_id, 'delete', existing);
+        }
+      } else {
+        // Watch
+        const watchedId = crypto.randomUUID();
+        const newWatched = {
+          watched_id: watchedId,
+          resource_id: resourceId,
+          user_id: activeUserId,
+          watched_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        };
+        await db.watchedResources.add(newWatched);
+        if (activeUserId) {
+          await queueLocalChange('watchedResources', watchedId, 'insert', newWatched);
+        }
+      }
+    } catch (err) {
+      console.error('Error toggling resource watched state:', err);
+    }
+  };
+
+  // 3. Add resource handler
   const handleAddResource = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError(null);
@@ -92,7 +124,7 @@ export const Resources: React.FC = () => {
     }
   };
 
-  // 3. Filtered objectives and resources
+  // 4. Filtered objectives and resources
   const filteredObjectives = objectives.filter(obj => {
     const matchesDomain = filterDomain === '' || obj.domain_id === filterDomain;
     const matchesObjective = filterObjective === '' || obj.objective_id === filterObjective;
@@ -277,25 +309,56 @@ export const Resources: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
                   {objResources.map(res => {
                     const Icon = getIcon(res.type);
+                    const isWatched = watchedSet.has(res.resource_id);
+
                     return (
-                      <a
+                      <div
                         key={res.resource_id}
-                        href={res.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="bg-slate-900/40 hover:bg-slate-900 border border-slate-850 hover:border-slate-800 p-3.5 rounded-xl transition-all flex items-start gap-3 group"
+                        className={`border p-3 rounded-xl transition-all flex items-center gap-3 group ${
+                          isWatched 
+                            ? 'bg-emerald-950/10 border-emerald-500/20 shadow-inner' 
+                            : 'bg-slate-900/40 hover:bg-slate-900 border-slate-850 hover:border-slate-800'
+                        }`}
                       >
-                        <Icon className="w-5 h-5 text-indigo-400 group-hover:scale-105 transition-transform mt-0.5 flex-shrink-0" />
-                        <div className="min-w-0">
-                          <span className="text-xs font-bold text-slate-300 group-hover:text-slate-50 transition-colors block truncate">
-                            {res.title}
-                          </span>
-                          <span className="text-[9px] text-slate-500 capitalize block mt-0.5 font-semibold">
-                            Type: {res.type} {res.license_note ? `• ${res.license_note}` : ''}
-                          </span>
-                        </div>
-                        <ExternalLink className="w-3.5 h-3.5 text-slate-600 ml-auto flex-shrink-0 mt-1" />
-                      </a>
+                        {/* Checkbox / Completion Toggle */}
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            toggleWatched(res.resource_id);
+                          }}
+                          className={`w-5 h-5 rounded-md border flex items-center justify-center transition-all flex-shrink-0 ${
+                            isWatched
+                              ? 'bg-emerald-600 border-emerald-500 text-slate-950'
+                              : 'border-slate-700 hover:border-indigo-400 text-transparent'
+                          }`}
+                          title={isWatched ? "Mark as incomplete" : "Mark as complete"}
+                        >
+                          <Check className="w-3.5 h-3.5 stroke-[3]" />
+                        </button>
+
+                        <a
+                          href={res.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-1 min-w-0 flex items-start gap-3"
+                        >
+                          <Icon className={`w-5 h-5 group-hover:scale-105 transition-transform mt-0.5 flex-shrink-0 ${
+                            isWatched ? 'text-emerald-400' : 'text-indigo-400'
+                          }`} />
+                          <div className="min-w-0 flex-1">
+                            <span className={`text-xs font-bold transition-colors block truncate ${
+                              isWatched ? 'text-slate-500 line-through' : 'text-slate-300 group-hover:text-slate-50'
+                            }`}>
+                              {res.title}
+                            </span>
+                            <span className="text-[9px] text-slate-500 capitalize block mt-0.5 font-semibold">
+                              Type: {res.type} {res.license_note ? `• ${res.license_note}` : ''}
+                            </span>
+                          </div>
+                          <ExternalLink className="w-3.5 h-3.5 text-slate-600 ml-auto flex-shrink-0 mt-1" />
+                        </a>
+                      </div>
                     );
                   })}
                 </div>

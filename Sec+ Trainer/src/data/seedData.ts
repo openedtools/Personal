@@ -649,6 +649,339 @@ export const RESOURCES: Resource[] = [
     license_note: 'Free IBM YouTube resource',
     user_id: null,
   },
+  {
+    resource_id: 'R-D1.O2-05',
+    objective_id: 'D1.O2',
+    type: 'video',
+    title: 'IBM Technology - What is Least Privilege?',
+    url: 'https://www.youtube.com/watch?v=F03r21t1p9g',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null
+  },
+  {
+    resource_id: 'R-D1.O4-05',
+    objective_id: 'D1.O4',
+    type: 'video',
+    title: 'IBM Technology - Diffie-Hellman Key Exchange Explained',
+    url: 'https://www.youtube.com/watch?v=NmM9HA2J6PM',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null
+  },
+  {
+    resource_id: 'R-D1.O4-06',
+    objective_id: 'D1.O4',
+    type: 'video',
+    title: 'IBM Technology - How Digital Signatures Work',
+    url: 'https://www.youtube.com/watch?v=s22eJ1eVgHs',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null
+  },
+  {
+    resource_id: 'R-D2.O1-03',
+    objective_id: 'D2.O1',
+    type: 'video',
+    title: 'IBM Technology - Types of Hackers Explained',
+    url: 'https://www.youtube.com/watch?v=UkrS58xOqP0',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null
+  },
+  {
+    resource_id: 'R-D2.O1-04',
+    objective_id: 'D2.O1',
+    type: 'video',
+    title: 'IBM Technology - Insider Threats Explained',
+    url: 'https://www.youtube.com/watch?v=U84tAmsP5f8',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null
+  },
+  {
+    resource_id: 'R-D2.O2-03',
+    objective_id: 'D2.O2',
+    type: 'video',
+    title: 'IBM Technology - Phishing Attacks Explained',
+    url: 'https://www.youtube.com/watch?v=g6Wn5w2XQ6k',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null
+  },
+  {
+    resource_id: 'R-D2.O2-04',
+    objective_id: 'D2.O2',
+    type: 'video',
+    title: 'IBM Technology - SQL Injection Explained',
+    url: 'https://www.youtube.com/watch?v=2nXoxD_W5T0',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null
+  },
+  {
+    resource_id: 'R-D2.O2-05',
+    objective_id: 'D2.O2',
+    type: 'video',
+    title: 'IBM Technology - Cross-Site Scripting (XSS) Explained',
+    url: 'https://www.youtube.com/watch?v=unlaZ8tQJio',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null
+  },
+  {
+    resource_id: 'R-D2.O3-03',
+    objective_id: 'D2.O3',
+    type: 'video',
+    title: 'IBM Technology - Common Vulnerabilities and Exposures (CVE) Explained',
+    url: 'https://www.youtube.com/watch?v=hBwz4p23a0I',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null
+  },
+  {
+    resource_id: 'R-D2.O4-03',
+    objective_id: 'D2.O4',
+    type: 'video',
+    title: 'IBM Technology - What is Ransomware?',
+    url: 'https://www.youtube.com/watch?v=F03r21t1p9g',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null
+  },
+  {
+    resource_id: 'R-D2.O4-04',
+    objective_id: 'D2.O4',
+    type: 'video',
+    title: 'IBM Technology - What is a Rootkit?',
+    url: 'https://www.youtube.com/watch?v=AQDCe585Lnc',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null
+  },
+  {
+    resource_id: 'R-D2.O5-03',
+    objective_id: 'D2.O5',
+    type: 'video',
+    title: 'IBM Technology - Network Segmentation Explained',
+    url: 'https://www.youtube.com/watch?v=kYOp1ZgH2mU',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null
+  },
+  {
+    resource_id: 'R-D3.O1-03',
+    objective_id: 'D3.O1',
+    type: 'video',
+    title: 'IBM Technology - What is Edge Computing?',
+    url: 'https://www.youtube.com/watch?v=3hScgbiwS1E',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null
+  },
+  {
+    resource_id: 'R-D3.O1-04',
+    objective_id: 'D3.O1',
+    type: 'video',
+    title: 'IBM Technology - Hybrid Cloud Architecture Explained',
+    url: 'https://www.youtube.com/watch?v=i479Y25W9p8',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null
+  },
+  {
+    resource_id: 'R-D3.O2-04',
+    objective_id: 'D3.O2',
+    type: 'video',
+    title: 'IBM Technology - Virtual Private Networks (VPNs) Explained',
+    url: 'https://www.youtube.com/watch?v=d_M_S8UvPkw',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null
+  },
+  {
+    resource_id: 'R-D3.O2-05',
+    objective_id: 'D3.O2',
+    type: 'video',
+    title: 'IBM Technology - What is a DMZ?',
+    url: 'https://www.youtube.com/watch?v=3KzJ6aXv0mE',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null
+  },
+  {
+    resource_id: 'R-D3.O3-03',
+    objective_id: 'D3.O3',
+    type: 'video',
+    title: 'IBM Technology - Data Loss Prevention (DLP) Explained',
+    url: 'https://www.youtube.com/watch?v=yR4c2R9G1eA',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null
+  },
+  {
+    resource_id: 'R-D3.O3-04',
+    objective_id: 'D3.O3',
+    type: 'video',
+    title: 'IBM Technology - Encryption at Rest vs. Encryption in Transit',
+    url: 'https://www.youtube.com/watch?v=AQDCe585Lnc',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null
+  },
+  {
+    resource_id: 'R-D3.O4-03',
+    objective_id: 'D3.O4',
+    type: 'video',
+    title: 'IBM Technology - RAID Explained',
+    url: 'https://www.youtube.com/watch?v=lT24zQ8nQ5Y',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null
+  },
+  {
+    resource_id: 'R-D3.O4-04',
+    objective_id: 'D3.O4',
+    type: 'video',
+    title: 'IBM Technology - High Availability Concepts',
+    url: 'https://www.youtube.com/watch?v=lT24zQ8nQ5Y',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null
+  },
+  {
+    resource_id: 'R-D4.O1-03',
+    objective_id: 'D4.O1',
+    type: 'video',
+    title: 'IBM Technology - What is EDR (Endpoint Detection and Response)?',
+    url: 'https://www.youtube.com/watch?v=hBwz4p23a0I',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null
+  },
+  {
+    resource_id: 'R-D4.O1-04',
+    objective_id: 'D4.O1',
+    type: 'video',
+    title: 'IBM Technology - BYOD vs COBO Security Policies',
+    url: 'https://www.youtube.com/watch?v=W-L6P6sR27I',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null
+  },
+  {
+    resource_id: 'R-D4.O2-03',
+    objective_id: 'D4.O2',
+    type: 'video',
+    title: 'IBM Technology - Software License Management Explained',
+    url: 'https://www.youtube.com/watch?v=W-L6P6sR27I',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null
+  },
+  {
+    resource_id: 'R-D4.O3-03',
+    objective_id: 'D4.O3',
+    type: 'video',
+    title: 'IBM Technology - Vulnerability Management Lifecycle Explained',
+    url: 'https://www.youtube.com/watch?v=m7H0D_T3zEE',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null
+  },
+  {
+    resource_id: 'R-D4.O4-03',
+    objective_id: 'D4.O4',
+    type: 'video',
+    title: 'IBM Technology - SIEM Logs Correlation Explained',
+    url: 'https://www.youtube.com/watch?v=hBwz4p23a0I',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null
+  },
+  {
+    resource_id: 'R-D4.O5-03',
+    objective_id: 'D4.O5',
+    type: 'video',
+    title: 'IBM Technology - Proxy Servers Explained',
+    url: 'https://www.youtube.com/watch?v=3KzJ6aXv0mE',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null
+  },
+  {
+    resource_id: 'R-D4.O6-04',
+    objective_id: 'D4.O6',
+    type: 'video',
+    title: 'IBM Technology - OAuth 2.0 and OpenID Connect (OIDC) Explained',
+    url: 'https://www.youtube.com/watch?v=t18YB3xDfQ0',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null
+  },
+  {
+    resource_id: 'R-D4.O6-05',
+    objective_id: 'D4.O6',
+    type: 'video',
+    title: 'IBM Technology - What is Active Directory?',
+    url: 'https://www.youtube.com/watch?v=iBhlT2wE0oU',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null
+  },
+  {
+    resource_id: 'R-D4.O7-03',
+    objective_id: 'D4.O7',
+    type: 'video',
+    title: 'IBM Technology - Infrastructure as Code (IaC) Security',
+    url: 'https://www.youtube.com/watch?v=1F2b_PqFz28',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null
+  },
+  {
+    resource_id: 'R-D4.O8-03',
+    objective_id: 'D4.O8',
+    type: 'video',
+    title: 'IBM Technology - Cyber Forensics Investigation Process',
+    url: 'https://www.youtube.com/watch?v=8V4V9vH9oM8',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null
+  },
+  {
+    resource_id: 'R-D4.O9-03',
+    objective_id: 'D4.O9',
+    type: 'video',
+    title: 'IBM Technology - How to Read Network Logs',
+    url: 'https://www.youtube.com/watch?v=8V4V9vH9oM8',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null
+  },
+  {
+    resource_id: 'R-D5.O1-03',
+    objective_id: 'D5.O1',
+    type: 'video',
+    title: 'IBM Technology - Security Policies and Procedures',
+    url: 'https://www.youtube.com/watch?v=7uV8hG-d_4A',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null
+  },
+  {
+    resource_id: 'R-D5.O2-04',
+    objective_id: 'D5.O2',
+    type: 'video',
+    title: 'IBM Technology - Risk Treatment Strategies Explained',
+    url: 'https://www.youtube.com/watch?v=7uV8hG-d_4A',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null
+  },
+  {
+    resource_id: 'R-D5.O3-03',
+    objective_id: 'D5.O3',
+    type: 'video',
+    title: 'IBM Technology - SOC 2 Reports Explained',
+    url: 'https://www.youtube.com/watch?v=o6Z-H60rV9U',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null
+  },
+  {
+    resource_id: 'R-D5.O4-03',
+    objective_id: 'D5.O4',
+    type: 'video',
+    title: 'IBM Technology - GDPR Compliance Requirements',
+    url: 'https://www.youtube.com/watch?v=9g0Q_eU7Q0M',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null
+  },
+  {
+    resource_id: 'R-D5.O5-03',
+    objective_id: 'D5.O5',
+    type: 'video',
+    title: 'IBM Technology - Penetration Testing Methodology Explained',
+    url: 'https://www.youtube.com/watch?v=m7H0D_T3zEE',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null
+  },
+  {
+    resource_id: 'R-D5.O6-03',
+    objective_id: 'D5.O6',
+    type: 'video',
+    title: 'IBM Technology - Social Engineering Prevention Training',
+    url: 'https://www.youtube.com/watch?v=g6Wn5w2XQ6k',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null
+  }
 ];
 
 export const QUESTIONS: Question[] = [

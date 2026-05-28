@@ -1,5 +1,5 @@
 import Dexie, { type Table } from 'dexie';
-import type { Objective, Topic, Question, Attempt, Session, MasterySnapshot, Resource, MistakeJournalEntry, SyncEvent } from '../types/schemas';
+import type { Objective, Topic, Question, Attempt, Session, MasterySnapshot, Resource, MistakeJournalEntry, SyncEvent, WatchedResource } from '../types/schemas';
 import { DOMAINS, OBJECTIVES, TOPICS, RESOURCES, QUESTIONS } from '../data/seedData';
 
 export interface LocalSyncQueueItem {
@@ -20,6 +20,7 @@ export class SecPlusDatabase extends Dexie {
   sessions!: Table<Session, string>;
   masterySnapshots!: Table<MasterySnapshot, string>;
   resources!: Table<Resource, string>;
+  watchedResources!: Table<WatchedResource, string>;
   mistakeJournal!: Table<MistakeJournalEntry, string>;
   syncQueue!: Table<LocalSyncQueueItem, number>;
   syncEvents!: Table<SyncEvent, string>;
@@ -39,6 +40,10 @@ export class SecPlusDatabase extends Dexie {
       mistakeJournal: 'journal_id, attempt_id, question_id, domain_id, objective_id, user_id',
       syncQueue: '++id, table_name, record_id, action, timestamp',
       syncEvents: 'event_id, timestamp, user_id',
+    });
+
+    this.version(2).stores({
+      watchedResources: 'watched_id, resource_id, user_id'
     });
 
     // Populate seed data on database creation
@@ -80,10 +85,11 @@ export class SecPlusDatabase extends Dexie {
 
   // Helper method to clear user progress data (for testing or reset)
   async resetUserProgress() {
-    await this.transaction('rw', [this.attempts, this.sessions, this.masterySnapshots, this.mistakeJournal, this.syncQueue, this.syncEvents], async () => {
+    await this.transaction('rw', [this.attempts, this.sessions, this.masterySnapshots, this.mistakeJournal, this.watchedResources, this.syncQueue, this.syncEvents], async () => {
       await this.attempts.clear();
       await this.sessions.clear();
       await this.mistakeJournal.clear();
+      await this.watchedResources.clear();
       await this.syncQueue.clear();
       await this.syncEvents.clear();
       

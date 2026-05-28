@@ -135,6 +135,16 @@ export const ResourceSchema = z.object({
 
 export type Resource = z.infer<typeof ResourceSchema>;
 
+export const WatchedResourceSchema = z.object({
+  watched_id: z.string().uuid(),
+  resource_id: z.string(),
+  user_id: z.string().nullable().default(null),
+  watched_at: z.string().datetime(),
+  updated_at: z.string().datetime().optional(),
+});
+
+export type WatchedResource = z.infer<typeof WatchedResourceSchema>;
+
 export const MistakeJournalEntrySchema = z.object({
   journal_id: z.string().uuid(),
   attempt_id: z.string().uuid(),
@@ -184,6 +194,7 @@ export const AppExportSchema = z.object({
   mastery_snapshots: z.array(MasterySnapshotSchema),
   mistake_journal: z.array(MistakeJournalEntrySchema),
   resources: z.array(ResourceSchema),
+  watched_resources: z.array(WatchedResourceSchema).optional(),
 });
 
 export type AppExport = z.infer<typeof AppExportSchema>;
