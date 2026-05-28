@@ -416,6 +416,30 @@ export const ReviewReport: React.FC = () => {
                 )}
               </div>
 
+              {/* Resources / Study Links */}
+              {resourcesMap[q.objective_id] && resourcesMap[q.objective_id].length > 0 && (
+                <div className="bg-slate-900/30 border border-slate-800/50 p-4 rounded-2xl space-y-2">
+                  <span className="text-[10px] font-extrabold text-indigo-400 uppercase tracking-widest flex items-center gap-1.5">
+                    <ExternalLink className="w-3.5 h-3.5" />
+                    <span>Study References for {q.objective_id}</span>
+                  </span>
+                  <div className="space-y-1.5 pt-1">
+                    {resourcesMap[q.objective_id].map(res => (
+                      <a
+                        key={res.resource_id}
+                        href={res.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-between text-xs text-indigo-600 hover:text-indigo-700 bg-slate-950/80 hover:bg-slate-950 p-2.5 rounded-xl border border-slate-800/40 transition-colors"
+                      >
+                        <span className="font-semibold">{res.title}</span>
+                        <span className="text-[10px] text-slate-500 font-mono capitalize">{res.type} ↗</span>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Mistake Journal Logger (Render on incorrect attempts) */}
               {!att.correct && (
                 <div className="border-t border-slate-850 pt-4 mt-2 space-y-3">
