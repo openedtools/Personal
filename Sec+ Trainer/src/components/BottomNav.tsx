@@ -33,7 +33,7 @@ export const BottomNav: React.FC = () => {
             <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center font-display font-extrabold text-white text-lg shadow-lg shadow-indigo-500/20">
               S+
             </div>
-            <span className="font-display font-bold text-white tracking-wide">Sec+ Mastery</span>
+            <span className="font-display font-bold text-slate-200 tracking-wide">Sec+ Mastery</span>
           </div>
           <div>
             {syncState === 'synced' ? (

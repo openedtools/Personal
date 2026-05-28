@@ -177,7 +177,7 @@ export const Dashboard: React.FC = () => {
               />
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="font-display font-extrabold text-4xl text-white tracking-tight">
+              <span className="font-display font-extrabold text-4xl text-slate-200 tracking-tight">
                 {overallReadiness}%
               </span>
               <span className="text-[10px] text-slate-400 uppercase tracking-widest font-bold mt-0.5">
@@ -196,7 +196,7 @@ export const Dashboard: React.FC = () => {
             <div className="bg-slate-900/60 p-4 rounded-2xl border border-slate-800/50">
               <span className="text-slate-500 text-xs font-semibold">Total Practice Questions</span>
               <div className="flex items-center gap-2 mt-1">
-                <span className="text-2xl font-bold text-white">{totalAttemptsCount}</span>
+                <span className="text-2xl font-bold text-slate-200">{totalAttemptsCount}</span>
                 <span className="text-[10px] text-slate-400 bg-slate-800 px-2 py-0.5 rounded-full">attempts</span>
               </div>
             </div>
