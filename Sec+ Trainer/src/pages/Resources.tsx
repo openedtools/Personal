@@ -103,7 +103,7 @@ export const Resources: React.FC = () => {
     <div className="space-y-6 pb-24 md:pb-6 select-none">
       <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-800 pb-4">
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-white md:text-3xl">
+          <h1 className="text-2xl font-extrabold tracking-tight text-slate-200 md:text-3xl">
             Remediation Links
           </h1>
           <p className="text-slate-400 text-sm mt-1">
@@ -117,7 +117,7 @@ export const Resources: React.FC = () => {
             setNewObjective(objectives[0]?.objective_id || '');
             setShowAddForm(!showAddForm);
           }}
-          className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-5 rounded-2xl shadow-lg shadow-indigo-600/20 transition-all active:scale-95 text-xs self-end sm:self-auto"
+          className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 text-slate-950 font-bold py-3 px-5 rounded-2xl shadow-lg shadow-indigo-600/20 transition-all active:scale-95 text-xs self-end sm:self-auto"
         >
           <Plus className="w-4 h-4" />
           <span>Add Custom Link</span>
@@ -207,7 +207,7 @@ export const Resources: React.FC = () => {
             </button>
             <button
               type="submit"
-              className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-md shadow-indigo-600/10"
+              className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 text-slate-950 px-4 py-2 rounded-xl text-xs font-bold shadow-md shadow-indigo-600/10"
             >
               <Check className="w-4 h-4" />
               <span>Save Link</span>
@@ -287,7 +287,7 @@ export const Resources: React.FC = () => {
                       >
                         <Icon className="w-5 h-5 text-indigo-400 group-hover:scale-105 transition-transform mt-0.5 flex-shrink-0" />
                         <div className="min-w-0">
-                          <span className="text-xs font-bold text-slate-300 group-hover:text-white transition-colors block truncate">
+                          <span className="text-xs font-bold text-slate-300 group-hover:text-slate-50 transition-colors block truncate">
                             {res.title}
                           </span>
                           <span className="text-[9px] text-slate-500 capitalize block mt-0.5 font-semibold">

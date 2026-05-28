@@ -31,6 +31,7 @@ export const QuizSetup: React.FC = () => {
   );
   const [questionCount, setQuestionCount] = useState<number>(10);
   const [isTimed, setIsTimed] = useState<boolean>(false);
+  const [isStudyMode, setIsStudyMode] = useState<boolean>(true);
   const [validationError, setValidationError] = useState<string | null>(null);
   
   const [matchingQuestionsCount, setMatchingQuestionsCount] = useState<number>(0);
@@ -112,9 +113,10 @@ export const QuizSetup: React.FC = () => {
     navigate('/quiz-runner', {
       state: {
         mode,
-        targetId,
+        targetId: selectedTargetId,
         questionCount: Math.min(questionCount, matchingQuestionsCount),
         isTimed,
+        isStudyMode,
       }
     });
   };
@@ -122,7 +124,7 @@ export const QuizSetup: React.FC = () => {
   return (
     <div className="space-y-6 pb-24 md:pb-6 max-w-2xl mx-auto">
       <header className="border-b border-slate-800 pb-4">
-        <h1 className="text-2xl font-extrabold tracking-tight text-white md:text-3xl">
+        <h1 className="text-2xl font-extrabold tracking-tight text-slate-200 md:text-3xl">
           Setup Practice Quiz
         </h1>
         <p className="text-slate-400 text-sm mt-1">
@@ -156,7 +158,7 @@ export const QuizSetup: React.FC = () => {
                 onClick={() => handleModeChange(m.id as any)}
                 className={`py-3 px-2 rounded-xl text-xs font-bold border transition-all text-center ${
                   mode === m.id
-                    ? 'bg-indigo-600 border-indigo-500 text-white shadow-md shadow-indigo-600/10'
+                    ? 'bg-indigo-600 border-indigo-500 text-slate-950 shadow-md shadow-indigo-600/10'
                     : 'bg-slate-900 border-slate-800 text-slate-400 hover:bg-slate-850'
                 }`}
               >
@@ -235,7 +237,7 @@ export const QuizSetup: React.FC = () => {
                 onClick={() => setQuestionCount(count)}
                 className={`flex-1 py-3.5 rounded-2xl text-xs font-extrabold border transition-all ${
                   questionCount === count
-                    ? 'bg-indigo-600 border-indigo-500 text-white shadow-md shadow-indigo-600/10'
+                    ? 'bg-indigo-600 border-indigo-500 text-slate-950 shadow-md shadow-indigo-600/10'
                     : 'bg-slate-900 border-slate-800 text-slate-400 hover:bg-slate-850'
                 }`}
               >
@@ -248,33 +250,56 @@ export const QuizSetup: React.FC = () => {
           </p>
         </div>
 
-        {/* 4. Timed/Untimed Toggle */}
-        <div className="flex items-center justify-between bg-slate-900/60 p-4 rounded-2xl border border-slate-800/80">
-          <div className="flex items-center gap-3">
-            <Clock className="w-5 h-5 text-slate-500" />
-            <div>
-              <span className="text-sm font-bold text-slate-200 block">Timed Practice Mode</span>
-              <span className="text-[10px] text-slate-500 font-semibold">Allows 75 seconds average per question.</span>
+        {/* 4. Study Mode & Timed Mode Toggles */}
+        <div className="space-y-3">
+          {/* Study Mode (Immediate Feedback) Toggle */}
+          <div className="flex items-center justify-between bg-slate-900/60 p-4 rounded-2xl border border-slate-800/80">
+            <div className="flex items-center gap-3">
+              <Zap className="w-5 h-5 text-indigo-400" />
+              <div>
+                <span className="text-sm font-bold text-slate-200 block">Immediate Feedback (Study Mode)</span>
+                <span className="text-[10px] text-slate-500 font-semibold">Checks your answer immediately with rationale and lets you log mistakes in-place.</span>
+              </div>
             </div>
+
+            <button
+              onClick={() => setIsStudyMode(!isStudyMode)}
+              className={`w-12 h-6 flex items-center rounded-full p-1 transition-all ${
+                isStudyMode ? 'bg-indigo-600 justify-end' : 'bg-slate-800 justify-start'
+              }`}
+            >
+              <span className="w-4 h-4 bg-slate-950 rounded-full shadow-md" />
+            </button>
           </div>
 
-          <button
-            onClick={() => setIsTimed(!isTimed)}
-            className={`w-12 h-6 flex items-center rounded-full p-1 transition-all ${
-              isTimed ? 'bg-indigo-600 justify-end' : 'bg-slate-800 justify-start'
-            }`}
-          >
-            <span className="w-4 h-4 bg-white rounded-full shadow-md" />
-          </button>
+          {/* Timed Mode Toggle */}
+          <div className="flex items-center justify-between bg-slate-900/60 p-4 rounded-2xl border border-slate-800/80">
+            <div className="flex items-center gap-3">
+              <Clock className="w-5 h-5 text-slate-600" />
+              <div>
+                <span className="text-sm font-bold text-slate-200 block">Timed Practice Mode</span>
+                <span className="text-[10px] text-slate-500 font-semibold">Allows 75 seconds average per question.</span>
+              </div>
+            </div>
+
+            <button
+              onClick={() => setIsTimed(!isTimed)}
+              className={`w-12 h-6 flex items-center rounded-full p-1 transition-all ${
+                isTimed ? 'bg-indigo-600 justify-end' : 'bg-slate-800 justify-start'
+              }`}
+            >
+              <span className="w-4 h-4 bg-slate-950 rounded-full shadow-md" />
+            </button>
+          </div>
         </div>
 
         {/* 5. Trigger Action */}
         <button
           onClick={handleStart}
           disabled={matchingQuestionsCount === 0}
-          className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:hover:bg-indigo-600 text-white font-bold py-4 rounded-2xl shadow-lg shadow-indigo-600/20 transition-all active:scale-[0.99] select-none text-sm"
+          className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:hover:bg-indigo-600 text-slate-950 font-bold py-4 rounded-2xl shadow-lg shadow-indigo-600/20 transition-all active:scale-[0.99] select-none text-sm"
         >
-          <Zap className="w-4 h-4 fill-white" />
+          <Zap className="w-4 h-4 fill-slate-950" />
           <span>Launch Practice Session</span>
         </button>
       </div>

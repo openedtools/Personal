@@ -54,7 +54,7 @@ export const TaxonomyBrowser: React.FC = () => {
   return (
     <div className="space-y-6 pb-24 md:pb-6">
       <header className="border-b border-slate-800 pb-4">
-        <h1 className="text-2xl font-extrabold tracking-tight text-white md:text-3xl">
+        <h1 className="text-2xl font-extrabold tracking-tight text-slate-200 md:text-3xl">
           SY0-701 Exam Taxonomy
         </h1>
         <p className="text-slate-400 text-sm mt-1">
@@ -89,7 +89,7 @@ export const TaxonomyBrowser: React.FC = () => {
                       Weight: {(dom.weight * 100).toFixed(0)}%
                     </span>
                   </div>
-                  <h2 className="text-base font-extrabold text-white mt-1.5 truncate">
+                  <h2 className="text-base font-extrabold text-slate-200 mt-1.5 truncate">
                     {dom.name}
                   </h2>
                 </div>
@@ -157,9 +157,9 @@ export const TaxonomyBrowser: React.FC = () => {
                             <div className="flex gap-3">
                               <button
                                 onClick={() => handleStartQuiz(obj.objective_id)}
-                                className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-4 py-2 rounded-xl font-bold shadow-md shadow-indigo-600/10 transition-all active:scale-95"
+                                className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 text-slate-950 text-xs px-4 py-2 rounded-xl font-bold shadow-md shadow-indigo-600/10 transition-all active:scale-95"
                               >
-                                <Zap className="w-3.5 h-3.5 fill-white" />
+                                <Zap className="w-3.5 h-3.5 fill-slate-950" />
                                 <span>Practice Objective</span>
                               </button>
                             </div>
@@ -179,7 +179,7 @@ export const TaxonomyBrowser: React.FC = () => {
                                     >
                                       <Hash className="w-3 h-3 text-slate-500 mt-0.5 flex-shrink-0" />
                                       <div className="space-y-0.5">
-                                        <p className="font-bold text-white leading-tight">{topic.title}</p>
+                                        <p className="font-bold text-slate-200 leading-tight">{topic.title}</p>
                                         <p className="text-[10px] text-slate-500">{topic.official_path}</p>
                                       </div>
                                     </div>

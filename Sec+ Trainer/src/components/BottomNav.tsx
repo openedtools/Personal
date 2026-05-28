@@ -30,7 +30,7 @@ export const BottomNav: React.FC = () => {
       <aside className="hidden md:flex flex-col w-64 bg-slate-950 border-r border-slate-800 h-full fixed left-0 top-0 text-slate-300">
         <div className="p-6 border-b border-slate-800 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center font-display font-extrabold text-white text-lg shadow-lg shadow-indigo-500/20">
+            <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center font-display font-extrabold text-slate-950 text-lg shadow-lg shadow-indigo-500/20">
               S+
             </div>
             <span className="font-display font-bold text-slate-200 tracking-wide">Sec+ Mastery</span>
@@ -56,7 +56,7 @@ export const BottomNav: React.FC = () => {
                 className={({ isActive }) =>
                   `flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group font-medium ${
                     isActive
-                      ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20'
+                      ? 'bg-indigo-600 text-slate-950 shadow-lg shadow-indigo-600/20'
                       : 'hover:bg-slate-900 text-slate-400 hover:text-slate-200'
                   }`
                 }

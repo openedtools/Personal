@@ -126,7 +126,7 @@ export const MistakeJournal: React.FC = () => {
     <div className="space-y-6 pb-24 md:pb-6 select-none">
       <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-800 pb-4">
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-white md:text-3xl">
+          <h1 className="text-2xl font-extrabold tracking-tight text-slate-200 md:text-3xl">
             Mistake Journal
           </h1>
           <p className="text-slate-400 text-sm mt-1">
@@ -137,9 +137,9 @@ export const MistakeJournal: React.FC = () => {
         {filteredEntries.length > 0 && (
           <button
             onClick={handlePracticeMistakes}
-            className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-5 rounded-2xl shadow-lg shadow-indigo-600/20 transition-all active:scale-95 text-xs self-end sm:self-auto"
+            className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 text-slate-950 font-bold py-3 px-5 rounded-2xl shadow-lg shadow-indigo-600/20 transition-all active:scale-95 text-xs self-end sm:self-auto"
           >
-            <Zap className="w-4 h-4 fill-white" />
+            <Zap className="w-4 h-4 fill-slate-950" />
             <span>Practice Journal Mistakes ({filteredEntries.length})</span>
           </button>
         )}
@@ -284,7 +284,7 @@ export const MistakeJournal: React.FC = () => {
                         </button>
                         <button
                           onClick={() => handleEditSave(entry)}
-                          className="flex items-center gap-1 bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-md shadow-indigo-600/10"
+                          className="flex items-center gap-1 bg-indigo-600 hover:bg-indigo-500 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md shadow-indigo-600/10"
                         >
                           <Save className="w-3.5 h-3.5" />
                           <span>Save Note</span>
@@ -313,7 +313,7 @@ export const MistakeJournal: React.FC = () => {
       ) : (
         <div className="text-center py-16 border border-dashed border-slate-800 rounded-3xl bg-slate-950/20 max-w-xl mx-auto">
           <AlertTriangle className="w-10 h-10 text-slate-500/80 mx-auto" />
-          <h3 className="text-white font-bold mt-3 text-sm">Your Mistake Journal is Empty</h3>
+          <h3 className="text-slate-200 font-bold mt-3 text-sm">Your Mistake Journal is Empty</h3>
           <p className="text-slate-500 text-xs mt-1.5 px-6 leading-relaxed">
             Great job! Mistake journal logs are created when you miss questions in a practice session and deconstruct the error on the review report.
           </p>

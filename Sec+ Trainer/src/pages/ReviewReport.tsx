@@ -200,7 +200,7 @@ export const ReviewReport: React.FC = () => {
   if (!session) {
     return (
       <div className="text-center py-12">
-        <h2 className="text-white text-xl font-bold">Session not found</h2>
+        <h2 className="text-slate-200 text-xl font-bold">Session not found</h2>
         <Link to="/" className="text-indigo-400 text-sm hover:underline mt-2 inline-block">Return to Dashboard</Link>
       </div>
     );
@@ -223,7 +223,7 @@ export const ReviewReport: React.FC = () => {
           <span className="text-[10px] text-slate-500 font-extrabold uppercase tracking-widest block">
             Practice Result
           </span>
-          <h1 className="text-2xl font-extrabold text-white tracking-tight mt-1">
+          <h1 className="text-2xl font-extrabold text-slate-200 tracking-tight mt-1">
             Session Review
           </h1>
           <p className="text-slate-400 text-xs mt-1">
@@ -322,7 +322,7 @@ export const ReviewReport: React.FC = () => {
 
       {/* Attempts Review Cards */}
       <section className="space-y-6">
-        <h3 className="font-display font-bold text-lg text-white">Question Breakdown</h3>
+        <h3 className="font-display font-bold text-lg text-slate-200">Question Breakdown</h3>
 
         {attempts.map((att, idx) => {
           const q = questionsMap[att.question_id];

@@ -109,7 +109,7 @@ export const Dashboard: React.FC = () => {
       {/* Header Banner */}
       <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-slate-900 border-b border-slate-800 pb-4">
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight md:text-3xl text-white">
+          <h1 className="text-2xl font-extrabold tracking-tight md:text-3xl text-slate-200">
             Welcome, {user ? user.email.split('@')[0] : 'Study Guest'}
           </h1>
           <p className="text-slate-400 text-sm mt-1">
@@ -214,9 +214,9 @@ export const Dashboard: React.FC = () => {
           <div className="flex flex-wrap gap-4">
             <Link
               to="/quiz"
-              className="flex-1 min-w-[200px] flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 px-5 rounded-2xl shadow-lg shadow-indigo-600/30 transition-all hover:scale-[1.01] active:scale-[0.99]"
+              className="flex-1 min-w-[200px] flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-50 text-slate-950 font-semibold py-3 px-5 rounded-2xl shadow-lg shadow-indigo-600/30 transition-all hover:scale-[1.01] active:scale-[0.99]"
             >
-              <Zap className="w-4 h-4 fill-white" />
+              <Zap className="w-4 h-4 fill-slate-950" />
               <span>Start Quick Practice</span>
               <ArrowRight className="w-4 h-4 ml-1" />
             </Link>
@@ -239,7 +239,7 @@ export const Dashboard: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Side: Domains Mastery Accordion */}
         <section className="lg:col-span-7 space-y-4">
-          <h3 className="font-display font-bold text-lg text-white">Domain Readiness</h3>
+          <h3 className="font-display font-bold text-lg text-slate-200">Domain Readiness</h3>
 
           <div className="space-y-3">
             {domains.map((dom) => {
@@ -262,12 +262,12 @@ export const Dashboard: React.FC = () => {
                           {dom.id} - {(dom.weight * 100).toFixed(0)}%
                         </span>
                       </div>
-                      <h4 className="text-sm font-bold text-white mt-1 truncate">{dom.name}</h4>
+                      <h4 className="text-sm font-bold text-slate-350 mt-1 truncate">{dom.name}</h4>
                     </div>
 
                     <div className="flex items-center gap-4">
                       <div className="text-right">
-                        <span className="text-lg font-bold text-white">{score}%</span>
+                        <span className="text-lg font-bold text-slate-200">{score}%</span>
                         <div className="text-[10px] text-slate-500 uppercase font-semibold tracking-wider">mastery</div>
                       </div>
                       <span className="text-slate-600 text-lg">{isExpanded ? '−' : '+'}</span>

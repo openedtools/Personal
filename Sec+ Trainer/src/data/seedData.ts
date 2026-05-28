@@ -54,6 +54,7 @@ export const TOPICS: Topic[] = [
 ];
 
 export const RESOURCES: Resource[] = [
+  // Domain 1.1 - Security Controls
   {
     resource_id: 'R-D1.O1-01',
     objective_id: 'D1.O1',
@@ -64,6 +65,16 @@ export const RESOURCES: Resource[] = [
     user_id: null,
   },
   {
+    resource_id: 'R-D1.O1-02',
+    objective_id: 'D1.O1',
+    type: 'video',
+    title: 'IBM Technology - Security Controls Explained',
+    url: 'https://www.youtube.com/watch?v=rl97sYwXg08',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null,
+  },
+  // Domain 1.2 - Security Concepts
+  {
     resource_id: 'R-D1.O2-01',
     objective_id: 'D1.O2',
     type: 'doc',
@@ -73,12 +84,265 @@ export const RESOURCES: Resource[] = [
     user_id: null,
   },
   {
+    resource_id: 'R-D1.O2-02',
+    objective_id: 'D1.O2',
+    type: 'video',
+    title: 'Professor Messer - Security Concepts (SY0-701 - 1.2)',
+    url: 'https://www.professormesser.com/security-plus/sy0-701/sy0-701-video/security-concepts-sy0-701/',
+    license_note: 'Free educational link',
+    user_id: null,
+  },
+  {
+    resource_id: 'R-D1.O2-03',
+    objective_id: 'D1.O2',
+    type: 'video',
+    title: 'IBM Technology - What is Zero Trust Security?',
+    url: 'https://www.youtube.com/watch?v=i479Y25W9p8',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null,
+  },
+  {
+    resource_id: 'R-D1.O2-04',
+    objective_id: 'D1.O2',
+    type: 'video',
+    title: 'IBM Technology - What is the CIA Triad?',
+    url: 'https://www.youtube.com/watch?v=tS_yM1mO4fU',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null,
+  },
+  // Domain 1.3 - Change Management
+  {
+    resource_id: 'R-D1.O3-01',
+    objective_id: 'D1.O3',
+    type: 'video',
+    title: 'Professor Messer - Change Management (SY0-701 - 1.3)',
+    url: 'https://www.professormesser.com/security-plus/sy0-701/sy0-701-video/change-management-sy0-701/',
+    license_note: 'Free educational link',
+    user_id: null,
+  },
+  {
+    resource_id: 'R-D1.O3-02',
+    objective_id: 'D1.O3',
+    type: 'video',
+    title: 'IBM Technology - Change Management Process Explained',
+    url: 'https://www.youtube.com/watch?v=1F2b_PqFz28',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null,
+  },
+  // Domain 1.4 - Cryptographic Solutions
+  {
+    resource_id: 'R-D1.O4-01',
+    objective_id: 'D1.O4',
+    type: 'video',
+    title: 'Professor Messer - Cryptographic Solutions (SY0-701 - 1.4)',
+    url: 'https://www.professormesser.com/security-plus/sy0-701/sy0-701-video/cryptographic-solutions-sy0-701/',
+    license_note: 'Free educational link',
+    user_id: null,
+  },
+  {
+    resource_id: 'R-D1.O4-02',
+    objective_id: 'D1.O4',
+    type: 'video',
+    title: 'IBM Technology - Symmetric vs. Asymmetric Encryption',
+    url: 'https://www.youtube.com/watch?v=AQDCe585Lnc',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null,
+  },
+  {
+    resource_id: 'R-D1.O4-03',
+    objective_id: 'D1.O4',
+    type: 'video',
+    title: 'IBM Technology - What is PKI? (Public Key Infrastructure)',
+    url: 'https://www.youtube.com/watch?v=A2w3P7Wv_zE',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null,
+  },
+  {
+    resource_id: 'R-D1.O4-04',
+    objective_id: 'D1.O4',
+    type: 'video',
+    title: 'IBM Technology - What is Hashing and How Does it Work?',
+    url: 'https://www.youtube.com/watch?v=2BldESGZKB8',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null,
+  },
+  // Domain 2.1 - Threat Actors
+  {
+    resource_id: 'R-D2.O1-01',
+    objective_id: 'D2.O1',
+    type: 'video',
+    title: 'Professor Messer - Threat Actors and Motivations (SY0-701 - 2.1)',
+    url: 'https://www.professormesser.com/security-plus/sy0-701/sy0-701-video/threat-actors-and-motivations-sy0-701/',
+    license_note: 'Free educational link',
+    user_id: null,
+  },
+  {
+    resource_id: 'R-D2.O1-02',
+    objective_id: 'D2.O1',
+    type: 'video',
+    title: 'IBM Technology - Cyber Threat Intelligence Explained',
+    url: 'https://www.youtube.com/watch?v=28BEXlM5W9A',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null,
+  },
+  // Domain 2.2 - Threat Vectors & Social Engineering
+  {
+    resource_id: 'R-D2.O2-01',
+    objective_id: 'D2.O2',
+    type: 'video',
+    title: 'Professor Messer - Threat Vectors and Attack Surfaces (SY0-701 - 2.2)',
+    url: 'https://www.professormesser.com/security-plus/sy0-701/sy0-701-video/threat-vectors-and-attack-surfaces-sy0-701/',
+    license_note: 'Free educational link',
+    user_id: null,
+  },
+  {
+    resource_id: 'R-D2.O2-02',
+    objective_id: 'D2.O2',
+    type: 'video',
+    title: 'IBM Technology - Social Engineering Attacks Explained',
+    url: 'https://www.youtube.com/watch?v=g6Wn5w2XQ6k',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null,
+  },
+  // Domain 2.3 - Vulnerabilities
+  {
+    resource_id: 'R-D2.O3-01',
+    objective_id: 'D2.O3',
+    type: 'video',
+    title: 'Professor Messer - Vulnerability Types (SY0-701 - 2.3)',
+    url: 'https://www.professormesser.com/security-plus/sy0-701/sy0-701-video/vulnerability-types-sy0-701/',
+    license_note: 'Free educational link',
+    user_id: null,
+  },
+  {
+    resource_id: 'R-D2.O3-02',
+    objective_id: 'D2.O3',
+    type: 'video',
+    title: 'IBM Technology - What is a Zero-Day Vulnerability?',
+    url: 'https://www.youtube.com/watch?v=5r4Q4gSgH6A',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null,
+  },
+  // Domain 3.1 - Architecture Models
+  {
+    resource_id: 'R-D3.O1-01',
+    objective_id: 'D3.O1',
+    type: 'video',
+    title: 'Professor Messer - Cloud Models (SY0-701 - 3.1)',
+    url: 'https://www.professormesser.com/security-plus/sy0-701/sy0-701-video/cloud-models-sy0-701/',
+    license_note: 'Free educational link',
+    user_id: null,
+  },
+  {
+    resource_id: 'R-D3.O1-02',
+    objective_id: 'D3.O1',
+    type: 'video',
+    title: 'IBM Technology - Cloud Shared Responsibility Model Explained',
+    url: 'https://www.youtube.com/watch?v=kYOp1ZgH2mU',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null,
+  },
+  // Domain 3.2 - Infrastructure Security
+  {
+    resource_id: 'R-D3.O2-01',
+    objective_id: 'D3.O2',
+    type: 'video',
+    title: 'Professor Messer - Secure Infrastructure Design (SY0-701 - 3.2)',
+    url: 'https://www.professormesser.com/security-plus/sy0-701/sy0-701-video/secure-infrastructure-design-sy0-701/',
+    license_note: 'Free educational link',
+    user_id: null,
+  },
+  {
+    resource_id: 'R-D3.O2-02',
+    objective_id: 'D3.O2',
+    type: 'video',
+    title: 'IBM Technology - What is a Firewall?',
+    url: 'https://www.youtube.com/watch?v=3KzJ6aXv0mE',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null,
+  },
+  {
+    resource_id: 'R-D3.O2-03',
+    objective_id: 'D3.O2',
+    type: 'video',
+    title: 'IBM Technology - What is a Web Application Firewall (WAF)?',
+    url: 'https://www.youtube.com/watch?v=Jm2qC4hWlDk',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null,
+  },
+  // Domain 3.3 - Data Protection
+  {
+    resource_id: 'R-D3.O3-01',
+    objective_id: 'D3.O3',
+    type: 'video',
+    title: 'Professor Messer - Data Protection (SY0-701 - 3.3)',
+    url: 'https://www.professormesser.com/security-plus/sy0-701/sy0-701-video/data-protection-sy0-701/',
+    license_note: 'Free educational link',
+    user_id: null,
+  },
+  {
+    resource_id: 'R-D3.O3-02',
+    objective_id: 'D3.O3',
+    type: 'video',
+    title: 'IBM Technology - Data Masking vs Tokenization Explained',
+    url: 'https://www.youtube.com/watch?v=yR4c2R9G1eA',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null,
+  },
+  // Domain 4.6 - Identity and Access Management
+  {
+    resource_id: 'R-D4.O6-01',
+    objective_id: 'D4.O6',
+    type: 'video',
+    title: 'Professor Messer - Identity and Access Management (SY0-701 - 4.6)',
+    url: 'https://www.professormesser.com/security-plus/sy0-701/sy0-701-video/identity-and-access-management-sy0-701/',
+    license_note: 'Free educational link',
+    user_id: null,
+  },
+  {
+    resource_id: 'R-D4.O6-02',
+    objective_id: 'D4.O6',
+    type: 'video',
+    title: 'IBM Technology - What is Multi-Factor Authentication (MFA)?',
+    url: 'https://www.youtube.com/watch?v=5rAEEH-0t4M',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null,
+  },
+  {
+    resource_id: 'R-D4.O6-03',
+    objective_id: 'D4.O6',
+    type: 'video',
+    title: 'IBM Technology - What is Single Sign-On (SSO)?',
+    url: 'https://www.youtube.com/watch?v=iBhlT2wE0oU',
+    license_note: 'Free IBM YouTube resource',
+    user_id: null,
+  },
+  // Domain 5.2 - Risk Management
+  {
     resource_id: 'R-D5.O2-01',
     objective_id: 'D5.O2',
     type: 'doc',
     title: 'NIST Cybersecurity Framework (CSF) 2.0',
     url: 'https://www.nist.gov/cyberframework',
     license_note: 'Public NIST cybersecurity documentation',
+    user_id: null,
+  },
+  {
+    resource_id: 'R-D5.O2-02',
+    objective_id: 'D5.O2',
+    type: 'video',
+    title: 'Professor Messer - Risk Management (SY0-701 - 5.2)',
+    url: 'https://www.professormesser.com/security-plus/sy0-701/sy0-701-video/risk-management-sy0-701/',
+    license_note: 'Free educational link',
+    user_id: null,
+  },
+  {
+    resource_id: 'R-D5.O2-03',
+    objective_id: 'D5.O2',
+    type: 'video',
+    title: 'IBM Technology - What is Risk Management?',
+    url: 'https://www.youtube.com/watch?v=7uV8hG-d_4A',
+    license_note: 'Free IBM YouTube resource',
     user_id: null,
   },
 ];
@@ -1055,6 +1319,321 @@ export const QUESTIONS: Question[] = [
     },
     tags: ['audits', 'compliance'],
     estimated_seconds: 45,
+    provenance: {
+      author_type: 'original',
+      source_origin: ['CompTIA objective map'],
+      copyright_status: 'original',
+      license_note: 'safe_to_export',
+      import_policy: 'n/a'
+    },
+    status: 'active'
+  },
+  {
+    question_id: 'Q-D1.O1-02',
+    exam_version: 'SY0-701',
+    domain_id: 'D1',
+    objective_id: 'D1.O1',
+    topic_ids: ['D1.O1.T1', 'D1.O1.T2'],
+    type: 'scenario_mcq',
+    difficulty: 'medium',
+    prompt: 'An administrator configures a network firewall to block incoming traffic on port 23 (Telnet) and configures audit logging to record all blocked connection attempts. How should the firewall rule and the audit logging be classified, respectively, in terms of functional type?',
+    choices: [
+      { id: 'A', text: 'Firewall is Preventive; Audit logging is Detective' },
+      { id: 'B', text: 'Firewall is Detective; Audit logging is Corrective' },
+      { id: 'C', text: 'Firewall is Preventive; Audit logging is Compensating' },
+      { id: 'D', text: 'Firewall is Deterrent; Audit logging is Preventive' }
+    ],
+    correct_answers: ['A'],
+    explanation: {
+      why_correct: 'The firewall rule actively blocks incoming traffic, preventing unauthorized connections (Preventive). Audit logs record events after they occur, enabling detection of unauthorized scan activities (Detective).',
+      why_not_others: {
+        'B': 'A firewall is not detective; it prevents connection. Audit logging is detective, not corrective (which resolves or restores after a breach).',
+        'C': 'Audit logging detects and audits events; it is not a compensating control (which is used when a primary control is not feasible).',
+        'D': 'Firewalls are technical preventive measures, not deterrents (which discourage actions using warnings or presence). Audit logs do not prevent connections directly.'
+      }
+    },
+    tags: ['controls', 'preventive-controls', 'detective-controls', 'firewall'],
+    estimated_seconds: 50,
+    provenance: {
+      author_type: 'original',
+      source_origin: ['CompTIA objective map'],
+      copyright_status: 'original',
+      license_note: 'safe_to_export',
+      import_policy: 'n/a'
+    },
+    status: 'active'
+  },
+  {
+    question_id: 'Q-D1.O1-03',
+    exam_version: 'SY0-701',
+    domain_id: 'D1',
+    objective_id: 'D1.O1',
+    topic_ids: ['D1.O1.T1', 'D1.O1.T2'],
+    type: 'scenario_mcq',
+    difficulty: 'medium',
+    prompt: "To comply with corporate governance policies, all newly hired developers must read and sign the company's Acceptable Use Policy (AUP) within their first week. Under which control category and functional type is this training requirement classified?",
+    choices: [
+      { id: 'A', text: 'Technical category and Preventive type' },
+      { id: 'B', text: 'Managerial category and Directive type' },
+      { id: 'C', text: 'Operational category and Compensating type' },
+      { id: 'D', text: 'Physical category and Detective type' }
+    ],
+    correct_answers: ['B'],
+    explanation: {
+      why_correct: 'Security policies, administrative rules, and training mandates are authored by management, placing them in the Managerial (administrative) category. Because the AUP formally instructs employees on acceptable behaviors and rules, it functions as a Directive control.',
+      why_not_others: {
+        'A': 'Policies are human/administrative processes, not technical controls involving software/hardware systems.',
+        'C': 'While training execution can be operational, a policy mandate is primarily a Managerial control. Directive is correct, not compensating.',
+        'D': 'It does not involve physical facilities or assets, nor does it detect violations (detective).'
+      }
+    },
+    tags: ['controls', 'managerial-controls', 'directive-controls', 'policy'],
+    estimated_seconds: 55,
+    provenance: {
+      author_type: 'original',
+      source_origin: ['CompTIA objective map'],
+      copyright_status: 'original',
+      license_note: 'safe_to_export',
+      import_policy: 'n/a'
+    },
+    status: 'active'
+  },
+  {
+    question_id: 'Q-D1.O1-04',
+    exam_version: 'SY0-701',
+    domain_id: 'D1',
+    objective_id: 'D1.O1',
+    topic_ids: ['D1.O1.T2'],
+    type: 'scenario_mcq',
+    difficulty: 'hard',
+    prompt: 'An organization operates a legacy mainframe server that hosts critical inventory databases but cannot support modern cryptographic transport protocols. To secure data in transit without altering the mainframe, the security team deploys external IPSec VPN gateways on adjacent network routers. What functional type of control does this VPN deployment represent?',
+    choices: [
+      { id: 'A', text: 'Detective control' },
+      { id: 'B', text: 'Deterrent control' },
+      { id: 'C', text: 'Compensating control' },
+      { id: 'D', text: 'Directive control' }
+    ],
+    correct_answers: ['C'],
+    explanation: {
+      why_correct: 'A compensating control is a security measure deployed to mitigate a vulnerability when standard security controls are not technically feasible or viable (in this case, encrypting traffic directly on the legacy server). The external IPSec gateway provides the required encryption capability, compensating for the host\'s lack of support.',
+      why_not_others: {
+        'A': 'Detective controls identify breaches or logs after they happen, whereas VPN gateways encrypt/secure connections to prevent exposure.',
+        'B': 'Deterrent controls discourage attackers (e.g. warning signs), they do not mitigate key hardware constraints.',
+        'D': 'Directive controls instruct human behavior (policies), rather than implementing technical network setups.'
+      }
+    },
+    tags: ['controls', 'compensating-controls', 'vpn'],
+    estimated_seconds: 60,
+    provenance: {
+      author_type: 'original',
+      source_origin: ['CompTIA objective map'],
+      copyright_status: 'original',
+      license_note: 'safe_to_export',
+      import_policy: 'n/a'
+    },
+    status: 'active'
+  },
+  {
+    question_id: 'Q-D1.O2-03',
+    exam_version: 'SY0-701',
+    domain_id: 'D1',
+    objective_id: 'D1.O2',
+    topic_ids: ['D1.O2.T1'],
+    type: 'mcq',
+    difficulty: 'medium',
+    prompt: 'A company implements a digital signature system for outbound purchase orders. By encrypting a cryptographic hash of the order document with the sender\'s private key, the system ensures that the sender cannot later deny having authorized the transaction. Which core security concept does this design satisfy?',
+    choices: [
+      { id: 'A', text: 'Confidentiality' },
+      { id: 'B', text: 'Availability' },
+      { id: 'C', text: 'Non-repudiation' },
+      { id: 'D', text: 'Least Privilege' }
+    ],
+    correct_answers: ['C'],
+    explanation: {
+      why_correct: 'Non-repudiation ensures that a party to a transaction or communication cannot deny the authenticity of their signature or sending the message. Digital signatures achieve this by binding the sender\'s private key to the signature, which can be verified by anyone using their public key.',
+      why_not_others: {
+        'A': 'Confidentiality prevents unauthorized disclosure of data, which signatures do not achieve on their own (the hash signature is public/verifiable).',
+        'B': 'Availability ensures systems remain functional and accessible, not that users cannot deny their actions.',
+        'D': 'Least privilege restricts account permissions, which is unrelated to verifying transacting identity.'
+      }
+    },
+    tags: ['concepts', 'non-repudiation', 'cryptography'],
+    estimated_seconds: 50,
+    provenance: {
+      author_type: 'original',
+      source_origin: ['CompTIA objective map'],
+      copyright_status: 'original',
+      license_note: 'safe_to_export',
+      import_policy: 'n/a'
+    },
+    status: 'active'
+  },
+  {
+    question_id: 'Q-D1.O2-04',
+    exam_version: 'SY0-701',
+    domain_id: 'D1',
+    objective_id: 'D1.O2',
+    topic_ids: ['D1.O2.T2'],
+    type: 'scenario_mcq',
+    difficulty: 'medium',
+    prompt: 'Under a Zero Trust Architecture (ZTA), which statement best describes the fundamental guiding principle of microsegmentation?',
+    choices: [
+      { id: 'A', text: 'Creating a single large demilitarized zone (DMZ) for all public web services.' },
+      { id: 'B', text: 'Dividing the network into small, isolated security zones to restrict lateral movement.' },
+      { id: 'C', text: 'Enforcing complex password rules at the domain controller layer.' },
+      { id: 'D', text: 'Deploying host-based intrusion prevention systems on remote laptops.' }
+    ],
+    correct_answers: ['B'],
+    explanation: {
+      why_correct: 'Microsegmentation divides network zones into distinct, granular compartments (workloads, servers, or subnets) with unique security policies. This restricts an attacker\'s ability to move laterally across the network if they compromise a single device, reinforcing Zero Trust principles.',
+      why_not_others: {
+        'A': 'A single large DMZ is a perimeter-focused strategy, which goes against ZTA\'s goal of breaking down trust boundaries inside the perimeter.',
+        'C': 'Password rules are IAM password strength policies, not network architectural segmentation.',
+        'D': 'HIPS protects endpoints, which is a host security control, not microsegmentation of networks.'
+      }
+    },
+    tags: ['concepts', 'zero-trust', 'microsegmentation'],
+    estimated_seconds: 55,
+    provenance: {
+      author_type: 'original',
+      source_origin: ['CompTIA objective map'],
+      copyright_status: 'original',
+      license_note: 'safe_to_export',
+      import_policy: 'n/a'
+    },
+    status: 'active'
+  },
+  {
+    question_id: 'Q-D1.O3-02',
+    exam_version: 'SY0-701',
+    domain_id: 'D1',
+    objective_id: 'D1.O3',
+    topic_ids: [],
+    type: 'scenario_mcq',
+    difficulty: 'medium',
+    prompt: 'A systems administrator wants to apply a major firmware update to the company\'s core network switches. Before implementing the change, they present the plan to a group of stakeholders responsible for evaluating risk, scheduling alignment, and operational impact. What is the name of this governing group?',
+    choices: [
+      { id: 'A', text: 'Incident Response Team (IRT)' },
+      { id: 'B', text: 'Disaster Recovery Board (DRB)' },
+      { id: 'C', text: 'Change Advisory Board (CAB)' },
+      { id: 'D', text: 'Software Quality Assurance (SQA) team' }
+    ],
+    correct_answers: ['C'],
+    explanation: {
+      why_correct: 'The Change Advisory Board (CAB) is a cross-functional group of stakeholders that reviews, evaluates, and approves major changes. Their role is to assess risks, coordinate timelines, and ensure a stable backout plan is in place to minimize operational disruption.',
+      why_not_others: {
+        'A': 'The IRT handles post-incident mitigation, not pre-planned system upgrades.',
+        'B': 'The Disaster Recovery Board activates systems in the event of an outage; they do not handle business-as-usual changes.',
+        'D': 'SQA validates software code metrics, they do not manage core organizational network switches change control.'
+      }
+    },
+    tags: ['change-management', 'operations', 'cab'],
+    estimated_seconds: 50,
+    provenance: {
+      author_type: 'original',
+      source_origin: ['CompTIA objective map'],
+      copyright_status: 'original',
+      license_note: 'safe_to_export',
+      import_policy: 'n/a'
+    },
+    status: 'active'
+  },
+  {
+    question_id: 'Q-D1.O3-03',
+    exam_version: 'SY0-701',
+    domain_id: 'D1',
+    objective_id: 'D1.O3',
+    topic_ids: [],
+    type: 'scenario_mcq',
+    difficulty: 'medium',
+    prompt: 'To ensure that a newly developed security patch does not break existing database applications or degrade transaction processing speeds, where should the patch first be deployed and tested according to change management standards?',
+    choices: [
+      { id: 'A', text: 'Production database server during standard business hours' },
+      { id: 'B', text: 'A designated sandbox or staging environment mirroring production' },
+      { id: 'C', text: 'Directly to the client workstations via automated scripting' },
+      { id: 'D', text: 'The primary domain controller to test authentication impact' }
+    ],
+    correct_answers: ['B'],
+    explanation: {
+      why_correct: 'Changes should always be tested in a sandbox, staging, or user acceptance testing (UAT) environment that closely mirrors production. This allows verification of application compatibility, security behavior, and performance without risking downtime on live systems.',
+      why_not_others: {
+        'A': 'Deploying straight to production databases without sandbox testing violates change control policies and risks critical database crashes.',
+        'C': 'Client workstations are endpoints, not database application servers. Patching them does not validate server databases.',
+        'D': 'The domain controller handles user authentications (Active Directory), not database transactional speeds.'
+      }
+    },
+    tags: ['change-management', 'operations', 'testing'],
+    estimated_seconds: 50,
+    provenance: {
+      author_type: 'original',
+      source_origin: ['CompTIA objective map'],
+      copyright_status: 'original',
+      license_note: 'safe_to_export',
+      import_policy: 'n/a'
+    },
+    status: 'active'
+  },
+  {
+    question_id: 'Q-D1.O4-03',
+    exam_version: 'SY0-701',
+    domain_id: 'D1',
+    objective_id: 'D1.O4',
+    topic_ids: [],
+    type: 'mcq',
+    difficulty: 'medium',
+    prompt: 'An application developer needs to securely store user credentials in a local authentication database. To defend against offline dictionary and rainbow table cracking attacks, which of the following techniques should they implement alongside a cryptographic hashing algorithm?',
+    choices: [
+      { id: 'A', text: 'Diffie-Hellman Key Exchange' },
+      { id: 'B', text: 'Adding a unique, random salt to each password before hashing' },
+      { id: 'C', text: 'Digital signatures using the developer\'s private key' },
+      { id: 'D', text: 'Encrypting the database file with asymmetric RSA' }
+    ],
+    correct_answers: ['B'],
+    explanation: {
+      why_correct: 'Salting is the process of appending a unique, random value (a salt) to a plaintext password before hashing it. This ensures that identical passwords yield different hashes, preventing attackers from using precomputed hashes (rainbow tables) to crack passwords offline.',
+      why_not_others: {
+        'A': 'Diffie-Hellman is a session key agreement protocol for data in transit; it is not used to store credentials at rest.',
+        'C': 'Digital signatures verify authenticity, not hash storage security against brute forcing.',
+        'D': 'Asymmetric RSA is slow and unsuited for database storage encryption. Hashing is the correct password verification standard.'
+      }
+    },
+    tags: ['cryptography', 'passwords', 'salting', 'hashing'],
+    estimated_seconds: 55,
+    provenance: {
+      author_type: 'original',
+      source_origin: ['CompTIA objective map'],
+      copyright_status: 'original',
+      license_note: 'safe_to_export',
+      import_policy: 'n/a'
+    },
+    status: 'active'
+  },
+  {
+    question_id: 'Q-D1.O4-04',
+    exam_version: 'SY0-701',
+    domain_id: 'D1',
+    objective_id: 'D1.O4',
+    topic_ids: [],
+    type: 'scenario_mcq',
+    difficulty: 'hard',
+    prompt: 'A client web browser connects to a banking portal and needs to instantly verify if the server\'s SSL/TLS certificate was revoked this morning. Which protocol or check provides the most real-time verification of certificate revocation status without downloading a large document?',
+    choices: [
+      { id: 'A', text: 'Certificate Revocation List (CRL)' },
+      { id: 'B', text: 'Online Certificate Status Protocol (OCSP)' },
+      { id: 'C', text: 'Certificate Signing Request (CSR)' },
+      { id: 'D', text: 'Diffie-Hellman Key Exchange' }
+    ],
+    correct_answers: ['B'],
+    explanation: {
+      why_correct: 'OCSP (Online Certificate Status Protocol) allows a client to query a Certificate Authority\'s database in real time for the revocation status of a single certificate. This is much faster and uses less bandwidth than downloading an entire Certificate Revocation List (CRL).',
+      why_not_others: {
+        'A': 'A CRL requires downloading the entire list of revoked certificates, which is not real-time and consumes substantial bandwidth.',
+        'C': 'A CSR is created by a server to request a certificate from a CA; it is not a verification check.',
+        'D': 'Diffie-Hellman negotiates key pairs; it does not contain certificate authentication or revocation checks.'
+      }
+    },
+    tags: ['cryptography', 'pki', 'ocsp', 'certificates'],
+    estimated_seconds: 60,
     provenance: {
       author_type: 'original',
       source_origin: ['CompTIA objective map'],

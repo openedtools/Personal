@@ -265,7 +265,7 @@ export const Settings: React.FC = () => {
   return (
     <div className="space-y-6 pb-24 md:pb-6 max-w-3xl mx-auto select-none">
       <header className="border-b border-slate-800 pb-4">
-        <h1 className="text-2xl font-extrabold tracking-tight text-white md:text-3xl">
+        <h1 className="text-2xl font-extrabold tracking-tight text-slate-200 md:text-3xl">
           Account & Settings
         </h1>
         <p className="text-slate-400 text-sm mt-1">
@@ -279,11 +279,11 @@ export const Settings: React.FC = () => {
           // Signed-in Dashboard
           <div className="space-y-4">
             <div className="flex items-center gap-4 border-b border-slate-900 pb-4">
-              <div className="w-12 h-12 rounded-2xl bg-indigo-650 flex items-center justify-center text-white">
+              <div className="w-12 h-12 rounded-2xl bg-indigo-650 flex items-center justify-center text-slate-950">
                 <UserCheck className="w-6 h-6" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-white leading-tight">Active User Account</h3>
+                <h3 className="text-sm font-bold text-slate-200 leading-tight">Active User Account</h3>
                 <p className="text-xs text-slate-450 mt-0.5">{user.email}</p>
               </div>
             </div>
@@ -292,7 +292,7 @@ export const Settings: React.FC = () => {
               <button
                 onClick={handleManualSync}
                 disabled={isSyncing}
-                className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-white text-xs font-bold py-2.5 px-4 rounded-xl shadow-md transition-all"
+                className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-slate-950 text-xs font-bold py-2.5 px-4 rounded-xl shadow-md transition-all"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
                 <span>Sync Now</span>
@@ -309,7 +309,7 @@ export const Settings: React.FC = () => {
         ) : (
           // Authentication form (Login / Register Toggle)
           <form onSubmit={handleAuth} className="space-y-4 max-w-md">
-            <h3 className="font-display font-extrabold text-base text-white">
+            <h3 className="font-display font-extrabold text-base text-slate-200">
               {isSignUp ? 'Create Cloud Account' : 'Sign In to Cloud'}
             </h3>
             <p className="text-slate-400 text-xs leading-relaxed">
@@ -378,7 +378,7 @@ export const Settings: React.FC = () => {
               <button
                 type="submit"
                 disabled={authLoading}
-                className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 px-5 rounded-xl text-xs shadow-md transition-all disabled:opacity-40"
+                className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 text-slate-950 font-bold py-2.5 px-5 rounded-xl text-xs shadow-md transition-all disabled:opacity-40"
               >
                 <Lock className="w-3.5 h-3.5" />
                 <span>{authLoading ? 'Connecting...' : isSignUp ? 'Register Account' : 'Sign In'}</span>
@@ -398,7 +398,7 @@ export const Settings: React.FC = () => {
               type="button"
               onClick={handleGoogleSignIn}
               disabled={authLoading}
-              className="w-full flex items-center justify-center gap-2 bg-slate-900 border border-slate-850 hover:bg-slate-850 hover:text-white text-slate-350 font-bold py-2.5 px-4 rounded-xl text-xs transition-all active:scale-[0.99] disabled:opacity-40"
+              className="w-full flex items-center justify-center gap-2 bg-slate-900 border border-slate-850 hover:bg-slate-850 hover:text-slate-50 text-slate-350 font-bold py-2.5 px-4 rounded-xl text-xs transition-all active:scale-[0.99] disabled:opacity-40"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -465,14 +465,14 @@ export const Settings: React.FC = () => {
           {/* Export button */}
           <button
             onClick={handleExportJSON}
-            className="flex items-center gap-1.5 bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-350 hover:text-white text-xs font-bold py-3 px-5 rounded-2xl transition-all"
+            className="flex items-center gap-1.5 bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-350 hover:text-slate-50 text-xs font-bold py-3 px-5 rounded-2xl transition-all"
           >
             <Download className="w-4 h-4 text-indigo-400" />
             <span>Export Backup File</span>
           </button>
 
           {/* Import file input label */}
-          <label className="flex items-center gap-1.5 bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-350 hover:text-white text-xs font-bold py-3 px-5 rounded-2xl cursor-pointer transition-all">
+          <label className="flex items-center gap-1.5 bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-350 hover:text-slate-50 text-xs font-bold py-3 px-5 rounded-2xl cursor-pointer transition-all">
             <Upload className="w-4 h-4 text-indigo-400" />
             <span>Import Backup File</span>
             <input

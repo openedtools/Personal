@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '../db/supabaseClient';
-import { db } from '../db/localDb';
+import { db, syncSeedDataIfNeeded } from '../db/localDb';
 import { syncNow, migrateGuestData } from '../db/syncManager';
 import type { SyncState } from '../db/syncManager';
 import { calculateReadiness } from '../utils/masteryMath';
@@ -32,26 +32,41 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   // 1. Listen for Supabase Auth changes
   useEffect(() => {
-    if (!supabase) {
+    const client = supabase;
+    if (!client) {
       setLoading(false);
+      // Still need to seed data for guest/local-only mode!
+      syncSeedDataIfNeeded().then(() => reloadMetrics());
       return;
     }
 
-    // Check active session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        setUser(session.user);
-        setSyncState('synced');
-        // Run initial sync
-        performSync();
-      } else {
-        setUser(null);
-        setSyncState('local-only');
-      }
-      setLoading(false);
-    });
+    const initApp = async () => {
+      // Sync static seed questions/resources to local IndexedDB first
+      await syncSeedDataIfNeeded();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      // Check active session
+      try {
+        const { data: { session } } = await client.auth.getSession();
+        if (session?.user) {
+          setUser(session.user);
+          setSyncState('synced');
+          // Run initial sync
+          performSync();
+        } else {
+          setUser(null);
+          setSyncState('local-only');
+          await reloadMetrics();
+        }
+      } catch (err) {
+        console.error('Error fetching active session:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    initApp();
+
+    const { data: { subscription } } = client.auth.onAuthStateChange(async (event, session) => {
       console.log('Auth state change event:', event);
       if (session?.user) {
         setUser(session.user);
@@ -71,7 +86,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     });
 
     return () => {
-      subscription.unsubscribe();
+      if (subscription) {
+        subscription.unsubscribe();
+      }
     };
   }, []);
 

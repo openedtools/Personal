@@ -106,4 +106,42 @@ export class SecPlusDatabase extends Dexie {
 }
 
 export const db = new SecPlusDatabase();
+
+export async function syncSeedDataIfNeeded() {
+  console.log('Syncing static seed data to IndexedDB...');
+  try {
+    await db.domains.bulkPut(DOMAINS);
+    await db.objectives.bulkPut(OBJECTIVES);
+    await db.topics.bulkPut(TOPICS);
+    await db.questions.bulkPut(QUESTIONS);
+    await db.resources.bulkPut(RESOURCES);
+
+    // Make sure every objective has an initial snapshot for guest mode (user_id = null)
+    const existingSnapshots = await db.masterySnapshots.filter(s => s.user_id === null).toArray();
+    const existingObjIds = new Set(existingSnapshots.map(s => s.objective_id));
+
+    const missingSnaps = OBJECTIVES.filter(o => !existingObjIds.has(o.objective_id)).map(obj => ({
+      objective_id: obj.objective_id,
+      accuracy: 0,
+      consistency: 0,
+      confidence: 0,
+      recency: 0,
+      variety: 0,
+      speed: 0,
+      score: 0,
+      label: 'Not Started' as const,
+      next_review_at: null,
+      updated_at: new Date().toISOString(),
+      user_id: null,
+    }));
+
+    if (missingSnaps.length > 0) {
+      await db.masterySnapshots.bulkAdd(missingSnaps);
+      console.log(`Initialized ${missingSnaps.length} missing mastery snapshots for guest.`);
+    }
+  } catch (error) {
+    console.error('Error syncing seed data in IndexedDB:', error);
+  }
+}
+
 export default db;
