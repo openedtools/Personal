@@ -1088,6 +1088,21 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.target.id === 'mapLightbox' || e.target.tagName === 'IMG') closeModal('mapLightbox');
   });
 
+  // ── Shirt mockup lightbox wiring ──
+  document.querySelectorAll('.mockup-img-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const img = document.getElementById('shirtLightboxImg');
+      if (!img) return;
+      img.src = btn.dataset.shirtSrc;
+      img.alt = btn.dataset.shirtAlt || '';
+      openModal('shirtLightbox');
+    });
+  });
+  on('shirtLightboxClose', 'click', () => closeModal('shirtLightbox'));
+  on('shirtLightbox',      'click', e => {
+    if (e.target.id === 'shirtLightbox' || e.target.tagName === 'IMG') closeModal('shirtLightbox');
+  });
+
   // ── Keyboard close ──
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
@@ -1097,6 +1112,7 @@ document.addEventListener('DOMContentLoaded', () => {
       closeModal('potluckModal');
       closeModal('tshirtModal');
       closeModal('mapLightbox');
+      closeModal('shirtLightbox');
     }
   });
 });

@@ -1229,33 +1229,89 @@ textarea:focus { border-color: var(--terracotta); }
 /* ── T-SHIRTS ─────────────────────────────────────── */
 .shirt-mockup-area {
   background: var(--surface);
-  border: 2px dashed var(--border);
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: 48px 24px;
+  padding: 32px 24px 24px;
   text-align: center;
-  max-width: 560px;
+  max-width: 760px;
   margin: 0 auto;
 }
 
-.mockup-placeholder { }
-
-.mockup-icon {
-  font-size: 4rem;
-  display: block;
-  margin-bottom: 16px;
-  opacity: 0.6;
+.mockup-heading {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  font-weight: 400;
+  color: var(--text);
+  margin-bottom: 24px;
 }
 
+.mockup-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  align-items: start;
+}
+
+.mockup-card { margin: 0; }
+
+.mockup-img-btn {
+  display: block;
+  width: 100%;
+  padding: 0;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  cursor: zoom-in;
+  box-shadow: var(--shadow);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.mockup-img-btn:hover { transform: translateY(-2px); }
+
+.mockup-img-btn:focus-visible {
+  outline: 3px solid var(--terracotta);
+  outline-offset: 3px;
+}
+
+.mockup-img-btn img {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* The two mockups differ by ~3% in width; a shared ratio keeps the cards
+     and captions aligned (only blank background is trimmed). The lightbox
+     shows each image uncropped. */
+  aspect-ratio: 69 / 100;
+  object-fit: cover;
+}
+
+.mockup-card figcaption { margin-top: 12px; }
+
 .mockup-title {
+  display: block;
   font-family: 'Playfair Display', serif;
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   color: var(--text);
-  margin-bottom: 8px;
 }
 
 .mockup-sub {
-  font-size: 0.9rem;
+  display: block;
+  font-size: 0.85rem;
   color: var(--muted);
+}
+
+.mockup-hint {
+  margin-top: 16px;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+@media (max-width: 560px) {
+  .shirt-mockup-area { padding: 24px 14px 18px; }
+  .mockup-heading { font-size: 1.35rem; margin-bottom: 16px; }
+  .mockup-grid { gap: 12px; }
+  .mockup-title { font-size: 1rem; }
+  .mockup-sub { font-size: 0.78rem; }
 }
 
 .tshirt-summary {

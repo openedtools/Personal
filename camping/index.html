@@ -6,7 +6,7 @@
   <title>Desert Turkey 2026 · Jumbo Rocks · Thanksgiving 2026</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=20" />
+  <link rel="stylesheet" href="css/style.css?v=21" />
 </head>
 <body>
 
@@ -461,11 +461,34 @@
     <div class="tab-content">
 
       <div class="shirt-mockup-area">
-        <div class="mockup-placeholder">
-          <span class="mockup-icon">👕</span>
-          <p class="mockup-title">This Year's Shirt</p>
-          <p class="mockup-sub">Mockup coming soon — check back later!</p>
+        <h2 class="mockup-heading">This Year's Shirts</h2>
+        <div class="mockup-grid">
+          <figure class="mockup-card">
+            <button type="button" class="mockup-img-btn" data-shirt-src="img/shirt-adult.jpg"
+                    data-shirt-alt="Adult shirt mockup: sage green with yellow Desert Turkey 2026 Joshua Tree artwork"
+                    aria-label="View the adult shirt mockup full size">
+              <img src="img/shirt-adult.jpg" width="1380" height="2000" loading="lazy"
+                   alt="Adult shirt mockup: sage green with yellow Desert Turkey 2026 Joshua Tree artwork" />
+            </button>
+            <figcaption>
+              <span class="mockup-title">Adult Shirt</span>
+              <span class="mockup-sub">Sage green · yellow ink</span>
+            </figcaption>
+          </figure>
+          <figure class="mockup-card">
+            <button type="button" class="mockup-img-btn" data-shirt-src="img/shirt-kid.webp"
+                    data-shirt-alt="Kid shirt mockup: ice blue with cream Desert Turkey 2026 Joshua Tree artwork"
+                    aria-label="View the kid shirt mockup full size">
+              <img src="img/shirt-kid.webp" width="1417" height="2000" loading="lazy"
+                   alt="Kid shirt mockup: ice blue with cream Desert Turkey 2026 Joshua Tree artwork" />
+            </button>
+            <figcaption>
+              <span class="mockup-title">Kid Shirt</span>
+              <span class="mockup-sub">Ice blue · cream ink</span>
+            </figcaption>
+          </figure>
         </div>
+        <p class="mockup-hint">Tap a shirt to see it full size.</p>
       </div>
 
       <div class="section-header" style="margin-top:48px">
@@ -551,6 +574,18 @@
     </div>
   </div><!-- /tab-tshirts -->
 
+  <!-- Shirt mockup full-screen lightbox.
+       Lives outside the tab panels on purpose: .tab-panel.active keeps a
+       transform from its fade-in animation, which would make a fixed
+       element inside it size/position itself to the panel, not the screen. -->
+  <div class="image-lightbox" id="shirtLightbox" role="dialog" aria-label="Shirt mockup full size">
+    <button class="lightbox-close" id="shirtLightboxClose" type="button" aria-label="Close">✕</button>
+    <div class="lightbox-img-wrap">
+      <img id="shirtLightboxImg" alt="" />
+    </div>
+    <div class="lightbox-footer">Press Esc or click ✕ to close</div>
+  </div>
+
   <!-- FOOTER -->
   <footer>
     <p>Desert Turkey 2026 · Jumbo Rocks · Joshua Tree NP · Thanksgiving 2026</p>
@@ -562,6 +597,6 @@
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
   <script src="js/firebase-config.js?v=20"></script>
   <script src="js/data.js?v=20"></script>
-  <script src="js/app.js?v=20"></script>
+  <script src="js/app.js?v=21"></script>
 </body>
 </html>
