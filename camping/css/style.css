@@ -352,7 +352,11 @@ body {
 
 .tab-panel.active {
   display: block;
-  animation: tabFadeIn 0.18s ease forwards;
+  /* No `forwards`: the end state equals the normal state, and holding the
+     final transform would turn the panel into the containing block for every
+     position:fixed modal/lightbox inside it (they'd size and position
+     themselves to the panel, not the screen, once the page is scrolled). */
+  animation: tabFadeIn 0.18s ease;
 }
 
 .tab-content {
